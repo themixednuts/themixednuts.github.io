@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body class="body">
+    <div class="container">
+        <div class="header">
+        </div>
+        <div class="topcontainer">
+            <div class="attributecontainer">
+                <form method="GET" class="forms">
+                    <div id="attr" class="form-div">
+                        <label for="lvl" id="level" class="form">Level</label>
+                        <input type="text" min="1" max="60" value="60" id="lvl">
+                        <label for="str" class="form">Strength</label>
+                        <input id="str" name="strength" type="text" min="5" value="5">
+                        <label for="dex" class="form">Dexterity</label>
+                        <input id="dex" name="Dexterity" type="text" min="5" value="5">
+                        <label for="int" class="form">Intelligence</label>
+                        <input id="int" name="Intelligence" type="text" min="5" value="5">
+                        <label for="foc" class="form">Focus</label>
+                        <input id="foc" name="Focus" type="text" min="5" value="5">
+
+                    </div>
+                </form>
+                <div class="player_statuseffects">
+                    <select class="player_statuseffects_select">
+
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="targetcondition_container">
+                <div class="targetcondition_hp">
+                    <label for="targethp" class="targethp_label">Target HP% <input type="number" id="targethp" min="0"
+                            max="100" value="100"></label>
+                </div>
+                <div class="targetcondition_debuff">
+                    <label for="" class="debuff_target_label">Target Debuff <select name="" id="debuff_target">
+                            <optgroup>
+                                <option value="">None</option>
+                                <option value="Debuff">Debuff</option>
+                                <option value="CC">CC</option>
+                                <option value="Slow">Slow</option>
+                            </optgroup>
+                        </select>
+                    </label>
+                </div>
+                <label for="targetvitals" class="targetvitals_label">Target Vitals <select name="" id="targetvitals">
+                        <optgroup>
+                            <option value="">None</option>
+                            <option value="Ancient">Ancient</option>
+                            <option value="AngryEarth">Angry Earth</option>
+                            <option value="Beast">Bease</option>
+                            <option value="Corrupted">Corrupted</option>
+                            <option value="Lost">Lost</option>
+                        </optgroup>
+                    </select>
+                </label>
+            </div>
+
+            <div class="weaponcontainer">
+                <div class="select">
+                    <select id="weapon" name="Weapon">
+                        <optgroup label="Weapon">
+                            <option value="2HAxeT5" selected> Great Axe</option>
+                            <option value="2hGreatSwordT5">Greatsword</option>
+                            <option value="2HhammerT5">Warhammer</option>
+                            <option value="MusketT5">Musket</option>
+                            <option value="BowT5">Bow</option>
+                            <option value="RapierT5">Rapier</option>
+                            <option value="HatchetT5">Hatchet</option>
+                            <option value="SpearT5">Spear</option>
+                            <option value="1hElementalGauntlet_IceT5">Ice Gauntlet</option>
+                            <option value="FireStaffT5">Fire Staff</option>
+                            <option value="VoidGauntletT5">Void Gauntlet</option>
+                            <option value="LifeStaffT5">Life Staff</option>
+                            <option value="SwordT5">Sword</option>
+                            <option value="BlunderbussT5">Blunderbuss</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="gearscore_container">
+                    <img src="../lyshineui/images/icons/misc/icon_gearscore.png" alt="" class="gearscore_icon">
+                    <input for="gearscore" id="gear_score" value="625"></label>
+                </div>
+                <div class="slideContainer">
+                    <input role="slider" type="range" min="100" max="625" value="625" id="gearscore" step="1"
+                        class="slider">
+                </div>
+
+                <div class="weaponperk_container">
+                    <select name="" id="gemslot_select" class="perks">
+                    </select>
+                    <select id="perk1" name="Perk1" class="perks wepperks">
+                            <option value="none" class="wepperks_drop" selected>No Perk</option>
+                    </select>
+                    <select id="perk2" name="Perk2" class="perks wepperks">
+                            <option value="none" class="wepperks_drop" selected>No Perk</option>
+                    </select>
+                    <select id="perk3" name="Perk3" class="perks wepperks">
+                            <option value="none" class="wepperks_drop" selected>No Perk</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="maincontent">
+            <div class="damagecontainer">
+                <div class="standard_damage_bars">
+                </div>
+                <div class="ability_damage_bars">
+                </div>
+                <div class="dot_damage_bars">
+                </div>
+            </div>
+            <div class="abilitiescontainer">
+                <div class="abilitytreeid_0 scaled" id="abilitytreeid_0_div">
+                </div>
+                <div class="abilitytreeid_1 scaled">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="footer">
+        </div>
+    </div>
+    <script type="module" src="./js/main.js"></script>
+</body>
+
+</html>
