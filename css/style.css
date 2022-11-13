@@ -577,7 +577,7 @@ input {
 .purchased {
     top: 50%;
     left: 50%;
-    animation: purshaseScale .3s ease-out;
+    /* animation: purshaseScale .3s ease-out; */
 }
 
 .unpurchased {}
@@ -856,7 +856,7 @@ input {
     src: url('../lyshineui/fonts/nimbussannov-regita.otf');
 }
 
-@keyframes purshaseScale {
+/* @keyframes purshaseScale {
     0% {
 
         transform: scale(107.5%) translateY(-50%) translateX(-50%);
@@ -866,4 +866,4 @@ input {
         transform: scale(1.2) translateY(-50%) translateX(-50%);
     }
 
-}
+} */
