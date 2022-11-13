@@ -163,7 +163,7 @@ body {
     all: unset;
     font-size: 4rem;
     font-weight: 600;
-    background-color:#1F1F1F;
+    background-color: #1F1F1F;
     text-align: center;
     color: #D4CFC4;
     width: 110px;
@@ -260,16 +260,21 @@ body {
 
 }
 
-.abilitytreeid_0:hover ~.abilitytreeid_1{
+.abilitytreeid_0:hover~.abilitytreeid_1 {
     z-index: 0;
 }
 
 
 .appended_ability_div {
     position: relative;
-    width: 100%;
-    height: 100%;
+    max-width: 72px;
+    min-width: 56px;
+    max-height: 72px;
+    min-height: 56px;
     z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%)
 
 }
 
@@ -278,17 +283,15 @@ body {
 }
 
 .appended_ability_div_tooltip {
-    position: absolute;
+    position: relative;
     width: 400px;
     height: fit-content;
-    top: 0%;
+    top: 25%;
     left: 50%;
     background-color: black;
     display: none;
-    z-index: 20;
     padding: 10%;
-    transform: translateY(100%) translateX(-50%);
-    /* transform: translateX(-50%) translateY(-50%); */
+    transform: translateX(-50%);
 
 }
 
@@ -338,7 +341,7 @@ body {
     width: 40px;
     top: -50%;
     right: -50%;
-    filter: opacity(0%);
+    display: none;
     transform: translateY(50%) translateX(-50%);
     text-align: center;
     z-index: -1;
@@ -348,6 +351,7 @@ body {
     font-size: 1.4rem;
     font-weight: 1000;
     user-select: none;
+
 }
 
 .icon__button__bg {
@@ -356,12 +360,12 @@ body {
     width: 80px;
     top: -50%;
     right: -50%;
-    filter: opacity(0%);
+    display: none;
     background-color: white;
     border-radius: 100%;
     background: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0) 100%);
     /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-
+    pointer-events: none;
 }
 
 .icon__button__border {
@@ -370,8 +374,8 @@ body {
     width: 80px;
     top: -50%;
     right: -50%;
-    filter: opacity(0%);
-
+    display: none;
+    pointer-events: none;
 
 }
 
@@ -401,7 +405,8 @@ body {
 .rune {
     position: absolute;
     z-index: -2;
-    filter: opacity(0%) brightness(50%) var(--purchased)
+    display: none;
+    filter: brightness(50%) var(--purchased)
 }
 
 
@@ -562,16 +567,17 @@ input {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
 }
 
-.perks{
+.perks {
     width: 250px;
     flex-grow: 0;
 }
+
 .show {
-    filter: brightness(100%) opacity(100%);
+    display: block;
 }
 
 .hide {
-    filter: opacity(0%);
+    display: none;
 }
 
 .purchased {
@@ -706,7 +712,7 @@ input {
 
 .after {
     position: absolute;
-    opacity: 0;
+    display: none;
 }
 
 .bar {
@@ -744,7 +750,7 @@ input {
 
 @container (width < 120px) {
     .normal_span {
-        opacity: 0;
+        display: none
     }
 
     .normal_span_after {
@@ -758,7 +764,7 @@ input {
         border-radius: 10%;
         left: 300px;
         color: black;
-        opacity: 100%;
+        display: block;
 
     }
 
@@ -779,7 +785,7 @@ input {
         border-radius: 10%;
         left: 360px;
         color: black;
-        opacity: 100%;
+        display: block;
     }
 
     .backstab_span {
@@ -799,7 +805,7 @@ input {
         border-radius: 10%;
         left: 420px;
         color: black;
-        opacity: 100%;
+        display: block;
     }
 
     .headshot_span {
@@ -820,7 +826,7 @@ input {
         border-radius: 10%;
         left: 480px;
         color: black;
-        opacity: 100%;
+        display: block;
     }
 }
 

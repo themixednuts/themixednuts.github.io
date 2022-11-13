@@ -56,6 +56,7 @@ const MODIFIERS = [
     "CritDamage",
     "CritChance",
     "DmgPctToHealth",
+    "DamagePercentage",
     "HeadshotDamage",
     "HitFromBehindDamage",
     "ABSStandard",
@@ -245,6 +246,8 @@ let selectedAffix = []
 
 
 let mods = {}
+let affixMods = {}
+let statusMods = {}
 
 gearscorevalue.textContent = gearscore.value;
 
@@ -591,9 +594,17 @@ const equipWepAbility = () => {
     return checkedAbility
 }
 
+
+
+
 const checkCondition = (abilityID) => {
+
     let totalProps = {}
     let abilitytrue = {}
+    let affixProps = {}
+    let statusProps = {}
+    affixMods = {}
+    statusMods = {}
 
     selectedAffix = []
     selectedPerkOtherApplyStatusEffect = []
@@ -602,10 +613,9 @@ const checkCondition = (abilityID) => {
     selectedWeaponOtherApplyStatusEffect = []
     selectedWeaponSelfApplyStatusEffect = []
 
-    console.log(abilityID)
 
     for (let [damagekey, damageID] of Object.entries(equippedDamageIDMap)) {
-
+        selectedAffix[damageID] = []
         abilitytrue[damageID] = []
 
 
@@ -635,6 +645,11 @@ const checkCondition = (abilityID) => {
                     && (!ability.DamageCategory || ability.DamageCategory == findDamageType.Category)
                     && (!ability.DMGVitalsCategory || document.querySelector("#targetvitals").value == ability.DMGVitalsCategory.split("=")[0])
                     && (!ability.StatusEffect || ability.StatusEffect == document.querySelector(".player_statuseffects_select").value))) {
+
+                if (affixDataMAP[ability.StatusID]) {
+                    selectedAffix[damageID].push(ability)
+                }
+
 
                 if (document.querySelector(`#${ability.AbilityID}_icon__button`)) {
                     if (ability.PerStatusEffectOnTarget || ability.PerStatusEffectOnSelf) {
@@ -698,41 +713,34 @@ const checkCondition = (abilityID) => {
 
 
 
-
-                abilitytrue[damageID].push(ability)
+                if (!affixDataMAP[ability.StatusID])
+                    abilitytrue[damageID].push(ability)
             }
 
         })
 
     }
 
-    abilityID.forEach(ability => {
-        if (affixDataMAP[ability.StatusID])
-            if (affixDataMAP[ability.StatusID].DamagePercentage)
-                selectedAffix.push(affixDataMAP[ability.StatusID])
-    })
 
 
 
-   /*  selectedAffix = [...new Set(selectedAffix)] */
+    /* selectedAffix = [...new Set(selectedAffix)] */
     selectedPerkOtherApplyStatusEffect = [...new Set(selectedPerkOtherApplyStatusEffect)]
     selectedPerkSelfApplyStatusEffect = [...new Set(selectedPerkSelfApplyStatusEffect)]
     selectedWeaponOnEndStatusEffect = [...new Set(selectedWeaponOnEndStatusEffect)]
     selectedWeaponOtherApplyStatusEffect = [...new Set(selectedWeaponOtherApplyStatusEffect)]
     selectedWeaponSelfApplyStatusEffect = [...new Set(selectedWeaponSelfApplyStatusEffect)]
 
-    console.log(abilitytrue)
 
     for (let [abilitydamageID, abilitytruevalue] of Object.entries(abilitytrue)) {
         if (!abilitydamageID)
             continue
 
-        //console.log(abilitydamageID, abilityID, selectedWeaponSelfApplyStatusEffect)
 
         totalProps = {}
         for (let propname of Object.values(MODIFIERS)) {
             totalProps[propname] = []
-
+            affixProps[propname] = []
 
             let maxStack = 1
 
@@ -763,8 +771,8 @@ const checkCondition = (abilityID) => {
                     else {
                         if (itemEquipAbilityMAP[x.AbilityID])
                             totalProps[propname].push(x[propname] * (1 + (itemEquipAbilityMAP[x.AbilityID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
-       /*                  if (itemAffixMAP[x.StatusID])
-                            totalProps[propname].push(x[propname] * (1 + (itemAffixMAP[x.StatusID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack) */
+                        /*                  if (itemAffixMAP[x.StatusID])
+                                             totalProps[propname].push(x[propname] * (1 + (itemAffixMAP[x.StatusID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack) */
                     }
                 }
                 else {
@@ -774,15 +782,16 @@ const checkCondition = (abilityID) => {
                     else {
                         if (itemEquipAbilityMAP[x.AbilityID])
                             totalProps[propname].push(x[propname].match(/(\d\.\d+)|(\d+)/g) * (1 + (itemEquipAbilityMAP[x.AbilityID].ScalingPerGearScore) * (gearscore.value - 100)))
-              /*           if (itemAffixMAP[x.StatusID])
-                            totalProps[propname].push(x[propname].match(/(\d\.\d+)|(\d+)/g) * (1 + (itemAffixMAP[x.StatusID].ScalingPerGearScore) * (gearscore.value - 100))) */
+                        /*           if (itemAffixMAP[x.StatusID])
+                                      totalProps[propname].push(x[propname].match(/(\d\.\d+)|(\d+)/g) * (1 + (itemAffixMAP[x.StatusID].ScalingPerGearScore) * (gearscore.value - 100))) */
                     }
                 }
 
 
             })
 
-
+            /* if(!affixProps[propname])
+            affixProps[propname].push(0) */
 
             selectedWeaponOtherApplyStatusEffect.forEach(wepapply => {
                 maxStack = 1
@@ -845,7 +854,45 @@ const checkCondition = (abilityID) => {
                 }
             })
 
+            selectedAffix[abilitydamageID].forEach(perkapply => {
 
+                if (!perkapply[propname])
+                    affixProps[propname].push(0)
+                else {
+                    if (typeof perkapply[propname] === "number") {
+                        affixProps[propname].push(perkapply[propname] * (1 + (itemAffixMAP[perkapply.StatusID].ScalingPerGearScore) * (gearscore.value - 100)))
+
+                    }
+                    else {
+                        affixProps[propname].push(perkapply[propname].match(/(\d\.\d+)|(\d+)/g) * (1 + (itemAffixMAP[perkapply.StatusID].ScalingPerGearScore) * (gearscore.value - 100)))
+
+                    }
+
+                }
+            })
+
+            affixProps[propname] = affixProps[propname].reduce((acc, cV) => {
+
+                if (typeof acc === "number" && typeof cV === "number")
+                    return acc + cV
+                if (typeof acc === "string" && typeof cV === "string")
+                    return parseFloat(acc.split("=")[1]) + parseFloat(cV.split("=")[1])
+                if (typeof acc === "number" && typeof cV === "string")
+                    return acc + parseFloat(cV.split("=")[1])
+                if (typeof acc === "string" && typeof cV === "number")
+                    return parseFloat(acc.split("=")[1]) + cV
+
+            }, 0)
+
+
+            if (propname == "DMGVitalsCategory") {
+                for (let [key, value] of Object.entries(totalProps[propname])) {
+                    if (typeof value === "number") {
+                        totalProps[propname][key] = 0
+                    }
+                }
+
+            }
 
 
             totalProps[propname] = totalProps[propname].reduce((acc, cV) => {
@@ -861,15 +908,27 @@ const checkCondition = (abilityID) => {
 
             }, 0)
 
-            // console.log(totalProps[propname])
+            statusProps[propname] = totalProps[propname]
+
+
+            if (new RegExp(/^DMG/).test(propname) && propname != "DMGVitalsCategory") {
+                totalProps[propname] = Math.min(Math.max(totalProps[propname] + affixProps[propname], Math.min(affixProps[propname], -0.5)), Math.max(affixProps[propname], 0.5))
+            }
+            else if (new RegExp(/^ABS/).test(propname) && propname != "ABSVitalsCategory") {
+                totalProps[propname] = Math.min(Math.max(totalProps[propname] + affixProps[propname], Math.min(affixProps[propname], -0.3)), Math.max(affixProps[propname], 0.5))
+            }
+            else
+                totalProps[propname] = totalProps[propname] + affixProps[propname]
+
 
         }
-
-
+        
+        affixMods[abilitydamageID] = affixProps
+        statusMods[abilitydamageID] = statusProps
         mods[abilitydamageID] = totalProps
 
     }
-
+    
 }
 
 const getDamageTableProp = (dmgkey) => {
@@ -935,8 +994,11 @@ const getStatScaling = () => {
 }
 
 //get Weapon Damage based off initial Weapon Base Damage * (Stat Scaling + Level Scaling)
-const getWeaponDamage = () => {
-    return getGSBasedDamage() * (getStatScaling() + getLevelScaling())
+const getWeaponDamage = (attk) => {
+    return {
+        nonsplit: getGSBasedDamage() * (getStatScaling() + getLevelScaling())  * (1 - affixMods[attk].DamagePercentage) ,
+        split: getGSBasedDamage() * (getStatScaling() + getLevelScaling()) * affixMods[attk].DamagePercentage
+    }
 
 }
 
@@ -1093,43 +1155,38 @@ function replaceToken(ability) {
 function damageFormula(attk, arrDMG) {
     let nonCrits
 
-    if (!getDamageTableProp("DmgCoef")[attk]) {
-        arrDMG[0] = (1 + mods[attk]["DMG" + getStatusEffectProp("DamageType")[attk]] + mods[attk].DMGVitalsCategory)
-        arrDMG[1] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk]["DMG" + getStatusEffectProp("DamageType")[attk]] + mods[attk].DMGVitalsCategory)
-        arrDMG[2] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk].HitFromBehindDamage + mods[attk]["DMG" + getStatusEffectProp("DamageType")[attk]] + mods[attk].DMGVitalsCategory)
-        arrDMG[3] = (1 * weaponData.CritDamageMultiplier + mods[attk].HeadshotDamage + mods[attk]["DMG" + getStatusEffectProp("DamageType")[attk]] + mods[attk].DMGVitalsCategory)
-
-        nonCrits = getWeaponDamage()
-            * Math.abs(getStatusEffectProp("HealthModifierDamageBased")[attk])
-            * (1 + mods[attk].BaseDamage)
-            * (1 - mods[attk][`ABS${getStatusEffectProp("DamageType")[attk]}`])
-
-        return {
-            normal: Number(Math.round(parseFloat((nonCrits * arrDMG[0]) + 'e' + 1)) + 'e-' + 1),
-            crit: Number(Math.round(parseFloat((nonCrits * arrDMG[1]) + 'e' + 1)) + 'e-' + 1),
-            backstab: Number(Math.round(parseFloat((nonCrits * arrDMG[2]) + 'e' + 1)) + 'e-' + 1),
-            headshot: Number(Math.round(parseFloat((nonCrits * arrDMG[3]) + 'e' + 1)) + 'e-' + 1)
-        }
+    function finddmgtype() {
+        if (getStatusEffectProp("DamageType")[attk])
+            return getStatusEffectProp("DamageType")[attk]
+        return getDamageTableProp("DamageType")[attk]
     }
-    else {
-        arrDMG[0] = (1 + mods[attk]["DMG" + getDamageTableProp("DamageType")[attk]] + mods[attk].DMGVitalsCategory)
-        arrDMG[1] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk]["DMG" + getDamageTableProp("DamageType")[attk]] + mods[attk].DMGVitalsCategory)
-        arrDMG[2] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk].HitFromBehindDamage + mods[attk]["DMG" + getDamageTableProp("DamageType")[attk]] + mods[attk].DMGVitalsCategory)
-        arrDMG[3] = (1 * weaponData.CritDamageMultiplier + mods[attk].HeadshotDamage + mods[attk]["DMG" + getDamageTableProp("DamageType")[attk]] + mods[attk].DMGVitalsCategory)
+ 
 
-        nonCrits = getWeaponDamage()
-            * getDamageTableProp("DmgCoef")[attk]
-            * (1 + mods[attk].BaseDamage)
-            * (1 - mods[attk][`ABS${getDamageTableProp("DamageType")[attk]}`])
-
-
-        return {
-            normal: Number(Math.round(parseFloat((nonCrits * arrDMG[0]) + 'e' + 1)) + 'e-' + 1),
-            crit: Number(Math.round(parseFloat((nonCrits * arrDMG[1]) + 'e' + 1)) + 'e-' + 1),
-            backstab: Number(Math.round(parseFloat((nonCrits * arrDMG[2]) + 'e' + 1)) + 'e-' + 1),
-            headshot: Number(Math.round(parseFloat((nonCrits * arrDMG[3]) + 'e' + 1)) + 'e-' + 1)
-        }
+    function dmgcoeforhealtmod() {
+        if (getStatusEffectProp("HealthModifierDamageBased")[attk])
+            return Math.abs(getStatusEffectProp("HealthModifierDamageBased")[attk])
+        return getDamageTableProp("DmgCoef")[attk]
     }
+
+
+    arrDMG[0] = (1 + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
+    arrDMG[1] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
+    arrDMG[2] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk].HitFromBehindDamage + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
+    arrDMG[3] = (1 * weaponData.CritDamageMultiplier + mods[attk].HeadshotDamage + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
+
+    nonCrits = getWeaponDamage(attk).nonsplit
+        * dmgcoeforhealtmod()
+        * (1 + mods[attk].BaseDamage)
+        * (1 - mods[attk]["ABS" + finddmgtype()])
+
+
+    return {
+        normal: Number(Math.round(parseFloat((nonCrits * arrDMG[0]) + 'e' + 1)) + 'e-' + 1),
+        crit: Number(Math.round(parseFloat((nonCrits * arrDMG[1]) + 'e' + 1)) + 'e-' + 1),
+        backstab: Number(Math.round(parseFloat((nonCrits * arrDMG[2]) + 'e' + 1)) + 'e-' + 1),
+        headshot: Number(Math.round(parseFloat((nonCrits * arrDMG[3]) + 'e' + 1)) + 'e-' + 1)
+    }
+
 }
 
 
@@ -1140,8 +1197,6 @@ const getFinalDamage = () => {
     let numbers = {}
     mods = {}
     checkCondition(checkedAbility.concat(activeItemPerks, activeAttributeAbility))
-
-
     let DMGARR = [
         "damageDMG_normal",
         "damageDMG_crit",
@@ -1219,6 +1274,8 @@ const getFinalDamage = () => {
         document.querySelector(`#${key}_crit_span`).style.width = damageFormula(attack, DMGARR).crit / maxDamage * 100 + "%"
         document.querySelector(`#${key}_backstab_span`).style.width = Math.min(damageFormula(attack, DMGARR).backstab / maxDamage * 100, 100) + "%"
         document.querySelector(`#${key}_headshot_span`).style.width = Math.min(damageFormula(attack, DMGARR).headshot / maxDamage * 100, 100) + "%"
+
+
     }
 
 
@@ -1238,7 +1295,7 @@ const getFinalDamage = () => {
 
     //console.log(activeAttributeAbility)
     //console.log(activeItemPerks)
-    console.log(mods)
+
 
 
 }
@@ -1252,11 +1309,11 @@ const getFinalDamage = () => {
             ratiox = (document.querySelector(".abilitiescontainer").offsetWidth / 2 / scaled.offsetWidth - .01),
             ratioh = (document.querySelector(".abilitiescontainer").offsetHeight / 2 / scaled.offsetHeight - .01),
             padding = scaled.offsetHeight * ratiox;
-
+ 
         let betterRatio = Math.min(ratiox, ratioh)
-
+ 
         scaled.style.cssText = `scale: ${Math.max(Math.min(betterRatio, 1), 0.6)};`
-
+ 
         console.log(document.querySelector(".container").offsetWidth + "/" + scaled.offsetWidth)
         parent.style.paddingTop = padding; // keeps the parent height in ratio to child resize
     })
