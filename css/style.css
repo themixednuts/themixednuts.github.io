@@ -847,13 +847,13 @@ input {
 
 @font-face {
     font-family: 'tooltipyellow-bold';
-    src: url("../lyshineui/fonts/NimbusSanNov-SemBol.otf");
+    src: url("../lyshineui/fonts/nimbussannov-sembol.otf");
 
 }
 
 @font-face {
     font-family: 'tooltipgray-italic';
-    src: url('../lyshineui/fonts/NimbusSanNov-RegIta.otf');
+    src: url('../lyshineui/fonts/nimbussannov-regita.otf');
 }
 
 @keyframes purshaseScale {
