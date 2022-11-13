@@ -1,0 +1,4 @@
+<fontshader>
+	<font path="NimbusSanNov-SemBol.otf" fontsize="24"/>
+	<effectfile path="LyShineUI/Fonts/_SharedFontEffects.xml"/>
+</fontshader>

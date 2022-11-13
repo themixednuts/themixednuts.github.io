@@ -1,0 +1,11 @@
+<fontshader>
+	<font path="NimbusSanNovCon-RegIta.otf" fontsize="36" widthslots="24" heightslots="16" sizebehavior="sizecache"/>
+	<effectfile path="LyShineUI/Fonts/_SharedFontEffects.xml"/>
+    <sizecache>
+        <fontcache size="12"/>
+        <fontcache size="20"/>
+        <fontcache size="24"/>
+        <fontcache size="32"/>
+        <fontcache size="48"/>
+    </sizecache>
+</fontshader>

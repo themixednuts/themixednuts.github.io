@@ -1,0 +1,4 @@
+<fontshader>
+	<font path="CaslonAnt.otf" fontsize="120"/>
+	<effectfile path="LyShineUI/Fonts/_SharedFontEffects.xml"/>
+</fontshader>

@@ -1,0 +1,87 @@
+<fontshader>
+    <effect name="default">
+        <pass>
+        </pass>
+    </effect>
+    <effect name="drop_shadow">
+        <pass>
+        </pass>
+        <pass>
+            <color r="0" g="0" b="0" a="1"/>
+            <pos x="1" y="1"/>
+        </pass>
+    </effect>
+    
+    <effect name="outline">
+        <pass>
+        </pass>
+
+        <pass>
+            <color r="0.05" g="0.05" b="0.05" a="1"/>
+            <pos x="-1" y="1"/>
+        </pass>
+
+        <pass>
+            <color r="0.05" g="0.05" b="0.05" a="1"/>
+            <pos x="1" y="-1"/>
+        </pass>
+
+        <pass>
+            <color r="0.05" g="0.05" b="0.05" a="1"/>
+            <pos x="1" y="1"/>
+        </pass>
+
+        <pass>
+            <color r="0.05" g="0.05" b="0.05" a="1"/>
+            <pos x="-1" y="-1"/>
+        </pass>
+    </effect>
+    <effect name="outlineBlack">
+        <pass>
+        </pass>
+
+        <pass>
+            <color r="0" g="0" b="0" a="1"/>
+            <pos x="-1" y="1"/>
+        </pass>
+
+        <pass>
+            <color r="0" g="0" b="0" a="1"/>
+            <pos x="1" y="-1"/>
+        </pass>
+
+        <pass>
+            <color r="0" g="0" b="0" a="1"/>
+            <pos x="1" y="1"/>
+        </pass>
+
+        <pass>
+            <color r="0" g="0" b="0" a="1"/>
+            <pos x="-1" y="-1"/>
+        </pass>
+    </effect>
+    <effect name="outlineFaint">
+        <pass>
+        </pass>
+
+        <pass>
+            <color r="0.05" g="0.05" b="0.05" a="0.25"/>
+            <pos x="-1" y="1"/>
+        </pass>
+
+        <pass>
+            <color r="0.05" g="0.05" b="0.05" a="0.25"/>
+            <pos x="1" y="-1"/>
+        </pass>
+
+        <pass>
+            <color r="0.05" g="0.05" b="0.05" a="0.25"/>
+            <pos x="1" y="1"/>
+        </pass>
+
+        <pass>
+            <color r="0.05" g="0.05" b="0.05" a="0.25"/>
+            <pos x="-1" y="-1"/>
+        </pass>
+    </effect>
+</fontshader>
