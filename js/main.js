@@ -248,6 +248,10 @@ let selectedAffix = []
 let mods = {}
 let affixMods = {}
 let statusMods = {}
+let cappedStatusEffects = {}
+let uncappedStatusEffects
+let selectedStatusEffects
+
 
 gearscorevalue.textContent = gearscore.value;
 
@@ -603,8 +607,14 @@ const checkCondition = (abilityID) => {
     let abilitytrue = {}
     let affixProps = {}
     let statusProps = {}
+    let cappedStatusProps = {}
+    let uncappedStatusProps = {}
     affixMods = {}
     statusMods = {}
+    cappedStatusEffects = {}
+    selectedStatusEffects = {}
+    uncappedStatusEffects = []
+    cappedStatusEffects = []
 
     selectedAffix = []
     selectedPerkOtherApplyStatusEffect = []
@@ -731,16 +741,36 @@ const checkCondition = (abilityID) => {
     selectedWeaponOtherApplyStatusEffect = [...new Set(selectedWeaponOtherApplyStatusEffect)]
     selectedWeaponSelfApplyStatusEffect = [...new Set(selectedWeaponSelfApplyStatusEffect)]
 
+    selectedStatusEffects = [
+        selectedPerkOtherApplyStatusEffect,
+        selectedPerkSelfApplyStatusEffect,
+        selectedWeaponOnEndStatusEffect,
+        selectedWeaponOtherApplyStatusEffect,
+        selectedWeaponSelfApplyStatusEffect
+    ]
+
+    selectedStatusEffects.forEach(status => {
+        
+        for (let ability of Object.values(status)) {
+            if (new RegExp(/Empower|Fortify|Rend|Weaken/).test(ability.EffectCategories))
+                cappedStatusEffects.push(ability)
+            else
+                uncappedStatusEffects.push(ability)
+        }
+    })
+
 
     for (let [abilitydamageID, abilitytruevalue] of Object.entries(abilitytrue)) {
         if (!abilitydamageID)
             continue
 
-
         totalProps = {}
+
         for (let propname of Object.values(MODIFIERS)) {
             totalProps[propname] = []
             affixProps[propname] = []
+            uncappedStatusProps[propname] = []
+            cappedStatusProps[propname] = []
 
             let maxStack = 1
 
@@ -771,8 +801,6 @@ const checkCondition = (abilityID) => {
                     else {
                         if (itemEquipAbilityMAP[x.AbilityID])
                             totalProps[propname].push(x[propname] * (1 + (itemEquipAbilityMAP[x.AbilityID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
-                        /*                  if (itemAffixMAP[x.StatusID])
-                                             totalProps[propname].push(x[propname] * (1 + (itemAffixMAP[x.StatusID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack) */
                     }
                 }
                 else {
@@ -782,75 +810,77 @@ const checkCondition = (abilityID) => {
                     else {
                         if (itemEquipAbilityMAP[x.AbilityID])
                             totalProps[propname].push(x[propname].match(/(\d\.\d+)|(\d+)/g) * (1 + (itemEquipAbilityMAP[x.AbilityID].ScalingPerGearScore) * (gearscore.value - 100)))
-                        /*           if (itemAffixMAP[x.StatusID])
-                                      totalProps[propname].push(x[propname].match(/(\d\.\d+)|(\d+)/g) * (1 + (itemAffixMAP[x.StatusID].ScalingPerGearScore) * (gearscore.value - 100))) */
                     }
                 }
 
 
             })
 
-            /* if(!affixProps[propname])
-            affixProps[propname].push(0) */
+            cappedStatusEffects.forEach(status => {
 
-            selectedWeaponOtherApplyStatusEffect.forEach(wepapply => {
-                maxStack = 1
-                abilityID.forEach(item => {
-                    if (item.OtherApplyStatusEffect == wepapply.StatusID) {
-                        if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                            maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-                        }
-                    }
-                })
-
-                if (!wepapply[propname])
-                    totalProps[propname].push(0)
-                else
-                    totalProps[propname].push(wepapply[propname] * maxStack)
-            })
-
-            selectedWeaponSelfApplyStatusEffect.forEach(wepapply => {
-                maxStack = 1
-                abilityID.forEach(item => {
-                    if (item.SelfApplyStatusEffect == wepapply.StatusID) {
-                        if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                            maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-
-                        }
-                    }
-                })
-
-                if (!wepapply[propname])
-                    totalProps[propname].push(0)
-                else
-                    totalProps[propname].push(wepapply[propname] * maxStack)
-            })
-
-
-            //console.log(selectedPerkSelfApplyStatusEffect)
-            selectedPerkSelfApplyStatusEffect.forEach(perkapply => {
-
-                //console.log(perkapply)
-                if (!perkapply[propname])
-                    totalProps[propname].push(0)
-                else {
-                    if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == perkapply.StatusID).AbilityID].ScalingPerGearScore)
-                        totalProps[propname].push(perkapply[propname])
+                function ifcapped() {
+                    if ((new RegExp(/Empower|Weaken/).test(status.EffectCategories) && new RegExp(/^DMG/).test(propname)) || (new RegExp(/Fortify|Rend/).test(status.EffectCategories) && new RegExp(/^ABS/).test(propname)))
+                        return cappedStatusProps
                     else
-                        totalProps[propname].push(perkapply[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == perkapply.StatusID).AbilityID].ScalingPerGearScore) * (gearscore.value - 100)))
+                        return uncappedStatusProps
+                }
+
+                maxStack = 1
+                abilityID.forEach(item => {
+                    if (item.OtherApplyStatusEffect == status.StatusID || item.SelfApplyStatusEffect == status.StatusID) {
+                        if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                            maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                        }
+                    }
+                })
+
+
+                if (!status[propname] || ((propname == 'DMGVitalsCategory' || propname == 'ABSVitalsCategory') && typeof status[propname] === "number") || (new RegExp(/^ABS/).test(propname) && status[propname] > 0) || (new RegExp(/^DMG/).test(propname) && status[propname] < 0))
+                    ifcapped()[propname].push(0)
+                else {
+                    if (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID]) {
+                        if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore) {
+
+                            ifcapped()[propname].push(status[propname] * maxStack)
+                        }
+                        else
+                            ifcapped()[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
+                    }
+                    else {
+                        if (!status[propname])
+                            ifcapped()[propname].push(0)
+                        else
+                            ifcapped()[propname].push(status[propname] * maxStack)
+                    }
                 }
             })
 
+            uncappedStatusEffects.forEach(status => {
+                maxStack = 1
+                abilityID.forEach(item => {
+                    if (item.OtherApplyStatusEffect == status.StatusID || item.SelfApplyStatusEffect == status.StatusID) {
+                        if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                            maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                        }
+                    }
+                })
 
 
-            selectedPerkOtherApplyStatusEffect.forEach(perkapply => {
-                if (!perkapply[propname])
-                    totalProps[propname].push(0)
+                if (!status[propname] || ((propname == 'DMGVitalsCategory' || propname == 'ABSVitalsCategory') && typeof status[propname] === "number") || (new RegExp(/^ABS/).test(propname) && status[propname] > 0) || (new RegExp(/^DMG/).test(propname) && status[propname] < 0))
+                    uncappedStatusProps[propname].push(0)
                 else {
-                    if (!itemEquipAbilityMAP[abilityID.find(perk => perk.OtherApplyStatusEffect == perkapply.StatusID).AbilityID].ScalingPerGearScore)
-                        totalProps[propname].push(perkapply[propname])
-                    else
-                        totalProps[propname].push(perkapply[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.OtherApplyStatusEffect == perkapply.StatusID).AbilityID].ScalingPerGearScore) * (gearscore.value - 100)))
+                    if (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID]) {
+                        if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore)
+                            uncappedStatusProps[propname].push(status[propname] * maxStack)
+                        else
+                            uncappedStatusProps[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
+                    }
+                    else {
+                        if (!status[propname])
+                            uncappedStatusProps[propname].push(0)
+                        else
+                            uncappedStatusProps[propname].push(status[propname] * maxStack)
+                    }
                 }
             })
 
@@ -885,15 +915,31 @@ const checkCondition = (abilityID) => {
             }, 0)
 
 
-            if (propname == "DMGVitalsCategory") {
-                for (let [key, value] of Object.entries(totalProps[propname])) {
-                    if (typeof value === "number") {
-                        totalProps[propname][key] = 0
-                    }
-                }
+            uncappedStatusProps[propname] = uncappedStatusProps[propname].reduce((acc, cV) => {
 
-            }
+                if (typeof acc === "number" && typeof cV === "number")
+                    return acc + cV
+                if (typeof acc === "string" && typeof cV === "string")
+                    return parseFloat(acc.split("=")[1]) + parseFloat(cV.split("=")[1])
+                if (typeof acc === "number" && typeof cV === "string")
+                    return acc + parseFloat(cV.split("=")[1])
+                if (typeof acc === "string" && typeof cV === "number")
+                    return parseFloat(acc.split("=")[1]) + cV
 
+            }, 0)
+
+            cappedStatusProps[propname] = cappedStatusProps[propname].reduce((acc, cV) => {
+
+                if (typeof acc === "number" && typeof cV === "number")
+                    return acc + cV
+                if (typeof acc === "string" && typeof cV === "string")
+                    return parseFloat(acc.split("=")[1]) + parseFloat(cV.split("=")[1])
+                if (typeof acc === "number" && typeof cV === "string")
+                    return acc + parseFloat(cV.split("=")[1])
+                if (typeof acc === "string" && typeof cV === "number")
+                    return parseFloat(acc.split("=")[1]) + cV
+
+            }, 0)
 
             totalProps[propname] = totalProps[propname].reduce((acc, cV) => {
 
@@ -908,27 +954,29 @@ const checkCondition = (abilityID) => {
 
             }, 0)
 
-            statusProps[propname] = totalProps[propname]
 
 
             if (new RegExp(/^DMG/).test(propname) && propname != "DMGVitalsCategory") {
-                totalProps[propname] = Math.min(Math.max(totalProps[propname] + affixProps[propname], Math.min(affixProps[propname], -0.5)), Math.max(affixProps[propname], 0.5))
+                statusProps[propname] = Math.min(Math.max(cappedStatusProps[propname] + uncappedStatusProps[propname] + affixProps[propname], Math.min(uncappedStatusProps[propname] + affixProps[propname], -0.5)), Math.max(uncappedStatusProps[propname] + affixProps[propname], 0.5))
             }
             else if (new RegExp(/^ABS/).test(propname) && propname != "ABSVitalsCategory") {
-                totalProps[propname] = Math.min(Math.max(totalProps[propname] + affixProps[propname], Math.min(affixProps[propname], -0.3)), Math.max(affixProps[propname], 0.5))
+                statusProps[propname] = Math.min(Math.max(cappedStatusProps[propname] + uncappedStatusProps[propname] + affixProps[propname], Math.min(uncappedStatusProps[propname] + affixProps[propname], -0.3)), Math.max(uncappedStatusProps[propname] + affixProps[propname], 0.5))
             }
             else
-                totalProps[propname] = totalProps[propname] + affixProps[propname]
+                statusProps[propname] = cappedStatusProps[propname] + uncappedStatusProps[propname]
+
+            totalProps[propname] = totalProps[propname] + affixProps[propname] + statusProps[propname]
 
 
         }
-        
+
+
         affixMods[abilitydamageID] = affixProps
         statusMods[abilitydamageID] = statusProps
         mods[abilitydamageID] = totalProps
 
     }
-    
+
 }
 
 const getDamageTableProp = (dmgkey) => {
@@ -996,7 +1044,7 @@ const getStatScaling = () => {
 //get Weapon Damage based off initial Weapon Base Damage * (Stat Scaling + Level Scaling)
 const getWeaponDamage = (attk) => {
     return {
-        nonsplit: getGSBasedDamage() * (getStatScaling() + getLevelScaling())  * (1 - affixMods[attk].DamagePercentage) ,
+        nonsplit: getGSBasedDamage() * (getStatScaling() + getLevelScaling()) * (1 - affixMods[attk].DamagePercentage),
         split: getGSBasedDamage() * (getStatScaling() + getLevelScaling()) * affixMods[attk].DamagePercentage
     }
 
@@ -1160,7 +1208,7 @@ function damageFormula(attk, arrDMG) {
             return getStatusEffectProp("DamageType")[attk]
         return getDamageTableProp("DamageType")[attk]
     }
- 
+
 
     function dmgcoeforhealtmod() {
         if (getStatusEffectProp("HealthModifierDamageBased")[attk])
@@ -1295,7 +1343,7 @@ const getFinalDamage = () => {
 
     //console.log(activeAttributeAbility)
     //console.log(activeItemPerks)
-
+    console.log(mods)
 
 
 }
