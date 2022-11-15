@@ -188,10 +188,13 @@ let itemEquipAbilityMAP = {}
 let itemAffixMAP = {}
 
 for (let perks of Object.values(itemPerks)) {
-    itemPerkMAP[perks.PerkID] = perks
-    itemEquipAbilityMAP[perks.EquipAbility] = perks
-    itemAffixMAP[perks.Affix] = perks
+    itemPerkMAP[perks.PerkID.toUpperCase()] = perks
+    if(perks.EquipAbility)
+    itemEquipAbilityMAP[perks.EquipAbility.toUpperCase()] = perks
+    if(perks.Affix)
+    itemAffixMAP[perks.Affix.toUpperCase()] = perks
 }
+
 
 const wepAbilityTable = {}
 const attkToDamageID = await loadAttkToDamageID()
@@ -199,18 +202,18 @@ const attkToDamageID = await loadAttkToDamageID()
 const globalAbilityData = await loadGlobalAbilityData()
 let globalAbilityMAP = {}
 for (let ability of Object.values(globalAbilityData))
-    globalAbilityMAP[ability.AbilityID] = ability
+    globalAbilityMAP[ability.AbilityID.toUpperCase()] = ability
 
 const affixDataTable = await loadAffixDataTable()
 let affixDataMAP = {}
 for (let affix of Object.values(affixDataTable))
-    affixDataMAP[affix.StatusID] = affix
+    affixDataMAP[affix.StatusID.toUpperCase()] = affix
 
 let weaponStatusEffectTable
 const perkStatusEffectTable = await loadPerkStatusEffectTable()
 let perkStatusEffectMAP = {}
 for (let status of Object.values(perkStatusEffectTable))
-    perkStatusEffectMAP[status.StatusID] = status
+    perkStatusEffectMAP[status.StatusID.toUpperCase()] = status
 
 
 
@@ -310,7 +313,7 @@ let operations = {
 function itemScaling(perk) {
     let scaled = perk.map(n => {
         for (const mod of Object.keys(MODIFIERS)) {
-            n[mod] * (1 + (itemPerks.find(item => item.EquipAbility == n.AbilityID).ScalingPerGearScore) * (gearscore.value - 100))
+            n[mod] * (1 + (itemEquipAbilityMAP[n.AbilityID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100))
         }
     })
 
@@ -388,17 +391,6 @@ async function loadWeaponData() {
     for (let spell of Object.values(weaponSpellDataTable))
         wepSpellDataMAP[spell.SpellID.toUpperCase()] = spell
 
-    /*     async function clear1(div) { 
-            abilityTreeID_0.removeChild(abilityTreeID_0.lastChild)
-            if(div)
-            div.outerHTML =  div.outerHTML
-        }
-        async function clear2(div) { 
-            abilityTreeID_1.removeChild(abilityTreeID_1.lastChild) 
-            if(div)
-            div.outerHTML = div.outerHTML
-        } */
-
     while (abilityTreeID_0.firstChild)
         abilityTreeID_0.removeChild(abilityTreeID_0.lastChild)
 
@@ -414,6 +406,11 @@ async function loadWeaponData() {
         barKey(".weapon_icon").remove()
     barKey(".weapon_icon_container").appendChild(createItem("img", "", "src", `../lyshineui/images/icons/drawing/${DRAWING[selectedWeapon]}`, "class", "weapon_icon", "id", `${selectedWeapon}_icon`))
     weaponAbilityTable.forEach(ability => {
+
+        if (ability.StatusID)
+            ability.StatusID = ability.StatusID.toUpperCase()
+        if (ability.AbilityID)
+            ability.AbilityID = ability.AbilityID.toUpperCase()
 
         if (ability.TreeId != null && ability.DisplayName) {
 
@@ -522,9 +519,13 @@ async function loadWeaponData() {
 
                 let appendBars = [
                     createItem("div", "", "id", `${key}_normal`, "class", "normal bar"),
+                    createItem("div", "", "id", `${key}_normal_gem`, "class", "normal bar gem_bar"),
                     createItem("div", "", "id", `${key}_crit`, "class", "crit bar"),
+                    createItem("div", "", "id", `${key}_crit_gem`, "class", "crit bar gem_bar"),
                     createItem("div", "", "id", `${key}_backstab`, "class", "backstab bar"),
+                    createItem("div", "", "id", `${key}_backstab_gem`, "class", "backstab bar gem_bar"),
                     createItem("div", "", "id", `${key}_headshot`, "class", "headshot bar"),
+                    createItem("div", "", "id", `${key}_headshot_gem`, "class", "headshot bar gem_bar"),
                     createItem("img", "", "src", `../lyshineui/images/icons/tooltip/icon_tooltip_${findDamageType.toLowerCase()}_opaque.png`, "class", "damagetype_icon"),
                     createItem("span", "", "class", "normal_span span", "id", `${key}_normal_span`),
                     createItem("span", "", "class", "crit_span span", "id", `${key}_crit_span`),
@@ -593,30 +594,6 @@ async function loadWeaponData() {
 };
 
 
-
-function onHoverandShift(target) {
-
-    let child = {}
-    for (let id of Object.values(target))
-        child[id.id] = id
-
-    if (shiftACTIVE) {
-        child[`${ability.AbilityID}_tooltip`].classList.remove("show")
-        child[`${ability.AbilityID}_tooltip`].classList.add("hide")
-        child[`${ability.AbilityID}_tooltip_extra`].classList.remove("hide", "shift_hide")
-        child[`${ability.AbilityID}_tooltip_extra`].classList.add("show")
-    }
-
-    if (!shiftACTIVE) {
-        child[`${ability.AbilityID}_tooltip_extra`].classList.add("hide")
-        child[`${ability.AbilityID}_tooltip`].classList.add("show")
-        child[`${ability.AbilityID}_tooltip`].classList.remove("hide", "shift_hide")
-        child[`${ability.AbilityID}_tooltip_extra`].classList.remove("show")
-
-    }
-
-}
-
 const equipWepAbility = () => {
 
 
@@ -624,6 +601,11 @@ const equipWepAbility = () => {
     let options = []
     checkedAbility = []
     weaponAbilityTable.forEach(ability => {
+
+        if (ability.StatusID)
+            ability.StatusID = ability.StatusID.toUpperCase()
+        if (ability.AbilityID)
+            ability.AbilityID = ability.AbilityID.toUpperCase()
 
         if (ability.TreeId != null && ability.DisplayName && !ability.UnlockDefault)
 
@@ -684,6 +666,11 @@ const equipWepAbility = () => {
 
 const checkCondition = (abilityID) => {
 
+    if (abilityID.StatusID)
+        abilityID.StatusID = abilityID.StatusID.toUpperCase()
+    if (abilityID.AbilityID)
+        abilityID.AbilityID = abilityID.AbilityID.toUpperCase()
+
     let totalProps = {}
     let abilitytrue = {}
     let affixProps = {}
@@ -723,6 +710,11 @@ const checkCondition = (abilityID) => {
 
 
         abilityID.forEach(ability => {
+            if (ability.StatusID)
+                ability.StatusID = ability.StatusID.toUpperCase()
+            if (ability.AbilityID)
+                ability.AbilityID = ability.AbilityID.toUpperCase()
+
 
             if (ability
                 && ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(getDamageTableProp("IsRanged")[damageID]))
@@ -737,9 +729,19 @@ const checkCondition = (abilityID) => {
                     && (!ability.DMGVitalsCategory || document.querySelector("#targetvitals").value == ability.DMGVitalsCategory.split("=")[0])
                     && (!ability.StatusEffect || ability.StatusEffect == document.querySelector(".player_statuseffects_select").value))) {
 
-                if (affixDataMAP[ability.StatusID]) {
-                    selectedAffix[damageID].push(ability)
+
+                if (!ability.StatusID) //check if ability that passed conditions is a StatusEffect or Affix, if not, push to abilitytrue array to effect specific conditions met
+                    abilitytrue[damageID].push(ability)
+
+
+                if (ability.StatusID) { //check if ability that passed conditions is a StatusEffect or Affix
+                    if (affixDataMAP[ability.StatusID.toUpperCase()]) { //check if StatusID is an Affix
+                        selectedAffix[damageID].push(ability)
+                    }
+
                 }
+
+
 
 
                 if (document.querySelector(`#${ability.AbilityID}_icon__button`)) {
@@ -761,50 +763,55 @@ const checkCondition = (abilityID) => {
                     }
                 }
 
-                if (perkStatusEffectMAP[ability.OtherApplyStatusEffect])
-                    selectedPerkOtherApplyStatusEffect.push(perkStatusEffectMAP[ability.OtherApplyStatusEffect])
-                if (perkStatusEffectMAP[ability.SelfApplyStatusEffect])
-                    selectedPerkSelfApplyStatusEffect.push(perkStatusEffectMAP[ability.SelfApplyStatusEffect])
-                if (wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()]) {
-                    if (wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()].StackMax > 1) {
-                        if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
-                            document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()].StackMax}`)
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+
+                if (ability.SelfApplyStatusEffect) {
+                    if (wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()]) {
+                        if (wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()].StackMax > 1) {
+                            if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
+                                document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()].StackMax}`)
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+                        }
+                        else {
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                        }
+                        selectedWeaponSelfApplyStatusEffect.push(wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()])
                     }
-                    else {
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+
+                    if (perkStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()]) {
+                        selectedPerkSelfApplyStatusEffect.push(perkStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()])
                     }
-                    selectedWeaponSelfApplyStatusEffect.push(wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()])
                 }
 
-                if (wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()]) {
-                    if (wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()].StackMax > 1) {
-                        if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
-                            document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()].StackMax}`)
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+                if (ability.OtherApplyStatusEffect) {
+                    if (wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()]) {
+                        if (wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()].StackMax > 1) {
+                            if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
+                                document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()].StackMax}`)
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+                        }
+                        else {
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                        }
+                        selectedWeaponOtherApplyStatusEffect.push(wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()])
                     }
-                    else {
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                    if (perkStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()]) {
+                        selectedPerkOtherApplyStatusEffect.push(perkStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()])
                     }
-                    selectedWeaponOtherApplyStatusEffect.push(wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()])
                 }
                 if (selectedWeaponSelfApplyStatusEffect)
                     if (wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect])
                         selectedWeaponOnEndStatusEffect.push(wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect.toUpperCase()])
 
-
-                if (!affixDataMAP[ability.StatusID])
-                    abilitytrue[damageID].push(ability)
             }
 
         })
@@ -844,6 +851,8 @@ const checkCondition = (abilityID) => {
         if (!abilitydamageID)
             continue
 
+
+
         totalProps = {}
 
         for (let propname of Object.values(MODIFIERS)) {
@@ -857,6 +866,11 @@ const checkCondition = (abilityID) => {
             //console.log(abilitytruevalue)
             abilitytruevalue.forEach(x => {
                 let maxStack = 1
+                if (x.StatusID)
+                    x.StatusID = x.StatusID.toUpperCase()
+                if (x.AbilityID)
+                    x.AbilityID = x.AbilityID.toUpperCase()
+
 
                 if (x.PerStatusEffectOnTarget) {
 
@@ -876,6 +890,7 @@ const checkCondition = (abilityID) => {
                     x[propname] = 0
 
                 if (typeof x[propname] === "number") {
+
                     if (!itemEquipAbilityMAP[x.AbilityID] && !itemAffixMAP[x.StatusID])
                         totalProps[propname].push(x[propname] * maxStack)
                     else {
@@ -897,6 +912,9 @@ const checkCondition = (abilityID) => {
             })
 
             cappedStatusEffects.forEach(status => {
+                if (status.StatusID)
+                    status.StatusID = status.StatusID.toUpperCase()
+
 
                 function ifcapped() {
                     if ((new RegExp(/Empower|Weaken/).test(status.EffectCategories) && new RegExp(/^DMG/).test(propname)) || (new RegExp(/Fortify|Rend/).test(status.EffectCategories) && new RegExp(/^ABS/).test(propname)))
@@ -907,9 +925,16 @@ const checkCondition = (abilityID) => {
 
                 maxStack = 1
                 abilityID.forEach(item => {
-                    if (item.OtherApplyStatusEffect == status.StatusID || item.SelfApplyStatusEffect == status.StatusID) {
+
+                    if (item.StatusID)
+                        item.StatusID = item.StatusID.toUpperCase()
+                    if (item.AbilityID)
+                        item.AbilityID = item.AbilityID.toUpperCase()
+
+                    if (item.OtherApplyStatusEffect.toUpperCase() == status.StatusID || item.SelfApplyStatusEffect.toUpperCase() == status.StatusID) {
                         if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
                             maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                            
                         }
                     }
                 })
@@ -918,13 +943,13 @@ const checkCondition = (abilityID) => {
                 if (!status[propname] || ((propname == 'DMGVitalsCategory' || propname == 'ABSVitalsCategory') && typeof status[propname] === "number") || (new RegExp(/^ABS/).test(propname) && status[propname] > 0) || (new RegExp(/^DMG/).test(propname) && status[propname] < 0))
                     ifcapped()[propname].push(0)
                 else {
-                    if (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID]) {
-                        if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore) {
 
-                            ifcapped()[propname].push(status[propname] * maxStack)
-                        }
-                        else
-                            ifcapped()[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
+                    if (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID]) {   
+                            if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID].ScalingPerGearScore) {
+                                ifcapped()[propname].push(status[propname] * maxStack)
+                            }
+                            else
+                                ifcapped()[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
                     }
                     else {
                         if (!status[propname])
@@ -936,8 +961,16 @@ const checkCondition = (abilityID) => {
             })
 
             uncappedStatusEffects.forEach(status => {
+                if (status.StatusID)
+                    status.StatusID = status.StatusID.toUpperCase()
                 maxStack = 1
                 abilityID.forEach(item => {
+
+                    if (item.StatusID)
+                        item.StatusID = item.StatusID.toUpperCase()
+                    if (item.AbilityID)
+                        item.AbilityID = item.AbilityID.toUpperCase()
+
                     if (item.OtherApplyStatusEffect == status.StatusID || item.SelfApplyStatusEffect == status.StatusID) {
                         if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
                             maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
@@ -950,10 +983,10 @@ const checkCondition = (abilityID) => {
                     uncappedStatusProps[propname].push(0)
                 else {
                     if (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID]) {
-                        if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore)
-                            uncappedStatusProps[propname].push(status[propname] * maxStack)
-                        else
-                            uncappedStatusProps[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
+                            if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore)
+                                uncappedStatusProps[propname].push(status[propname] * maxStack)
+                            else
+                                uncappedStatusProps[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
                     }
                     else {
                         if (!status[propname])
@@ -970,11 +1003,11 @@ const checkCondition = (abilityID) => {
                     affixProps[propname].push(0)
                 else {
                     if (typeof perkapply[propname] === "number") {
-                        affixProps[propname].push(perkapply[propname] * (1 + (itemAffixMAP[perkapply.StatusID].ScalingPerGearScore) * (gearscore.value - 100)))
+                        affixProps[propname].push(perkapply[propname] * (1 + (itemAffixMAP[perkapply.StatusID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100)))
 
                     }
                     else {
-                        affixProps[propname].push(perkapply[propname].match(/(\d\.\d+)|(\d+)/g) * (1 + (itemAffixMAP[perkapply.StatusID].ScalingPerGearScore) * (gearscore.value - 100)))
+                        affixProps[propname].push(perkapply[propname].match(/(\d\.\d+)|(\d+)/g) * (1 + (itemAffixMAP[perkapply.StatusID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100)))
 
                     }
 
@@ -1145,17 +1178,19 @@ const getItemEqiup = () => {
     document.querySelectorAll(".perks").forEach(item => {
 
 
-        if (itemPerkMAP[item.value]) {
+        if (itemPerkMAP[item.value.toUpperCase()]) {
 
-            if (itemPerkMAP[item.value].EquipAbility) {
-                itemPerkMAP[item.value].EquipAbility.split(",").forEach(ability => {
-                    if (!globalAbilityMAP[ability].IsStackableAbility)
-                        notstackable.push(globalAbilityMAP[ability])
-                    else activeItemPerks.push(globalAbilityMAP[ability])
+            if (itemPerkMAP[item.value.toUpperCase()].EquipAbility) {
+                itemPerkMAP[item.value.toUpperCase()].EquipAbility.split(",").forEach(ability => {
+                    if (!globalAbilityMAP[ability.toUpperCase()].IsStackableAbility)
+                        notstackable.push(globalAbilityMAP[ability.toUpperCase()])
+                    else activeItemPerks.push(globalAbilityMAP[ability.toUpperCase()])
                 })
             }
-            if (itemPerkMAP[item.value].Affix)
-                activeItemPerks.push(affixDataMAP[itemPerkMAP[item.value].Affix])
+            if (itemPerkMAP[item.value.toUpperCase()].Affix) {
+                console.log(itemPerkMAP[item.value.toUpperCase()])
+                activeItemPerks.push(affixDataMAP[itemPerkMAP[item.value.toUpperCase()].Affix.toUpperCase()])
+            }
 
         }
     })
@@ -1517,7 +1552,7 @@ for (const attributeKey of Object.keys(ATTRIBUTES)) {
     })
 }
 
-window.addEventListener("keydown", function check(e){
+window.addEventListener("keydown", function check(e) {
     if (e.keyCode == 16) {
         if (document.querySelector(".appended_ability_div_tooltip")) {
             document.querySelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("shift_key"))
@@ -1527,7 +1562,7 @@ window.addEventListener("keydown", function check(e){
 
 })
 
-window.addEventListener("keyup", function check (e){
+window.addEventListener("keyup", function check(e) {
     if (e.keyCode == 16) {
         if (document.querySelector(".appended_ability_div_tooltip")) {
             document.querySelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("shift_key"))

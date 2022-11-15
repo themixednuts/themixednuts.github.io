@@ -422,6 +422,9 @@ body {
    /*  background-color: #1F1F1F; */
 }
 
+.gem_bar{
+    position: absolute;
+}
 
 .maxStack {
     z-index: 2;
