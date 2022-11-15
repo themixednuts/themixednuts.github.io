@@ -142,6 +142,23 @@ const ITEMCLASS = {
     "2hGreatSwordT5": masterItemMAP["2hGreatSwordDropT5"].ItemClass
 }
 
+const DRAWING = {
+    "2HAxeT5": "2hgreataxe.png",
+    "2HhammerT5": "2hdemohammer.png",
+    "MusketT5": "2hmusketa.png",
+    "BowT5": "bowa.png",
+    "RapierT5": "1hrapier.png",
+    "HatchetT5": "1hhatchet.png",
+    "SpearT5": "speara.png",
+    "1hElementalGauntlet_IceT5": "icegauntlet.png",
+    "FireStaffT5": "stafffire.png",
+    "VoidGauntletT5": "voidgauntlet.png",
+    "LifeStaffT5": "stafflife.png",
+    "SwordT5": "1hsword.png",
+    "BlunderbussT5": "blunderbuss.png",
+    "2hGreatSwordT5": "2hgreatsword.png"
+}
+
 const categoryIdMap = {
     'Ranged Damage': 1,
     'Melee Damage': 2,
@@ -163,7 +180,7 @@ for (const attributeKey of Object.keys(ATTRIBUTES)) {
 const damageTable = await loadDamageTable()
 let damageTableMAP = {}
 for (let dmgid of Object.values(damageTable))
-    damageTableMAP[dmgid.DamageID] = dmgid
+    damageTableMAP[dmgid.DamageID.toUpperCase()] = dmgid
 
 const itemPerks = await loadItemPerk()
 let itemPerkMAP = {}
@@ -201,7 +218,13 @@ let damageTableRow = []
 let damageName = [document.querySelectorAll('.barlabel')].reduce((a, c) => a + c).forEach((value, key) => damageTableRow[key] = value.id)
 
 let abilityData
+
+let staminaMAP = {}
 let staminaCosts_Player = await loadStaminaData()
+for (const stam of Object.values(staminaCosts_Player))
+    staminaMAP[stam.CostID.toUpperCase()] = stam
+
+
 let manaCosts_Player = await loadManaData()
 let cooldowns_Player = await loadCooldowns()
 
@@ -242,7 +265,7 @@ let selectedWeaponOtherApplyStatusEffect = []
 let selectedWeaponOnEndStatusEffect = []
 let selectedAffix = []
 
-
+let shiftACTIVE
 
 
 let mods = {}
@@ -322,6 +345,8 @@ function createItem(item, text, att, attvalue, att2, att2value, att3, att3value,
     return newItem
 }
 
+
+
 function appendChildren(parent, children) {
     children.forEach(function (child) {
         parent.appendChild(child)
@@ -329,10 +354,14 @@ function appendChildren(parent, children) {
 }
 //end custom functions
 let wepStatusEffectMAP = {}
+let wepAbilityMAP = {}
+let wepSpellDataMAP = {}
 //load properties for selected weapon
 async function loadWeaponData() {
 
     wepStatusEffectMAP = {}
+    wepAbilityMAP = {}
+    wepSpellDataMAP = {}
     equippedDamageIDMap = {}
     const abilityTreeID_0 = document.querySelector(".abilitytreeid_0")
     const abilityTreeID_1 = document.querySelector(".abilitytreeid_1")
@@ -344,7 +373,7 @@ async function loadWeaponData() {
     selectedWeaponText = document.getElementById("weapon").options[document.getElementById("weapon").selectedIndex].text
     weaponStatusEffectTable = await loadWepStatusEffectTable(STATUSEFFECTS[selectedWeapon])
     for (let status of Object.values(weaponStatusEffectTable))
-        wepStatusEffectMAP[status.StatusID] = status
+        wepStatusEffectMAP[status.StatusID.toUpperCase()] = status
 
     if (selectedWeaponText != 'Void Gauntlet')
         selectedWeaponText = selectedWeaponText.replace(/Gauntlet|Staff/i, 'Magic')
@@ -353,6 +382,11 @@ async function loadWeaponData() {
     weaponAbilityTable = await loadWeaponAbilityTable(selectedWeaponText)
     weaponSpellDataTable = await loadSpellData(selectedWeaponText)
 
+    for (let ability of Object.values(weaponAbilityTable))
+        wepAbilityMAP[ability.AbilityID.toUpperCase()] = ability
+
+    for (let spell of Object.values(weaponSpellDataTable))
+        wepSpellDataMAP[spell.SpellID.toUpperCase()] = spell
 
     while (abilityTreeID_0.firstChild)
         abilityTreeID_0.removeChild(abilityTreeID_0.lastChild)
@@ -364,6 +398,10 @@ async function loadWeaponData() {
         document.querySelector(".player_statuseffects_select").removeChild(document.querySelector(".player_statuseffects_select").lastChild)
 
     document.querySelector(".player_statuseffects_select").appendChild(createItem("option", "None", "value", ""))
+    console.log(selectedWeapon)
+    if(barKey(".weapon_icon"))
+    barKey(".weapon_icon").remove()
+    barKey(".weapon_icon_container").appendChild(createItem("img", "", "src", `../lyshineui/images/icons/drawing/${DRAWING[selectedWeapon]}`,"class","weapon_icon","id",`${selectedWeapon}_icon`))
     weaponAbilityTable.forEach(ability => {
 
         if (ability.TreeId != null && ability.DisplayName) {
@@ -385,7 +423,23 @@ async function loadWeaponData() {
                     div.style.cssText += `grid-column: ${ability.TreeColumnPosition + 1}/ ${ability.TreeColumnPosition + 2};
                     grid-row: ${ability.TreeRowPosition + 1}/ ${ability.TreeRowPosition + 2};`
 
-                    div.appendChild(createItem("span", replaceToken(ability), "class", "appended_ability_div_tooltip", "width", "200px", "height", "200px"))
+                    div.appendChild(createItem("span", replaceToken(ability).normal, "class", "appended_ability_div_tooltip", "width", "200px", "height", "200px", "id", `${ability.AbilityID}_tooltip`))
+                    div.appendChild(createItem("span", replaceToken(ability).extra, "class", "appended_ability_div_tooltip_extra", "width", "200px", "height", "200px", "id", `${ability.AbilityID}_tooltip_extra`))
+                    window.addEventListener("keydown", (e) => {
+                        if (e.keyCode == 16) {
+                            document.querySelector(`#${ability.AbilityID}_tooltip`).classList.add("shift_key")
+                            document.querySelector(`#${ability.AbilityID}_tooltip_extra`).classList.add("shift_key")
+                        }
+            
+                    })
+                    
+                    window.addEventListener("keyup", (e) => {
+                        if (e.keyCode == 16) {
+                            document.querySelector(`#${ability.AbilityID}_tooltip`).classList.remove("shift_key")
+                            document.querySelector(`#${ability.AbilityID}_tooltip_extra`).classList.remove("shift_key")
+                        }
+            
+                    })
 
                     if (ability.IsActiveAbility) {
                         div.appendChild(createItem("img", "", "src", ability.Icon.toLowerCase(), "width", "68", "height", "68", "class", "icon_ability hover ability icon", "id", `${ability.AbilityID}_icon`))
@@ -433,6 +487,8 @@ async function loadWeaponData() {
         }
 
     })
+
+
 
 
     while (document.querySelector(".standard_damage_bars").firstChild)
@@ -536,6 +592,31 @@ async function loadWeaponData() {
 
 };
 
+
+
+function onHoverandShift(target) {
+
+    let child = {}
+    for (let id of Object.values(target))
+        child[id.id] = id
+
+    if (shiftACTIVE) {
+        child[`${ability.AbilityID}_tooltip`].classList.remove("show")
+        child[`${ability.AbilityID}_tooltip`].classList.add("hide")
+        child[`${ability.AbilityID}_tooltip_extra`].classList.remove("hide", "shift_hide")
+        child[`${ability.AbilityID}_tooltip_extra`].classList.add("show")
+    }
+
+    if (!shiftACTIVE) {
+        child[`${ability.AbilityID}_tooltip_extra`].classList.add("hide")
+        child[`${ability.AbilityID}_tooltip`].classList.add("show")
+        child[`${ability.AbilityID}_tooltip`].classList.remove("hide", "shift_hide")
+        child[`${ability.AbilityID}_tooltip_extra`].classList.remove("show")
+
+    }
+
+}
+
 const equipWepAbility = () => {
 
 
@@ -578,9 +659,9 @@ const equipWepAbility = () => {
 
         })
 
-        if (ability.StatusEffect) {
+        if (ability.StatusEffect.StatusID) {
 
-            options.push(wepStatusEffectMAP[ability.StatusEffect.StatusID])
+            options.push(wepStatusEffectMAP[ability.StatusEffect.StatusID.toUpperCase()])
         }
 
     })
@@ -593,7 +674,7 @@ const equipWepAbility = () => {
     })
 
     if (document.querySelector(".player_statuseffects_select").value != "None")
-        checkedAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value])
+        checkedAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value.toUpperCase()])
 
     return checkedAbility
 }
@@ -684,11 +765,11 @@ const checkCondition = (abilityID) => {
                     selectedPerkOtherApplyStatusEffect.push(perkStatusEffectMAP[ability.OtherApplyStatusEffect])
                 if (perkStatusEffectMAP[ability.SelfApplyStatusEffect])
                     selectedPerkSelfApplyStatusEffect.push(perkStatusEffectMAP[ability.SelfApplyStatusEffect])
-                if (wepStatusEffectMAP[ability.SelfApplyStatusEffect]) {
-                    if (wepStatusEffectMAP[ability.SelfApplyStatusEffect].StackMax > 1) {
+                if (wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()]) {
+                    if (wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()].StackMax > 1) {
                         if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
                             document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.SelfApplyStatusEffect].StackMax}`)
+                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()].StackMax}`)
                         document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
                         document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
                         document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
@@ -698,14 +779,14 @@ const checkCondition = (abilityID) => {
                         document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
                         document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
                     }
-                    selectedWeaponSelfApplyStatusEffect.push(wepStatusEffectMAP[ability.SelfApplyStatusEffect])
+                    selectedWeaponSelfApplyStatusEffect.push(wepStatusEffectMAP[ability.SelfApplyStatusEffect.toUpperCase()])
                 }
 
-                if (wepStatusEffectMAP[ability.OtherApplyStatusEffect]) {
-                    if (wepStatusEffectMAP[ability.OtherApplyStatusEffect].StackMax > 1) {
+                if (wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()]) {
+                    if (wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()].StackMax > 1) {
                         if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
                             document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.OtherApplyStatusEffect].StackMax}`)
+                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()].StackMax}`)
                         document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
                         document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
                         document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
@@ -715,12 +796,11 @@ const checkCondition = (abilityID) => {
                         document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
                         document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
                     }
-                    selectedWeaponOtherApplyStatusEffect.push(wepStatusEffectMAP[ability.OtherApplyStatusEffect])
+                    selectedWeaponOtherApplyStatusEffect.push(wepStatusEffectMAP[ability.OtherApplyStatusEffect.toUpperCase()])
                 }
-                if (selectedWeaponSelfApplyStatusEffect && wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect])
-                    selectedWeaponOnEndStatusEffect.push(wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect])
-
-
+                if (selectedWeaponSelfApplyStatusEffect)
+                    if (wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect])
+                        selectedWeaponOnEndStatusEffect.push(wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect.toUpperCase()])
 
 
                 if (!affixDataMAP[ability.StatusID])
@@ -750,7 +830,7 @@ const checkCondition = (abilityID) => {
     ]
 
     selectedStatusEffects.forEach(status => {
-        
+
         for (let ability of Object.values(status)) {
             if (new RegExp(/Empower|Fortify|Rend|Weaken/).test(ability.EffectCategories))
                 cappedStatusEffects.push(ability)
@@ -987,7 +1067,7 @@ const getDamageTableProp = (dmgkey) => {
         if (!damageid)
             continue;
 
-        const damageInfo = damageTableMAP[damageid]
+        const damageInfo = damageTableMAP[damageid.toUpperCase()]
         if (damageInfo)
             keyValues[damageid] = damageInfo[dmgkey]
 
@@ -1005,7 +1085,7 @@ const getStatusEffectProp = (statusProp) => {
         if (!damageid)
             continue;
 
-        const statusInfo = wepStatusEffectMAP[damageid]
+        const statusInfo = wepStatusEffectMAP[damageid.toUpperCase()]
         if (statusInfo)
             keyValues[damageid] = statusInfo[statusProp]
 
@@ -1038,13 +1118,15 @@ const getStatScaling = () => {
         }
     }
 
-    return statSum;
+    return {
+        nonsplit: statSum,
+    }
 }
 
 //get Weapon Damage based off initial Weapon Base Damage * (Stat Scaling + Level Scaling)
 const getWeaponDamage = (attk) => {
     return {
-        nonsplit: getGSBasedDamage() * (getStatScaling() + getLevelScaling()) * (1 - affixMods[attk].DamagePercentage),
+        nonsplit: getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling()) * (1 - affixMods[attk].DamagePercentage),
         split: getGSBasedDamage() * (getStatScaling() + getLevelScaling()) * affixMods[attk].DamagePercentage
     }
 
@@ -1088,115 +1170,89 @@ const getItemEqiup = () => {
 
 function replaceToken(ability) {
 
+
     const tableMap = {
-        DamageTable: damageTable,
-        Type_StatusEffectData: weaponStatusEffectTable,
+        DamageTable: damageTableMAP,
+        Type_StatusEffectData: wepStatusEffectMAP,
 
-        BlunderbussAbilityTable: weaponAbilityTable,
-        BowAbilityTable: weaponAbilityTable,
-        FireMagicAbilityTable: weaponAbilityTable,
-        GreatAxeAbilityTable: weaponAbilityTable,
-        GreatswordAbilityTable: weaponAbilityTable,
-        HatchetAbilityTable: weaponAbilityTable,
-        IceMagicAbilityTable: weaponAbilityTable,
-        LifeMagicAbilityTable: weaponAbilityTable,
-        MusketAbilityTable: weaponAbilityTable,
-        RapierAbilityTable: weaponAbilityTable,
+        BlunderbussAbilityTable: wepAbilityMAP,
+        BowAbilityTable: wepAbilityMAP,
+        FireMagicAbilityTable: wepAbilityMAP,
+        GreatAxeAbilityTable: wepAbilityMAP,
+        GreatswordAbilityTable: wepAbilityMAP,
+        HatchetAbilityTable: wepAbilityMAP,
+        IceMagicAbilityTable: wepAbilityMAP,
+        LifeMagicAbilityTable: wepAbilityMAP,
+        MusketAbilityTable: wepAbilityMAP,
+        RapierAbilityTable: wepAbilityMAP,
         RuneAbilityTable: "runeAbilityTable",
-        SpearAbilityTable: weaponAbilityTable,
-        SwordAbilityTable: weaponAbilityTable,
-        VoidGauntletAbilityTable: weaponAbilityTable,
-        WarHammerAbilityTable: weaponAbilityTable,
+        SpearAbilityTable: wepAbilityMAP,
+        SwordAbilityTable: wepAbilityMAP,
+        VoidGauntletAbilityTable: wepAbilityMAP,
+        WarHammerAbilityTable: wepAbilityMAP,
 
-        SpellDataTable_Blunderbuss: weaponSpellDataTable,
-        SpellDataTable_Bow: weaponSpellDataTable,
-        SpellDataTable_FireMagic: weaponSpellDataTable,
-        SpellDataTable_GreatAxe: weaponSpellDataTable,
-        SpellDataTable_Greatsword: weaponSpellDataTable,
-        SpellDataTable_Hatchet: weaponSpellDataTable,
-        SpellDataTable_IceMagic: weaponSpellDataTable,
-        SpellDataTable_LifeMagic: weaponSpellDataTable,
-        SpellDataTable_Musket: weaponSpellDataTable,
-        SpellDataTable_Rapier: weaponSpellDataTable,
+        SpellDataTable_Blunderbuss: wepSpellDataMAP,
+        SpellDataTable_Bow: wepSpellDataMAP,
+        SpellDataTable_FireMagic: wepSpellDataMAP,
+        SpellDataTable_GreatAxe: wepSpellDataMAP,
+        SpellDataTable_Greatsword: wepSpellDataMAP,
+        SpellDataTable_Hatchet: wepSpellDataMAP,
+        SpellDataTable_IceMagic: wepSpellDataMAP,
+        SpellDataTable_LifeMagic: wepSpellDataMAP,
+        SpellDataTable_Musket: wepSpellDataMAP,
+        SpellDataTable_Rapier: wepSpellDataMAP,
         SpellDataTable_Runes: "runeSpellDataTable",
-        SpellDataTable_Spear: weaponSpellDataTable,
-        SpellDataTable_Sword: weaponSpellDataTable,
-        SpellDataTable_VoidGauntlet: weaponSpellDataTable,
-        SpellDataTable_WarHammer: weaponSpellDataTable,
+        SpellDataTable_Spear: wepSpellDataMAP,
+        SpellDataTable_Sword: wepSpellDataMAP,
+        SpellDataTable_VoidGauntlet: wepSpellDataMAP,
+        SpellDataTable_WarHammer: wepSpellDataMAP,
 
-        StaminaCosts_Player: staminaCosts_Player,
+        StaminaCosts_Player: staminaMAP,
         ManaCosts_Player: manaCosts_Player,
         Cooldowns_Player: cooldowns_Player
     }
 
     let token = ability.Description.match(/{\[(.*?)]}/g)
-    let getid = []
-    let getprop = []
-    let getMulti = []
     let getOperand = []
-    let getTable = []
+    let extradescription = ability.Description
     let description = ability.Description
-    let afterprop = []
-    let dmgidtotable = []
+    let innerToken = []
+    let insideToken
 
     if (token) {
 
         for (let [key, value] of Object.entries(token)) {
-            dmgidtotable[key] = []
-            getid[key] = value.match(/(\w+)(?=\.\w+)(?!\.\w+\.\w+)/g).map(n => n.toUpperCase())
-            getprop[key] = value.match(/[A-Za-z]+\b(?!\.)(?!\w)/g)
-            getMulti[key] = value.match(/\d+(?=])|-\d+/g)
+            innerToken[key] = []
             getOperand[key] = value.match(/[*\/]/g)
-            getTable[key] = value.match(/\w+(?=\.\w+\.\w+)/g)
+            insideToken = value.matchAll(/\b(\w+)\.(\w+)\.(\w+)\b/g)
+            for (const match of insideToken)
+                innerToken[key].push(match)
 
-            for (let [extrakey, extravalue] of Object.entries(getTable[key])) {
-
-
-                if (tableMap[extravalue] == damageTable)
-                    dmgidtotable[key][extrakey] = damageTable.find(dmg => dmg.DamageID.toUpperCase() == getid[key][extrakey])[getprop[key][extrakey]]
-                if (tableMap[extravalue] == weaponAbilityTable)
-                    dmgidtotable[key][extrakey] = weaponAbilityTable.find(ability => ability.AbilityID.toUpperCase() == getid[key][extrakey])[getprop[key][extrakey]]
-                if (tableMap[extravalue] == weaponStatusEffectTable)
-                    dmgidtotable[key][extrakey] = weaponStatusEffectTable.find(status => status.StatusID.toUpperCase() == getid[key][extrakey])[getprop[key][extrakey]]
-                if (tableMap[extravalue] == weaponSpellDataTable)
-                    dmgidtotable[key][extrakey] = weaponSpellDataTable.find(spell => spell.SpellID.toUpperCase() == getid[key][extrakey])[getprop[key][extrakey]]
-                if (tableMap[extravalue] == staminaCosts_Player)
-                    dmgidtotable[key][extrakey] = staminaCosts_Player.find(stam => stam.CostID.toUpperCase() == getid[key][extrakey])[getprop[key][extrakey]]
-                if (tableMap[extravalue] == manaCosts_Player)
-                    dmgidtotable[key][extrakey] = manaCosts_Player.find(mana => mana.ID == getid[key][extrakey])[getprop[key][extrakey]]
-                if (tableMap[extravalue] == cooldowns_Player)
-                    dmgidtotable[key][extrakey] = cooldowns_Player.find(skill => skill.ID == getid[key][extrakey])[getprop[key][extrakey]]
-
-                if (dmgidtotable[key][1])
-                    dmgidtotable[key] = [dmgidtotable[key].reduce((a, c) => a * c)]
-
-
+            for (const [innerkey, innervalue] of Object.entries(innerToken[key])) {
+                innerToken[key][innerkey] = tableMap[innervalue[1]][innervalue[2].toUpperCase()][innervalue[3]]
+                let find = innerToken[key][innerkey]
+                extradescription = extradescription.replace(innervalue[0], find)
             }
-
-
-
-            if (getMulti[key]) {
-
-                afterprop[key] = operations[getOperand[key][0]](dmgidtotable[key], getMulti[key])
-            }
-
-            if (!getMulti[key])
-                afterprop[key] = dmgidtotable[key]
-
-            //console.log(getid[key])
-            //console.log(getprop[key])
-            //console.log(getTable[key])
-            //console.log(getOperand[key])
-            //console.log(getMulti[key])
-            //console.log(dmgidtotable[key])
-            //console.log(afterprop[key])
-            description = description.replace(token[key], Number(Math.round(parseFloat(afterprop[key] + 'e' + 2)) + 'e-' + 2))
         }
+
+        description = extradescription
+
+        for (let [key, value] of Object.entries(extradescription.match(/{\[(.*?)]}/g))) {
+            let roundReduction = Number(Math.round(parseFloat(value.match(/[-+\s]\d.\d+|\d.\d+|\d+(?=\])|\s\d\s|\d+/g).reduce((a, c) => a * c, 1) + 'e' + 2)) + 'e-' + 2)
+            description = description.replace(value, roundReduction)
+
+        }
+
+
     }
 
+    extradescription = `${ability.DisplayName} <br><br> ${extradescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'")}`
     description = `${ability.DisplayName} <br><br> ${description.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'")}`
 
-    return description
+    return {
+        normal: description,
+        extra: extradescription
+    }
 
 }
 
@@ -1402,6 +1458,8 @@ document.getElementById("weapon").addEventListener("input", () => {
     document.querySelectorAll(".addedperk").forEach(x => x.remove())
 });
 
+
+
 document.querySelector("#debuff_target").addEventListener("input", getFinalDamage)
 document.querySelector("#targetvitals").addEventListener("input", getFinalDamage)
 document.querySelector(".player_statuseffects_select").addEventListener("input", () => {
@@ -1458,6 +1516,8 @@ for (const attributeKey of Object.keys(ATTRIBUTES)) {
         getFinalDamage();
     })
 }
+
+
 
 // Event Listeners End
 

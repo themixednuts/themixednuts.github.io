@@ -275,7 +275,6 @@ body {
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%)
-
 }
 
 .appended_ability_div:hover {
@@ -283,6 +282,19 @@ body {
 }
 
 .appended_ability_div_tooltip {
+    position: relative;
+    width: 400px;
+    height: fit-content;
+    top: 25%;
+    left: 50%;
+    background-color: black;
+    display: none;
+    padding: 10%;
+    transform: translateX(-50%);
+
+}
+
+.appended_ability_div_tooltip_extra {
     position: relative;
     width: 400px;
     height: fit-content;
@@ -320,7 +332,12 @@ body {
 }
 
 
-.appended_ability_div:hover>.appended_ability_div_tooltip {
+.appended_ability_div:hover>.appended_ability_div_tooltip:not(.shift_key) {
+    display: block;
+    z-index: 1000;
+}
+
+.appended_ability_div:hover>.appended_ability_div_tooltip_extra.shift_key {
     display: block;
     z-index: 1000;
 }
@@ -379,6 +396,32 @@ body {
 
 }
 
+.weapon_select_container{
+    position: relative;
+    display: flex;
+    height: auto;
+}
+.weapon_icon_container{
+    position: absolute;
+    left: 200px;
+    flex: 1;
+}
+.weapon_icon{
+    width: 280px;
+    height: auto;
+}
+.select{
+    position: relative;
+    flex: 1;
+}
+
+#weapon{
+    position: relative;
+    width: fit-content;
+    padding-right: 20px;
+    z-index: 1;
+   /*  background-color: #1F1F1F; */
+}
 
 
 .maxStack {
@@ -572,13 +615,7 @@ input {
     flex-grow: 0;
 }
 
-.show {
-    display: block;
-}
 
-.hide {
-    display: none;
-}
 
 .purchased {
     top: 50%;
@@ -708,6 +745,14 @@ input {
 .headshot_span {
     z-index: 4;
 
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
 }
 
 .after {
