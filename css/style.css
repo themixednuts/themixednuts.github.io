@@ -147,7 +147,7 @@ body {
 .gearscore_container {
     position: relative;
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap-reverse;
     align-items: center;
     gap: .5rem;
 }
@@ -402,8 +402,7 @@ body {
     height: auto;
 }
 .weapon_icon_container{
-    position: absolute;
-    left: 200px;
+    position: relative;
     flex: 1;
 }
 .weapon_icon{
