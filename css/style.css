@@ -403,7 +403,7 @@ body {
 }
 .weapon_icon_container{
     position: relative;
-    flex: 1;
+    flex: 1 0 auto; 
 }
 .weapon_icon{
     width: 280px;
