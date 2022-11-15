@@ -388,6 +388,17 @@ async function loadWeaponData() {
     for (let spell of Object.values(weaponSpellDataTable))
         wepSpellDataMAP[spell.SpellID.toUpperCase()] = spell
 
+    /*     async function clear1(div) { 
+            abilityTreeID_0.removeChild(abilityTreeID_0.lastChild)
+            if(div)
+            div.outerHTML =  div.outerHTML
+        }
+        async function clear2(div) { 
+            abilityTreeID_1.removeChild(abilityTreeID_1.lastChild) 
+            if(div)
+            div.outerHTML = div.outerHTML
+        } */
+
     while (abilityTreeID_0.firstChild)
         abilityTreeID_0.removeChild(abilityTreeID_0.lastChild)
 
@@ -399,9 +410,9 @@ async function loadWeaponData() {
 
     document.querySelector(".player_statuseffects_select").appendChild(createItem("option", "None", "value", ""))
     console.log(selectedWeapon)
-    if(barKey(".weapon_icon"))
-    barKey(".weapon_icon").remove()
-    barKey(".weapon_icon_container").appendChild(createItem("img", "", "src", `../lyshineui/images/icons/drawing/${DRAWING[selectedWeapon]}`,"class","weapon_icon","id",`${selectedWeapon}_icon`))
+    if (barKey(".weapon_icon"))
+        barKey(".weapon_icon").remove()
+    barKey(".weapon_icon_container").appendChild(createItem("img", "", "src", `../lyshineui/images/icons/drawing/${DRAWING[selectedWeapon]}`, "class", "weapon_icon", "id", `${selectedWeapon}_icon`))
     weaponAbilityTable.forEach(ability => {
 
         if (ability.TreeId != null && ability.DisplayName) {
@@ -425,21 +436,7 @@ async function loadWeaponData() {
 
                     div.appendChild(createItem("span", replaceToken(ability).normal, "class", "appended_ability_div_tooltip", "width", "200px", "height", "200px", "id", `${ability.AbilityID}_tooltip`))
                     div.appendChild(createItem("span", replaceToken(ability).extra, "class", "appended_ability_div_tooltip_extra", "width", "200px", "height", "200px", "id", `${ability.AbilityID}_tooltip_extra`))
-                    window.addEventListener("keydown", (e) => {
-                        if (e.keyCode == 16) {
-                            document.querySelector(`#${ability.AbilityID}_tooltip`).classList.add("shift_key")
-                            document.querySelector(`#${ability.AbilityID}_tooltip_extra`).classList.add("shift_key")
-                        }
-            
-                    })
-                    
-                    window.addEventListener("keyup", (e) => {
-                        if (e.keyCode == 16) {
-                            document.querySelector(`#${ability.AbilityID}_tooltip`).classList.remove("shift_key")
-                            document.querySelector(`#${ability.AbilityID}_tooltip_extra`).classList.remove("shift_key")
-                        }
-            
-                    })
+
 
                     if (ability.IsActiveAbility) {
                         div.appendChild(createItem("img", "", "src", ability.Icon.toLowerCase(), "width", "68", "height", "68", "class", "icon_ability hover ability icon", "id", `${ability.AbilityID}_icon`))
@@ -486,7 +483,10 @@ async function loadWeaponData() {
             })
         }
 
+
+
     })
+
 
 
 
@@ -1517,6 +1517,25 @@ for (const attributeKey of Object.keys(ATTRIBUTES)) {
     })
 }
 
+window.addEventListener("keydown", function check(e){
+    if (e.keyCode == 16) {
+        if (document.querySelector(".appended_ability_div_tooltip")) {
+            document.querySelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("shift_key"))
+            document.querySelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("shift_key"))
+        }
+    }
+
+})
+
+window.addEventListener("keyup", function check (e){
+    if (e.keyCode == 16) {
+        if (document.querySelector(".appended_ability_div_tooltip")) {
+            document.querySelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("shift_key"))
+            document.querySelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("shift_key"))
+        }
+    }
+
+})
 
 
 // Event Listeners End
