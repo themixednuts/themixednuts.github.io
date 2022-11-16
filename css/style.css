@@ -72,6 +72,7 @@ body {
     display: flex;
     gap: 2rem;
     flex-wrap: wrap;
+    flex-direction: row-reverse;
 }
 
 .maincontent {
@@ -90,37 +91,81 @@ body {
     position: relative;
     grid-column: 1 / 2;
     grid-row: 2 / 3;
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: inline-flex;
+    flex-wrap: nowrap;
     align-content: flex-start;
     justify-content: space-evenly;
     gap: 2rem;
-    flex: 1;
-    width: fit-content;
+    flex: 1 1 auto;
 
 }
 
+
 .forms {
+    display: inline-block;
     position: relative;
     white-space: pre-line;
-    flex-grow: 0;
 }
 
 .form-div {
+    display: inline-block;
     position: relative;
+}
 
+.attributerow{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.attr_arrow{
+    position: relative;
+    display: inline-block;
+    flex: 0;
+}
+
+.bttn10{
+    width: 24px;
+    height: 16px;
+}
+
+.bttn1{
+    width: 32px;
+    height: 32px;
+}
+
+.reduce10{
+    transform: rotate(-180deg);
+}
+
+.reduce1{
+    transform: rotate(-180deg);
 }
 
 .targetcondition_container {
     position: relative;
+    display: flex;
+    flex-direction: column;
     grid-column: 2 / 3;
     grid-row: 2 / 3;
-    flex: 1;
+    flex: 1 1 auto;
+    gap: 1rem;
+    align-content: center;
+    /* justify-content: center; */
+}
+
+.vitals_container {
+    position: relative;
+
 }
 
 .targetcondition_hp {
+    position: relative;
+    display: flex;
     white-space: pre-line;
+    gap: 3rem;
 }
 
 .targetcondition_debuff {
@@ -131,9 +176,10 @@ body {
     position: relative;
     grid-column: 3 / 4;
     grid-row: 2 / 3;
-    flex: 1;
+    flex: 2;
     flex-direction: row;
     white-space: pre-line;
+    flex: 1 1 auto;
 }
 
 .weaponperk_container {
@@ -159,18 +205,9 @@ body {
     height: 64px;
 }
 
-/* #gear_score {
-    all: unset;
-    font-size: 4rem;
-    font-weight: 600;
-    background-color: #1F1F1F;
-    text-align: center;
-    color: #D4CFC4;
-    width: 110px;
-    flex-grow: 0;
-} */
 
-input{
+
+.input {
     position: relative;
     all: unset;
     font-size: 4rem;
@@ -302,7 +339,7 @@ input{
     position: relative;
     width: 400px;
     height: fit-content;
-    top: 25%;
+    top: 15%;
     left: 50%;
     background-color: black;
     display: none;
@@ -315,7 +352,7 @@ input{
     position: relative;
     width: 400px;
     height: fit-content;
-    top: 25%;
+    top: 15%;
     left: 50%;
     background-color: black;
     display: none;
@@ -514,7 +551,9 @@ select {
     background-position: right 10px top 50%;
     background-repeat: no-repeat;
     background-size: 15px;
-    padding: 10px;
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 40px;
     border-color: black;
     outline: none;
     width: minmax(200px, fit-content);
@@ -634,6 +673,7 @@ option {
 .purchased {
     top: 50%;
     left: 50%;
+    filter: brightness(100%);
     /* animation: purshaseScale .3s ease-out; */
 }
 
@@ -677,6 +717,20 @@ option {
     flex-shrink: 0;
     justify-content: space-between;
 
+}
+
+#targethp::after {
+    position: relative;
+    display: inline-block;
+    content: "%";
+    width: 50px;
+    height: 50px;
+    color: white;
+}
+
+.armor_rating {
+    position: relative;
+    display: none;
 }
 
 .label {

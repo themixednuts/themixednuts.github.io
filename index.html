@@ -14,37 +14,52 @@
                 <form method="GET" class="forms">
                     <div id="attr" class="form-div">
                         <label for="lvl" id="level" class="form">Level</label>
-                        <input type="text" min="1" max="60" value="60" id="lvl">
-                        <label for="str" class="form">Strength</label>
-                        <input id="str" name="strength" type="text" min="5" value="5">
-                        <label for="dex" class="form">Dexterity</label>
-                        <input id="dex" name="Dexterity" type="text" min="5" value="5">
-                        <label for="int" class="form">Intelligence</label>
-                        <input id="int" name="Intelligence" type="text" min="5" value="5">
-                        <label for="foc" class="form">Focus</label>
-                        <input id="foc" name="Focus" type="text" min="5" value="5">
+                        <input type="text" min="1" max="60" value="60" id="lvl" class="input attribute">
+                        <div class="attributerow" id="str_container">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt="" class="attr_arrow reduce10 bttn10" id="str_button_reduce10" for="str">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt="" class="attr_arrow reduce1 bttn1" id="str_button_reduce1" for="str">
+                            <input id="str" name="strength" type="text" min="5" value="5" class="input attribute">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt="" class="attr_arrow increase1 bttn1" id="str_button_increase1" for="str">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt="" class="attr_arrow increase10 bttn10" id="str_button_increase10" for="str">
+                        </div>
+                        <div class="attributerow" id="dex_container">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt="" class="attr_arrow reduce10 bttn10" id="dex_button_reduce10" for="dex">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt="" class="attr_arrow reduce1 bttn1" id="dex_button_reduce1" for="dex">
+                            <input id="dex" name="Dexterity" type="text" min="5" value="5" class="input attribute">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt="" class="attr_arrow increase1 bttn1" id="dex_button_increase1" for="dex">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt="" class="attr_arrow increase10 bttn10" id="dex_button_increase10" for="dex">
+                        </div>
+                        <div class="attributerow" id="int_container">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt="" class="attr_arrow reduce10 bttn10" id="int_button_reduce10" for="int">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt="" class="attr_arrow reduce1 bttn1" id="int_button_reduce1" for="int">
+                            <input id="int" name="Intelligence" type="text" min="5" value="5" class="input attribute">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt="" class="attr_arrow increase1 bttn1" id="int_button_increase1" for="int">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt="" class="attr_arrow increase10 bttn10" id="int_button_increase10" for="int">
+                        </div>
+                        <div class="attributerow" id="foc_container">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt="" class="attr_arrow reduce10 bttn10" id="foc_button_reduce10" for="foc">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt="" class="attr_arrow reduce1 bttn1" id="foc_button_reduce1" for="foc">
+                            <input id="foc" name="Focus" type="text" min="5" value="5" class="input attribute">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt="" class="attr_arrow increase1 bttn1" id="foc_button_increase1" for="foc">
+                            <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt="" class="attr_arrow increase10 bttn10" id="foc_button_increase10" for="foc">
+                        </div>
 
                     </div>
                 </form>
                 <div class="player_statuseffects">
                     <select class="player_statuseffects_select">
-
                     </select>
-
                 </div>
             </div>
-
             <div class="targetcondition_container">
                 <div class="vitals_container">
                     <select name="" id="targetvitals">
                     </select>
-                    <input type="text" class="level">
+                    <select class="target_level_container">
+                    </select>
                 </div>
                 <div class="targetcondition_hp">
-                    <input type="number" id="targethp" min="0" max="100" value="100">
-
-                </div>
-                <div class="targetcondition_debuff">
+                    <input type="text" id="targethp" min="0" max="100" value="100" class="hp input">
                     <select name="" id="debuff_target">
                         <option value="">None</option>
                         <option value="Debuff">Debuff</option>
@@ -52,8 +67,12 @@
                         <option value="Slow">Slow</option>
                     </select>
                 </div>
-
-
+                <div class="targetcondition_debuff">
+                </div>
+                <div class="armorrating_container">
+                    <input type="text" class="armor_rating" id="phys_armorrating">
+                    <input type="text" class="armor_rating" id="ele_armorrating">
+                </div>
             </div>
 
             <div class="weaponcontainer">
@@ -79,7 +98,7 @@
                 </div>
                 <div class="gearscore_container">
                     <img src="../lyshineui/images/icons/misc/icon_gearscore.png" alt="" class="gearscore_icon">
-                    <input for="gearscore" id="gear_score" value="625"></label>
+                    <input for="gearscore" id="gear_score" value="625" class="input"></label>
                     <div class="weapon_icon_container">
                     </div>
                 </div>
