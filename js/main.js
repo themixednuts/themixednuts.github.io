@@ -1828,7 +1828,7 @@ function up() {
 
 })
 
-new Array("mouseup", "touchend", "touchcancel", "contextmenu").forEach(type => window.addEventListener(type, up))
+new Array("mouseup", "touchend", "contextmenu").forEach(type => window.addEventListener(type, up))
 
 
 
