@@ -480,6 +480,7 @@ async function loadWeaponData() {
 
                     div.appendChild(createItem("span", replaceToken(ability).normal, { class: "appended_ability_div_tooltip", width: "200px", height: "200px", id: `${ability.AbilityID}_tooltip` }))
                     div.appendChild(createItem("span", replaceToken(ability).extra, { class: "appended_ability_div_tooltip_extra", width: "200px", height: "200px", id: `${ability.AbilityID}_tooltip_extra` }))
+                    div.appendChild(createItem("span", replaceToken(ability).ctrl, { class: "appended_ability_div_tooltip_ctrl", width: "200px", height: "200px", id: `${ability.AbilityID}_tooltip_ctrl` }))
 
 
                     if (ability.IsActiveAbility) {
@@ -1326,6 +1327,7 @@ function replaceToken(ability) {
     let getOperand = []
     let extradescription = ability.Description
     let description = ability.Description
+    let ctrldescription = ability.Description
     let innerToken = []
     let insideToken
 
@@ -1358,10 +1360,11 @@ function replaceToken(ability) {
 
     extradescription = `${ability.DisplayName} <br><br> ${extradescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'")}`
     description = `${ability.DisplayName} <br><br> ${description.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'")}`
-
+    ctrldescription = `${ability.DisplayName} <br><br> ${ctrldescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'")}`
     return {
         normal: description,
-        extra: extradescription
+        extra: extradescription,
+        ctrl: ctrldescription
     }
 
 }
@@ -1701,17 +1704,20 @@ for (const attributeKey of Object.keys(ATTRIBUTES)) {
     })
 }
 
+
 window.addEventListener("keydown", function check(e) {
     if (e.keyCode == 16) {
         if (qSelector(".appended_ability_div_tooltip")) {
             qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("shift_key"))
             qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("shift_key"))
+            qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("shift_key"))
         }
     }
     if (e.keyCode == 17) {
         if (qSelector(".appended_ability_div_tooltip")) {
             qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("ctrl_key"))
             qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("ctrl_key"))
+            qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("ctrl_key"))
         }
     }
 
@@ -1722,12 +1728,14 @@ window.addEventListener("keyup", function check(e) {
         if (qSelector(".appended_ability_div_tooltip")) {
             qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("shift_key"))
             qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("shift_key"))
+            qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("shift_key"))
         }
     }
     if (e.keyCode == 17) {
         if (qSelector(".appended_ability_div_tooltip")) {
             qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("ctrl_key"))
             qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("ctrl_key"))
+            qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("ctrl_key"))
         }
     }
 

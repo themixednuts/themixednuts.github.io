@@ -361,6 +361,20 @@ body {
 
 }
 
+.appended_ability_div_tooltip_ctrl {
+    position: relative;
+    min-width: 400px;
+    width: fit-content;
+    height: fit-content;
+    top: 15%;
+    left: 50%;
+    background-color: black;
+    display: none;
+    padding: 10%;
+    transform: translateX(-50%);
+
+}
+
 .appended_ability_div:not(.border):hover>.hover {
     scale: 107.5%;
     filter: brightness(100%);
@@ -386,12 +400,16 @@ body {
 }
 
 
-.appended_ability_div:hover>.appended_ability_div_tooltip:not(.shift_key) {
+.appended_ability_div:hover>.appended_ability_div_tooltip:not(.shift_key.ctrl_key):not(.shift_key) {
     display: block;
     z-index: 1000;
 }
 
-.appended_ability_div:hover>.appended_ability_div_tooltip_extra.shift_key {
+.appended_ability_div:hover>.appended_ability_div_tooltip_extra.shift_key:not(.ctrl_key) {
+    display: block;
+    z-index: 1000;
+}
+.appended_ability_div:hover>.appended_ability_div_tooltip_ctrl.shift_key.ctrl_key {
     display: block;
     z-index: 1000;
 }
