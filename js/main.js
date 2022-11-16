@@ -1705,41 +1705,46 @@ for (const attributeKey of Object.keys(ATTRIBUTES)) {
 }
 
 
-window.addEventListener("keydown", function check(e) {
-    if (e.keyCode == 16) {
-        if (qSelector(".appended_ability_div_tooltip")) {
-            qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("shift_key"))
-            qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("shift_key"))
-            qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("shift_key"))
+new Array("keydown", "touchstart").forEach(type =>
+    window.addEventListener(type, function check(e) {
+        if (e.keyCode == 16) {
+            if (qSelector(".appended_ability_div_tooltip")) {
+                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("shift_key"))
+                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("shift_key"))
+                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("shift_key"))
+            }
         }
-    }
-    if (e.keyCode == 17) {
-        if (qSelector(".appended_ability_div_tooltip")) {
-            qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("ctrl_key"))
-            qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("ctrl_key"))
-            qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("ctrl_key"))
+        if (e.keyCode == 17) {
+            if (qSelector(".appended_ability_div_tooltip")) {
+                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("ctrl_key"))
+                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("ctrl_key"))
+                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("ctrl_key"))
+            }
         }
-    }
 
-})
+    })
+)
 
-window.addEventListener("keyup", function check(e) {
-    if (e.keyCode == 16) {
-        if (qSelector(".appended_ability_div_tooltip")) {
-            qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("shift_key"))
-            qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("shift_key"))
-            qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("shift_key"))
-        }
-    }
-    if (e.keyCode == 17) {
-        if (qSelector(".appended_ability_div_tooltip")) {
-            qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("ctrl_key"))
-            qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("ctrl_key"))
-            qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("ctrl_key"))
-        }
-    }
+new Array("keyup", "touchend").forEach(type =>
 
-})
+    window.addEventListener(type, function check(e) {
+        if (e.keyCode == 16) {
+            if (qSelector(".appended_ability_div_tooltip")) {
+                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("shift_key"))
+                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("shift_key"))
+                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("shift_key"))
+            }
+        }
+        if (e.keyCode == 17) {
+            if (qSelector(".appended_ability_div_tooltip")) {
+                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("ctrl_key"))
+                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("ctrl_key"))
+                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("ctrl_key"))
+            }
+        }
+
+    })
+)
 
 qSelector(".target_level_container").addEventListener("change", function change(e) {
     for (let vital of Object.values(vitals)) {
@@ -1770,11 +1775,11 @@ function down(e, v) {
     safetyStop = false
     qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
     qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
-    if(!safetyStop)
-    interval = setInterval(function () {
+    if (!safetyStop)
+        interval = setInterval(function () {
             qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
             qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
-    }, 200)
+        }, 200)
 }
 
 function up() {
@@ -1809,19 +1814,8 @@ function up() {
 
 })
 
-window.addEventListener("mouseup", up)
-window.addEventListener("touchend", up)
-window.addEventListener("touchcancel", up)
-window.addEventListener("contextmenu", up)
-/* ["mouseup","mouseleave","mouseout","touchend","touchcancel"].forEach(type => {
-    qSelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, up))
-    
-    qSelectorAll(".reduce1").forEach(bttn => bttn.addEventListener(type, up))
-    qSelectorAll(".increase10").forEach(bttn => bttn.addEventListener(type, up))
-    
-    qSelectorAll(".increase1").forEach(bttn => bttn.addEventListener(type, up))
+new Array("mouseup","touchend","touchcancel","contextmenu").forEach(type => window.addEventListener(type, up))
 
-}) */
 
 
 // Event Listeners End
