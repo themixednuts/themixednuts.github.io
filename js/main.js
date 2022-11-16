@@ -1168,7 +1168,7 @@ const getStatScaling = () => {
 
 //get Weapon Damage based off initial Weapon Base Damage * (Stat Scaling + Level Scaling)
 const getWeaponDamage = (attk) => {
-    let isStatusEffect
+    let isStatusEffect = false
 
     if (getStatusEffectProp("DamageType")[attk]) {
         isStatusEffect = true
@@ -1362,7 +1362,7 @@ function damageFormula(attk, arrDMG) {
 
     noGEM = normalDamage("nonsplit")
     GEM = normalDamage("split")
-    if (isStatusEffect || !GEM)
+    if (isStatusEffect || !GEM || !affixMods[attk].DamagePercentage)
         GEM = 0
 
 
@@ -1398,7 +1398,7 @@ const getFinalDamage = () => {
     let findmaxDIV
     let maxDIV = {}
 
-
+    
 
     for (let [key, attack] of Object.entries(equippedDamageIDMap)) {
 
@@ -1486,6 +1486,8 @@ const getFinalDamage = () => {
         document.querySelector(`#${key}_crit_span`).style.width = (damageFormula(attack, DMGARR).crit  + isGEM("critGEM")) / maxDamage * 100 + "%"
         document.querySelector(`#${key}_backstab_span`).style.width = (damageFormula(attack, DMGARR).backstab  + isGEM("backstabGEM")) / maxDamage * 100 + "%"
         document.querySelector(`#${key}_headshot_span`).style.width = (damageFormula(attack, DMGARR).headshot  + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_normal_gem`).style.width = 0 + "%"
+        if(isGEM("normalGEM"))
         document.querySelector(`#${key}_normal_gem`).style.width = damageFormula(attack, DMGARR).normalGEM / (damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM) * 100 + "% "
 
 
