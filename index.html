@@ -35,52 +35,45 @@
             </div>
 
             <div class="targetcondition_container">
+                <div class="vitals_container">
+                    <select name="" id="targetvitals">
+                    </select>
+                    <input type="text" class="level">
+                </div>
                 <div class="targetcondition_hp">
-                    <label for="targethp" class="targethp_label">Target HP% <input type="number" id="targethp" min="0"
-                            max="100" value="100"></label>
+                    <input type="number" id="targethp" min="0" max="100" value="100">
+
                 </div>
                 <div class="targetcondition_debuff">
-                    <label for="" class="debuff_target_label">Target Debuff <select name="" id="debuff_target">
-                            <optgroup>
-                                <option value="">None</option>
-                                <option value="Debuff">Debuff</option>
-                                <option value="CC">CC</option>
-                                <option value="Slow">Slow</option>
-                            </optgroup>
-                        </select>
-                    </label>
-                </div>
-                <label for="targetvitals" class="targetvitals_label">Target Vitals <select name="" id="targetvitals">
-                        <optgroup>
-                            <option value="">None</option>
-                            <option value="Ancient">Ancient</option>
-                            <option value="AngryEarth">Angry Earth</option>
-                            <option value="Beast">Bease</option>
-                            <option value="Corrupted">Corrupted</option>
-                            <option value="Lost">Lost</option>
-                        </optgroup>
+                    <select name="" id="debuff_target">
+                        <option value="">None</option>
+                        <option value="Debuff">Debuff</option>
+                        <option value="CC">CC</option>
+                        <option value="Slow">Slow</option>
                     </select>
-                </label>
+                </div>
+
+
             </div>
 
             <div class="weaponcontainer">
                 <div class="weapon_select_container">
                     <div class="select">
                         <select id="weapon" name="Weapon">
-                                <option value="2HAxeT5" selected> Great Axe</option>
-                                <option value="2hGreatSwordT5">Greatsword</option>
-                                <option value="2HhammerT5">Warhammer</option>
-                                <option value="MusketT5">Musket</option>
-                                <option value="BowT5">Bow</option>
-                                <option value="RapierT5">Rapier</option>
-                                <option value="HatchetT5">Hatchet</option>
-                                <option value="SpearT5">Spear</option>
-                                <option value="1hElementalGauntlet_IceT5">Ice Gauntlet</option>
-                                <option value="FireStaffT5">Fire Staff</option>
-                                <option value="VoidGauntletT5">Void Gauntlet</option>
-                                <option value="LifeStaffT5">Life Staff</option>
-                                <option value="SwordT5">Sword</option>
-                                <option value="BlunderbussT5">Blunderbuss</option>
+                            <option value="2HAxeT5" selected> Great Axe</option>
+                            <option value="2hGreatSwordT5">Greatsword</option>
+                            <option value="2HhammerT5">Warhammer</option>
+                            <option value="MusketT5">Musket</option>
+                            <option value="BowT5">Bow</option>
+                            <option value="RapierT5">Rapier</option>
+                            <option value="HatchetT5">Hatchet</option>
+                            <option value="SpearT5">Spear</option>
+                            <option value="1hElementalGauntlet_IceT5">Ice Gauntlet</option>
+                            <option value="FireStaffT5">Fire Staff</option>
+                            <option value="VoidGauntletT5">Void Gauntlet</option>
+                            <option value="LifeStaffT5">Life Staff</option>
+                            <option value="SwordT5">Sword</option>
+                            <option value="BlunderbussT5">Blunderbuss</option>
                         </select>
                     </div>
                 </div>

@@ -159,7 +159,19 @@ body {
     height: 64px;
 }
 
-#gear_score {
+/* #gear_score {
+    all: unset;
+    font-size: 4rem;
+    font-weight: 600;
+    background-color: #1F1F1F;
+    text-align: center;
+    color: #D4CFC4;
+    width: 110px;
+    flex-grow: 0;
+} */
+
+input{
+    position: relative;
     all: unset;
     font-size: 4rem;
     font-weight: 600;
@@ -169,6 +181,11 @@ body {
     width: 110px;
     flex-grow: 0;
 }
+
+/* input:hover{
+    border: 1px solid;
+    border-color: white;
+} */
 
 .damagecontainer {
     position: relative;
@@ -560,11 +577,6 @@ option {
     opacity: 50%;
 }
 
-input {
-    position: relative;
-    margin-left: auto;
-    margin-right: 0px;
-}
 
 .slideContainer {
     position: relative;
