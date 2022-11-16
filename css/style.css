@@ -144,6 +144,7 @@ body {
     transform: rotate(-180deg);
 }
 
+
 #str{
     height: 100%;
 }
@@ -171,7 +172,9 @@ body {
 
 .vitals_container {
     position: relative;
-
+    display: inline-flex;
+    gap: 1rem;
+    
 }
 
 .targetcondition_hp {
@@ -179,6 +182,7 @@ body {
     display: flex;
     white-space: pre-line;
     gap: 3rem;
+    
 }
 
 .targetcondition_debuff {
@@ -759,10 +763,25 @@ option {
     color: white;
 }
 
+.armorrating_container{
+    position: relative;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
 .armor_rating {
     position: relative;
     display: none;
 }
+#phys_armorrating{
+    position: relative;
+    flex: 0 0 auto;
+}
+#ele_armorrating{
+    position: relative;
+    flex: 0 0 auto;
+}
+
 
 .label {
     position: absolute;

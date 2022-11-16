@@ -321,8 +321,11 @@ for (let vital of Object.values(vitals)) {
 vitalsDisplayName = [...new Set(vitalsDisplayName)]
 for (let vitalname of Object.values(vitalsDisplayName))
     qSelector("#targetvitals").appendChild(createItem("option", vitalname, { class: "vitalID" }))
-
-
+qSelector("#targetvitals").value = "Player"
+qSelectorAll(".armor_rating").forEach(select => {
+    select.classList.add("show")
+    select.value = 0
+})
 
 
 
@@ -430,7 +433,7 @@ async function loadWeaponData() {
         }
     }
 
-    console.log(selectedVitals)
+
 
 
     for (let ability of Object.values(weaponAbilityTable))
@@ -1764,28 +1767,39 @@ qSelector("#targetvitals").addEventListener("change", function change(e) {
         if (vital.DisplayName == qSelector("#targetvitals").value && vital.Level == qSelector(".target_level_container").value)
             selectedVitals = vital
     }
+    if (qSelector("#targetvitals").value == "Player")
+        qSelectorAll(".armor_rating").forEach(select => {
+            select.classList.add("show")
+            select.value = 0
+        })
+    else
+        qSelectorAll(".armor_rating").forEach(select => select.classList.remove("show"))
     getFinalDamage()
 })
 
 let interval
 let safetyStop = false
-
+let timeoutInterval
 
 function down(e, v) {
     safetyStop = false
     qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
     qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
     if (!safetyStop)
-        interval = setInterval(function () {
-            qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
-            qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
-        }, 200)
+        timeoutInterval = setTimeout(function () {
+            interval = setInterval(function () {
+                qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
+                qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
+            }, 200)
+        }, 300)
 }
 
 function up() {
-    clearInterval(interval);
+    clearInterval(interval)
+    clearInterval(timeoutInterval)
     safetyStop = true
 }
+
 
 ["mousedown", "touchstart"].forEach(type => {
 
@@ -1814,7 +1828,7 @@ function up() {
 
 })
 
-new Array("mouseup","touchend","touchcancel","contextmenu").forEach(type => window.addEventListener(type, up))
+new Array("mouseup", "touchend", "touchcancel", "contextmenu").forEach(type => window.addEventListener(type, up))
 
 
 
