@@ -761,7 +761,7 @@ const checkCondition = (abilityID) => {
                         ability.AbilityID = ability.AbilityID.toUpperCase()
                 }
 
-               
+
                 if (ability
                     && ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(getDamageTableProp("IsRanged")[damageID]))
                         && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(getDamageTableProp("IsRanged")[damageID]))
@@ -1754,56 +1754,57 @@ qSelector("#targetvitals").addEventListener("change", function change(e) {
     getFinalDamage()
 })
 
-
-var interval;
+let interval
+let safetyStop = false
 
 
 function down(e, v) {
-
+    safetyStop = false
     qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
     qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
-
+    if(!safetyStop)
     interval = setInterval(function () {
-        qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
-        qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
-    }, 175)
-
-
+            qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
+            qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
+    }, 200)
 }
 
 function up() {
     clearInterval(interval);
+    safetyStop = true
 }
 
 ["mousedown", "touchstart"].forEach(type => {
 
     qSelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
-        down(e, -10)
+            down(e, -10)
 
     }))
 
     qSelectorAll(".reduce1").forEach(bttn => bttn.addEventListener(type, function change(e) {
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
-        down(e, -1)
+            down(e, -1)
 
     }))
 
     qSelectorAll(".increase10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 500)
-        down(e, +10)
+            down(e, +10)
     }))
 
     qSelectorAll(".increase1").forEach(bttn => bttn.addEventListener(type, function change(e) {
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 500)
-        down(e, +1)
+            down(e, +1)
 
     }))
 
 })
 
 window.addEventListener("mouseup", up)
-
+window.addEventListener("touchend", up)
+window.addEventListener("touchcancel", up)
+window.addEventListener("contextmenu", up)
 /* ["mouseup","mouseleave","mouseout","touchend","touchcancel"].forEach(type => {
     qSelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, up))
     
