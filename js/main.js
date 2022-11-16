@@ -1801,7 +1801,7 @@ function up() {
 }
 
 
-["mousedown", "touchstart"].forEach(type => {
+["mousedown"].forEach(type => {
 
     qSelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
