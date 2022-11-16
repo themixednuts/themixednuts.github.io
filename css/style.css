@@ -396,35 +396,35 @@ body {
 
 }
 
-.weapon_select_container{
+.weapon_select_container {
     position: relative;
     display: flex;
     height: auto;
 }
-.weapon_icon_container{
+
+.weapon_icon_container {
     position: relative;
-    flex: 1 0 auto; 
+    flex: 1 0 auto;
 }
-.weapon_icon{
+
+.weapon_icon {
     width: 280px;
     height: auto;
 }
-.select{
+
+.select {
     position: relative;
     flex: 1;
 }
 
-#weapon{
+#weapon {
     position: relative;
     width: fit-content;
     padding-right: 20px;
     z-index: 1;
-   /*  background-color: #1F1F1F; */
+    /*  background-color: #1F1F1F; */
 }
 
-.gem_bar{
-    position: absolute;
-}
 
 .maxStack {
     z-index: 2;
@@ -576,7 +576,7 @@ input {
 
 .slider {
     -webkit-appearance: none;
-    max-width: 500px;
+    max-width: 550px;
     min-width: 200px;
     width: 100%;
     height: 10px;
@@ -674,7 +674,7 @@ input {
     justify-items: center;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
+    z-index: 20;
     left: 45px;
     line-height: 100%;
     white-space: nowrap;
@@ -772,6 +772,14 @@ input {
 
 }
 
+.gem_bar {
+    position: absolute;
+    height: 100%;
+    top: 50%;
+    background-color: darkgray;
+    transform: translateY(-50%);
+}
+
 .boldyellow {
     color: #ffd45f;
     display: inline;
@@ -816,8 +824,7 @@ input {
     }
 
     .crit_span {
-        color: var(--critColor);
-        z-index: 0;
+        display: none;
     }
 
     .crit_span_after {
@@ -836,8 +843,7 @@ input {
     }
 
     .backstab_span {
-        color: var(--backstabColor);
-        z-index: 0;
+        display: none;
     }
 
     .backstab_span_after {
@@ -856,8 +862,7 @@ input {
     }
 
     .headshot_span {
-        color: var(--headshotColor);
-        z-index: 0;
+        display: none;
 
     }
 

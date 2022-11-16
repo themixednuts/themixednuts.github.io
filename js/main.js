@@ -26,6 +26,7 @@ const loadSpellData = async (weapon) => (await fetch(`json/SpellData/SpellDataTa
 const loadStaminaData = async () => (await fetch(`json/unknown/StaminaCosts_Player.json`)).json()
 const loadManaData = async () => (await fetch(`json/unknown/ManaCosts_Player.json`)).json()
 const loadCooldowns = async () => (await fetch(`json/unknown/Cooldowns_Player.json`)).json()
+const loadVitals = async () => (await fetch(`json/VitalsData/Vitals.json`)).json()
 //load json files end
 
 
@@ -82,7 +83,11 @@ const MODIFIERS = [
     "DMGNature",
     "DMGLightning",
     "DMGCorruption",
-    "DMGVitalsCategory"
+    "DMGVitalsCategory",
+    "ScalingStrength",
+    "ScalingDexterity",
+    "ScalingIntelligence",
+    "ScalingFocus"
 ]
 
 const abilitydmgMap = {
@@ -189,10 +194,10 @@ let itemAffixMAP = {}
 
 for (let perks of Object.values(itemPerks)) {
     itemPerkMAP[perks.PerkID.toUpperCase()] = perks
-    if(perks.EquipAbility)
-    itemEquipAbilityMAP[perks.EquipAbility.toUpperCase()] = perks
-    if(perks.Affix)
-    itemAffixMAP[perks.Affix.toUpperCase()] = perks
+    if (perks.EquipAbility)
+        itemEquipAbilityMAP[perks.EquipAbility.toUpperCase()] = perks
+    if (perks.Affix)
+        itemAffixMAP[perks.Affix.toUpperCase()] = perks
 }
 
 
@@ -223,13 +228,13 @@ let damageName = [document.querySelectorAll('.barlabel')].reduce((a, c) => a + c
 let abilityData
 
 let staminaMAP = {}
-let staminaCosts_Player = await loadStaminaData()
+const staminaCosts_Player = await loadStaminaData()
 for (const stam of Object.values(staminaCosts_Player))
     staminaMAP[stam.CostID.toUpperCase()] = stam
 
 
-let manaCosts_Player = await loadManaData()
-let cooldowns_Player = await loadCooldowns()
+const manaCosts_Player = await loadManaData()
+const cooldowns_Player = await loadCooldowns()
 
 let selectedWeapon
 let selectedWeaponText
@@ -254,7 +259,7 @@ for (let ability of Object.values(attributeAbilityTable))
 
 let abilityName = {}
 let equippedDamageIDMap = {}
-let damageCategory = await loadDamageTypes()
+const damageCategory = await loadDamageTypes()
 
 let activeAttributeAbility = []
 let checkedAbility = []
@@ -267,6 +272,12 @@ let selectedWeaponSelfApplyStatusEffect = []
 let selectedWeaponOtherApplyStatusEffect = []
 let selectedWeaponOnEndStatusEffect = []
 let selectedAffix = []
+
+let vitalsMAP = {}
+const vitals = await loadVitals()
+for(let vital of Object.values(vitals))
+vitalsMAP[vital.VitalsID.toUpperCase()] = vital
+
 
 let shiftACTIVE
 
@@ -401,7 +412,6 @@ async function loadWeaponData() {
         document.querySelector(".player_statuseffects_select").removeChild(document.querySelector(".player_statuseffects_select").lastChild)
 
     document.querySelector(".player_statuseffects_select").appendChild(createItem("option", "None", "value", ""))
-    console.log(selectedWeapon)
     if (barKey(".weapon_icon"))
         barKey(".weapon_icon").remove()
     barKey(".weapon_icon_container").appendChild(createItem("img", "", "src", `../lyshineui/images/icons/drawing/${DRAWING[selectedWeapon]}`, "class", "weapon_icon", "id", `${selectedWeapon}_icon`))
@@ -519,13 +529,9 @@ async function loadWeaponData() {
 
                 let appendBars = [
                     createItem("div", "", "id", `${key}_normal`, "class", "normal bar"),
-                    createItem("div", "", "id", `${key}_normal_gem`, "class", "normal bar gem_bar"),
                     createItem("div", "", "id", `${key}_crit`, "class", "crit bar"),
-                    createItem("div", "", "id", `${key}_crit_gem`, "class", "crit bar gem_bar"),
                     createItem("div", "", "id", `${key}_backstab`, "class", "backstab bar"),
-                    createItem("div", "", "id", `${key}_backstab_gem`, "class", "backstab bar gem_bar"),
                     createItem("div", "", "id", `${key}_headshot`, "class", "headshot bar"),
-                    createItem("div", "", "id", `${key}_headshot_gem`, "class", "headshot bar gem_bar"),
                     createItem("img", "", "src", `../lyshineui/images/icons/tooltip/icon_tooltip_${findDamageType.toLowerCase()}_opaque.png`, "class", "damagetype_icon"),
                     createItem("span", "", "class", "normal_span span", "id", `${key}_normal_span`),
                     createItem("span", "", "class", "crit_span span", "id", `${key}_crit_span`),
@@ -535,6 +541,7 @@ async function loadWeaponData() {
                     createItem("span", "", "class", "crit_span_after after span", "id", `${key}_crit_span_after`),
                     createItem("span", "", "class", "backstab_after after span", "id", `${key}_backstab_span_after`),
                     createItem("span", "", "class", "headshot_span_after after span", "id", `${key}_headshot_span_after`),
+                    createItem("span", "", "class", "normal_span gem_span span", "id", `${key}_normalGEM_span`)
                 ]
 
                 if (key == "light_attack" || key == "heavy_attack" || key == "charged_heavy" || key == "special_attack") {
@@ -550,7 +557,7 @@ async function loadWeaponData() {
                 }
                 appendBars.forEach(x => barKey(`#${key}`).appendChild(x))
                 barKey(`#${key}_normal`).appendChild(createItem("div", `${Object.keys(abilityName[key])[0]}`, "class", `${key}_label label`))
-
+                document.querySelector(`#${key}_normal`).appendChild(createItem("div", "", "id", `${key}_normal_gem`, "class", "normal gem_bar"),)
             }
         }
     }
@@ -693,12 +700,11 @@ const checkCondition = (abilityID) => {
 
 
     for (let [damagekey, damageID] of Object.entries(equippedDamageIDMap)) {
-        selectedAffix[damageID] = []
-        abilitytrue[damageID] = []
-
-
         if (!damageID)
             continue
+
+        selectedAffix[damageID] = []
+        abilitytrue[damageID] = []
 
         let findDamageType = damageCategory.find(x => {
             if (getStatusEffectProp("DamageType")[damageID])
@@ -934,7 +940,7 @@ const checkCondition = (abilityID) => {
                     if (item.OtherApplyStatusEffect.toUpperCase() == status.StatusID || item.SelfApplyStatusEffect.toUpperCase() == status.StatusID) {
                         if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
                             maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-                            
+
                         }
                     }
                 })
@@ -944,12 +950,12 @@ const checkCondition = (abilityID) => {
                     ifcapped()[propname].push(0)
                 else {
 
-                    if (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID]) {   
-                            if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID].ScalingPerGearScore) {
-                                ifcapped()[propname].push(status[propname] * maxStack)
-                            }
-                            else
-                                ifcapped()[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
+                    if (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID]) {
+                        if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID].ScalingPerGearScore) {
+                            ifcapped()[propname].push(status[propname] * maxStack)
+                        }
+                        else
+                            ifcapped()[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
                     }
                     else {
                         if (!status[propname])
@@ -983,10 +989,10 @@ const checkCondition = (abilityID) => {
                     uncappedStatusProps[propname].push(0)
                 else {
                     if (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID]) {
-                            if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore)
-                                uncappedStatusProps[propname].push(status[propname] * maxStack)
-                            else
-                                uncappedStatusProps[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
+                        if (!itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect == status.StatusID).AbilityID].ScalingPerGearScore)
+                            uncappedStatusProps[propname].push(status[propname] * maxStack)
+                        else
+                            uncappedStatusProps[propname].push(status[propname] * (1 + (itemEquipAbilityMAP[abilityID.find(perk => perk.SelfApplyStatusEffect.toUpperCase() == status.StatusID).AbilityID.toUpperCase()].ScalingPerGearScore) * (gearscore.value - 100)) * maxStack)
                     }
                     else {
                         if (!status[propname])
@@ -1132,35 +1138,52 @@ const getGSBasedDamage = () => weaponData.BaseDamage * (1.0112) ** (Math.floor((
 const getLevelScaling = () => 1 + .025 * (levelvalue.value - 1);
 
 const getStatScaling = () => {
-
     activeAttributeAbility = []
     let statSum = 0;
+    let affixStatSum = 0
+
     for (const attributeKey of Object.keys(ATTRIBUTES)) {
         const tmpAttributeScaling = weaponData[`Scaling${ATTRIBUTES[attributeKey]}`]
-
+        const affixScaling = affixMods[equippedDamageIDMap.light_attack][`Scaling${ATTRIBUTES[attributeKey]}`]
         ATTRTHREHOLDS.forEach(threshold => {
             if (attributeDefinitions[attributeKey][STATS[attributeKey] - 5].Level >= threshold)
                 attributeDefinitions[attributeKey].find(attr => attr.Level == threshold).EquipAbilities.split(",").forEach(x => activeAttributeAbility.push(attributeAbilityMAP[x]))
 
         })
 
-
-
         if (tmpAttributeScaling > 0) {
             statSum += tmpAttributeScaling * attributeDefinitions[attributeKey][STATS[attributeKey] - 5].ModifierValueSum;
+        }
+
+        if (affixScaling > 0) {
+            affixStatSum += affixScaling * attributeDefinitions[attributeKey][STATS[attributeKey] - 5].ModifierValueSum;
         }
     }
 
     return {
         nonsplit: statSum,
+        split: Math.max(statSum, affixStatSum)
     }
 }
 
 //get Weapon Damage based off initial Weapon Base Damage * (Stat Scaling + Level Scaling)
 const getWeaponDamage = (attk) => {
+    let isStatusEffect
+
+    if (getStatusEffectProp("DamageType")[attk]) {
+        isStatusEffect = true
+    }
+    else
+        isStatusEffect = false
+
+
+    let statusCheck = 0
+    if (!isStatusEffect)
+        statusCheck = affixMods[attk].DamagePercentage
+
     return {
-        nonsplit: getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling()) * (1 - affixMods[attk].DamagePercentage),
-        split: getGSBasedDamage() * (getStatScaling() + getLevelScaling()) * affixMods[attk].DamagePercentage
+        nonsplit: getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling()) * (1 - statusCheck),
+        split: getGSBasedDamage() * (getStatScaling().split + getLevelScaling()) * statusCheck
     }
 
 }
@@ -1188,7 +1211,6 @@ const getItemEqiup = () => {
                 })
             }
             if (itemPerkMAP[item.value.toUpperCase()].Affix) {
-                console.log(itemPerkMAP[item.value.toUpperCase()])
                 activeItemPerks.push(affixDataMAP[itemPerkMAP[item.value.toUpperCase()].Affix.toUpperCase()])
             }
 
@@ -1291,12 +1313,22 @@ function replaceToken(ability) {
 
 }
 
-function damageFormula(attk, arrDMG) {
-    let nonCrits
+function roundNumber(number){
+    return Number(Math.round(parseFloat(number + 'e' + 1)) + 'e-' + 1)
+}
 
+function damageFormula(attk, arrDMG) {
+    let noGEM
+    let GEM
+    let affixstat = selectedAffix[equippedDamageIDMap.light_attack]
+    let isStatusEffect = false
     function finddmgtype() {
-        if (getStatusEffectProp("DamageType")[attk])
+        if (getStatusEffectProp("DamageType")[attk]) {
+            isStatusEffect = true
             return getStatusEffectProp("DamageType")[attk]
+        }
+        else
+            isStatusEffect = false
         return getDamageTableProp("DamageType")[attk]
     }
 
@@ -1308,22 +1340,41 @@ function damageFormula(attk, arrDMG) {
     }
 
 
+    function normalDamage(split) {
+        return getWeaponDamage(attk)[split]
+            * dmgcoeforhealtmod()
+            * (1 + mods[attk].BaseDamage)
+            * (1 - mods[attk]["ABS" + finddmgtype()])
+    }
+
     arrDMG[0] = (1 + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
     arrDMG[1] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
     arrDMG[2] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk].HitFromBehindDamage + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
     arrDMG[3] = (1 * weaponData.CritDamageMultiplier + mods[attk].HeadshotDamage + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
 
-    nonCrits = getWeaponDamage(attk).nonsplit
-        * dmgcoeforhealtmod()
-        * (1 + mods[attk].BaseDamage)
-        * (1 - mods[attk]["ABS" + finddmgtype()])
+    if (affixstat[0]) {
+        arrDMG[5] = (1 + mods[attk]["DMG" + affixstat[0].DamageType] + mods[attk].DMGVitalsCategory)
+        arrDMG[6] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk]["DMG" + affixstat[0].DamageType] + mods[attk].DMGVitalsCategory)
+        arrDMG[7] = (1 * weaponData.CritDamageMultiplier + mods[attk].CritDamage + mods[attk].HitFromBehindDamage + mods[attk]["DMG" + affixstat[0].DamageType] + mods[attk].DMGVitalsCategory)
+        arrDMG[8] = (1 * weaponData.CritDamageMultiplier + mods[attk].HeadshotDamage + mods[attk]["DMG" + affixstat[0].DamageType] + mods[attk].DMGVitalsCategory)
+    }
+
+
+    noGEM = normalDamage("nonsplit")
+    GEM = normalDamage("split")
+    if (isStatusEffect || !GEM)
+        GEM = 0
 
 
     return {
-        normal: Number(Math.round(parseFloat((nonCrits * arrDMG[0]) + 'e' + 1)) + 'e-' + 1),
-        crit: Number(Math.round(parseFloat((nonCrits * arrDMG[1]) + 'e' + 1)) + 'e-' + 1),
-        backstab: Number(Math.round(parseFloat((nonCrits * arrDMG[2]) + 'e' + 1)) + 'e-' + 1),
-        headshot: Number(Math.round(parseFloat((nonCrits * arrDMG[3]) + 'e' + 1)) + 'e-' + 1)
+        normal: noGEM * arrDMG[0],
+        crit: noGEM * arrDMG[1],
+        backstab:noGEM * arrDMG[2],
+        headshot: noGEM * arrDMG[3],
+        normalGEM: GEM * arrDMG[5],
+        critGEM: GEM * arrDMG[6],
+        backstabGEM: GEM * arrDMG[7],
+        headshotGEM: GEM * arrDMG[8]
     }
 
 }
@@ -1332,10 +1383,11 @@ function damageFormula(attk, arrDMG) {
 //Final Damage
 const getFinalDamage = () => {
 
-    getStatScaling()
+
     let numbers = {}
     mods = {}
     checkCondition(checkedAbility.concat(activeItemPerks, activeAttributeAbility))
+    getStatScaling()
     let DMGARR = [
         "damageDMG_normal",
         "damageDMG_crit",
@@ -1352,20 +1404,25 @@ const getFinalDamage = () => {
 
         if (!attack)
             continue
-        console.log(attack + ":", damageFormula(attack, DMGARR))
 
-
-        document.querySelector(`#${key}_normal_span`).textContent = damageFormula(attack, DMGARR).normal
-        document.querySelector(`#${key}_normal_span_after`).textContent = damageFormula(attack, DMGARR).normal
-
-
+        document.querySelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(attack, DMGARR).normal)
+        document.querySelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).normal)
+        if (damageFormula(attack, DMGARR).normalGEM) {
+            document.querySelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM)
+            document.querySelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM)
+            /* document.querySelector(`#${key}_normalGEM_span`).textContent = damageFormula(attack, DMGARR).normalGEM */
+        }
 
         if (getDamageTableProp("CanCrit")[attack] != false) {
-            document.querySelector(`#${key}_crit_span`).textContent = damageFormula(attack, DMGARR).crit
+            document.querySelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(attack, DMGARR).crit)
             document.querySelector(`#${key}_crit_span_after`).textContent = damageFormula(attack, DMGARR).crit
             document.querySelector(`#${key}_crit`).classList.add("show")
             document.querySelector(`#${key}_crit`).classList.remove("hide")
             document.querySelector(`#${key}_crit_span_after`).classList.remove("hide")
+            if (damageFormula(attack, DMGARR).critGEM) {
+                document.querySelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(attack, DMGARR).crit + damageFormula(attack, DMGARR).critGEM)
+                document.querySelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).crit + damageFormula(attack, DMGARR).critGEM)
+            }
         }
         else {
             document.querySelector(`#${key}_crit`).classList.remove("show")
@@ -1374,11 +1431,15 @@ const getFinalDamage = () => {
         }
 
         if (getDamageTableProp("NoBackstab")[attack] != true) {
-            document.querySelector(`#${key}_backstab_span`).textContent = damageFormula(attack, DMGARR).backstab
-            document.querySelector(`#${key}_backstab_span_after`).textContent = damageFormula(attack, DMGARR).backstab
+            document.querySelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(attack, DMGARR).backstab)
+            document.querySelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).backstab)
             document.querySelector(`#${key}_backstab`).classList.add("show")
             document.querySelector(`#${key}_backstab`).classList.remove("hide")
             document.querySelector(`#${key}_backstab_span_after`).classList.remove("hide")
+            if (damageFormula(attack, DMGARR).backstabGEM) {
+                document.querySelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(attack, DMGARR).backstab + damageFormula(attack, DMGARR).backstabGEM)
+                document.querySelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).backstab + damageFormula(attack, DMGARR).backstabGEM)
+            }
         }
         else {
             document.querySelector(`#${key}_backstab`).classList.remove("show")
@@ -1387,11 +1448,15 @@ const getFinalDamage = () => {
         }
 
         if (getDamageTableProp("NoHeadshot")[attack] != true) {
-            document.querySelector(`#${key}_headshot_span`).textContent = damageFormula(attack, DMGARR).headshot
-            document.querySelector(`#${key}_headshot_span_after`).textContent = damageFormula(attack, DMGARR).headshot
+            document.querySelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(attack, DMGARR).headshot)
+            document.querySelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).headshot)
             document.querySelector(`#${key}_headshot`).classList.add("show")
             document.querySelector(`#${key}_headshot`).classList.remove("hide")
             document.querySelector(`#${key}_headshot_span_after`).classList.remove("hide")
+            if (damageFormula(attack, DMGARR).headshotGEM) {
+                document.querySelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(attack, DMGARR).headshot + damageFormula(attack, DMGARR).headshotGEM)
+                document.querySelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).headshot + damageFormula(attack, DMGARR).headshotGEM)
+            }
         }
         else {
             document.querySelector(`#${key}_headshot`).classList.remove("show")
@@ -1401,22 +1466,30 @@ const getFinalDamage = () => {
 
 
 
-
-        let maxDamage = Math.max(damageFormula(attack, DMGARR).normal, damageFormula(attack, DMGARR).crit, damageFormula(attack, DMGARR).backstab, damageFormula(attack, DMGARR).headshot)
+        let maxDamage
+        maxDamage = Math.max(damageFormula(attack, DMGARR).normal, damageFormula(attack, DMGARR).crit, damageFormula(attack, DMGARR).backstab, damageFormula(attack, DMGARR).headshot)
+        if (damageFormula(attack, DMGARR).normalGEM)
+            maxDamage = Math.max(damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM, damageFormula(attack, DMGARR).crit + damageFormula(attack, DMGARR).critGEM, damageFormula(attack, DMGARR).backstab + damageFormula(attack, DMGARR).backstabGEM, damageFormula(attack, DMGARR).headshot + damageFormula(attack, DMGARR).headshotGEM)
         maxDIV[attack] = maxDamage
 
-        document.querySelector(`#${key}_normal`).style.width = Math.min(damageFormula(attack, DMGARR).normal / maxDamage * 100, 100) + "% "
-        document.querySelector(`#${key}_crit`).style.width = damageFormula(attack, DMGARR).crit / maxDamage * 100 + "%"
-        document.querySelector(`#${key}_backstab`).style.width = Math.min(damageFormula(attack, DMGARR).backstab / maxDamage * 100, 100) + "%"
-        document.querySelector(`#${key}_headshot`).style.width = Math.min(damageFormula(attack, DMGARR).headshot / maxDamage * 100, 100) + "%"
-        document.querySelector(`#${key}_normal_span`).style.width = Math.min(damageFormula(attack, DMGARR).normal / maxDamage * 100, 100) + "% "
-        document.querySelector(`#${key}_crit_span`).style.width = damageFormula(attack, DMGARR).crit / maxDamage * 100 + "%"
-        document.querySelector(`#${key}_backstab_span`).style.width = Math.min(damageFormula(attack, DMGARR).backstab / maxDamage * 100, 100) + "%"
-        document.querySelector(`#${key}_headshot_span`).style.width = Math.min(damageFormula(attack, DMGARR).headshot / maxDamage * 100, 100) + "%"
+        function isGEM(prop) {
+            if (damageFormula(attack, DMGARR)[prop])
+                return damageFormula(attack, DMGARR)[prop]
+            return 0
+        }
+
+        document.querySelector(`#${key}_normal`).style.width = (damageFormula(attack, DMGARR).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+        document.querySelector(`#${key}_crit`).style.width = (damageFormula(attack, DMGARR).crit  + isGEM("critGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_backstab`).style.width = (damageFormula(attack, DMGARR).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_headshot`).style.width = (damageFormula(attack, DMGARR).headshot  + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_normal_span`).style.width = (damageFormula(attack, DMGARR).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+        document.querySelector(`#${key}_crit_span`).style.width = (damageFormula(attack, DMGARR).crit  + isGEM("critGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_backstab_span`).style.width = (damageFormula(attack, DMGARR).backstab  + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_headshot_span`).style.width = (damageFormula(attack, DMGARR).headshot  + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_normal_gem`).style.width = damageFormula(attack, DMGARR).normalGEM / (damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM) * 100 + "% "
 
 
     }
-
 
     findmaxDIV = Object.values(maxDIV).reduce((a, c) => Math.max(a, c), 0)
 
@@ -1427,7 +1500,7 @@ const getFinalDamage = () => {
     for (let [key, attack] of Object.entries(equippedDamageIDMap)) {
         if (!attack)
             continue
-        document.querySelector(`#${key}`).style.width = Math.max(maxDIV[attack] * 100, 12) + "%"
+        document.querySelector(`#${key}`).style.width = Math.max(maxDIV[attack] * 100, 11) + "%"
 
     }
 
