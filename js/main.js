@@ -322,6 +322,7 @@ vitalsDisplayName = [...new Set(vitalsDisplayName)]
 for (let vitalname of Object.values(vitalsDisplayName))
     qSelector("#targetvitals").appendChild(createItem("option", vitalname, { class: "vitalID" }))
 qSelector("#targetvitals").value = "Player"
+selectedVitals = vitalsMAP.PLAYER
 qSelectorAll(".armor_rating").forEach(select => {
     select.classList.add("show")
     select.value = 0
@@ -345,20 +346,10 @@ function removeSpace(text) {
     return text.split(' ').join('')
 }
 
-const operations = {
-    "+": function (operand1, operand2) {
-        return operand1 + operand2;
-    },
-    "-": function (operand1, operand2) {
-        return operand1 - operand2;
-    },
-    "*": function (operand1, operand2) {
-        return operand1 * operand2;
-    },
-    "/": function (operand1, operand2) {
-        return operand1 / operand2;
-    }
+function roundNumber(number) {
+    return Number(Math.round(parseFloat(number + 'e' + 1)) + 'e-' + 1)
 }
+
 
 function itemScaling(perk) {
     let scaled = perk.map(n => {
@@ -432,8 +423,6 @@ async function loadWeaponData() {
                 selectedVitals = vital
         }
     }
-
-
 
 
     for (let ability of Object.values(weaponAbilityTable))
@@ -748,7 +737,7 @@ const checkCondition = (abilityID) => {
             selectedAffix[damageID] = []
             abilitytrue[damageID] = []
 
-            let findDamageType = damageCategory.find(x => {
+            let findDamageCategory = damageCategory.find(x => {
                 if (getStatusEffectProp("DamageType")[damageID])
                     return x.TypeID == getStatusEffectProp("DamageType")[damageID]
                 else
@@ -775,7 +764,7 @@ const checkCondition = (abilityID) => {
                         && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(getDamageTableProp("DamageType")[damageID]))
                         && (!ability.TargetStatusEffectCategory || new RegExp(ability.TargetStatusEffectCategory.replace(/,/g, "|"), "gi").test(qSelector("#debuff_target").value))
                         && (!ability.TargetHealthPercent || _is[ability.TargetComparisonType](targetHP.value, ability.TargetHealthPercent))
-                        && (!ability.DamageCategory || ability.DamageCategory == findDamageType.Category)
+                        && (!ability.DamageCategory || ability.DamageCategory == findDamageCategory.Category)
                         && (!ability.DMGVitalsCategory || new RegExp(ability.DMGVitalsCategory.split("=")[0]).test(selectedVitals.VitalsCategories))
                         && (!ability.StatusEffect || ability.StatusEffect == qSelector(".player_statuseffects_select").value))) {
 
@@ -1153,6 +1142,31 @@ const checkCondition = (abilityID) => {
 
 }
 
+const armorMitigation = () => {
+
+    let physRating = 0
+    let eleRating = 0
+    let physmit = 0
+    let elemit = 0
+
+    if (selectedVitals.VitalsID != "Player") {
+        physRating = Math.pow(selectedVitals.GearScoreOverride, 1.2) * selectedVitals.PhysicalMitigation / (1 - selectedVitals.PhysicalMitigation)
+        eleRating = Math.pow(selectedVitals.GearScoreOverride, 1.2) * selectedVitals.ElementalMitigation / (1 - selectedVitals.ElementalMitigation)
+        physmit = Math.min(1 - 1 / (1 + Math.floor(physRating) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+        elemit = Math.min(1 - 1 / (1 + Math.floor(eleRating) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+
+    }
+
+    if (selectedVitals.VitalsID == "Player") {
+        physmit = Math.min(1 - 1 / (1 + Math.floor(qSelector("#phys_armorrating").value) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+        elemit = Math.min(1 - 1 / (1 + Math.floor(qSelector("#ele_armorrating").value) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+    }
+    return {
+        Physical: physmit,
+        Elemental: elemit
+    }
+}
+
 const getDamageTableProp = (dmgkey) => {
 
     let keyValues = {}
@@ -1282,7 +1296,7 @@ const getItemEqiup = () => {
 
 
 
-function replaceToken(ability) {
+const replaceToken = (ability) => {
 
 
     const tableMap = {
@@ -1372,15 +1386,14 @@ function replaceToken(ability) {
 
 }
 
-function roundNumber(number) {
-    return Number(Math.round(parseFloat(number + 'e' + 1)) + 'e-' + 1)
-}
-
 function damageFormula(attk, arrDMG) {
     let noGEM
     let GEM
     let affixstat = selectedAffix[equippedDamageIDMap.light_attack]
     let isStatusEffect = false
+
+    let findDamageCategory = damageCategory.find(x => x.TypeID == finddmgtype()).Category
+
     function finddmgtype() {
         if (getStatusEffectProp("DamageType")[attk]) {
             isStatusEffect = true
@@ -1390,7 +1403,6 @@ function damageFormula(attk, arrDMG) {
             isStatusEffect = false
         return getDamageTableProp("DamageType")[attk]
     }
-
 
     function dmgcoeforhealtmod() {
         if (getStatusEffectProp("HealthModifierDamageBased")[attk])
@@ -1404,6 +1416,8 @@ function damageFormula(attk, arrDMG) {
             * dmgcoeforhealtmod()
             * (1 + mods[attk].BaseDamage)
             * (1 - mods[attk]["ABS" + finddmgtype()])
+            * (1 - armorMitigation()[findDamageCategory])
+            
     }
 
     arrDMG[0] = (1 + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
@@ -1447,7 +1461,7 @@ const getFinalDamage = () => {
     mods = {}
     getStatScaling()
     checkCondition(checkedAbility.concat(activeItemPerks, activeAttributeAbility))
-    console.log(attrdefMAP)
+    console.log(armorMitigation())
     let DMGARR = [
         "damageDMG_normal",
         "damageDMG_crit",
@@ -1631,7 +1645,6 @@ document.getElementById("weapon").addEventListener("input", () => {
 
 
 qSelector("#debuff_target").addEventListener("input", getFinalDamage)
-qSelector("#targetvitals").addEventListener("input", getFinalDamage)
 qSelector(".player_statuseffects_select").addEventListener("input", () => {
     equipWepAbility()
     getFinalDamage()
@@ -1749,29 +1762,35 @@ new Array("keyup", "touchend").forEach(type =>
     })
 )
 
-qSelector(".target_level_container").addEventListener("change", function change(e) {
+qSelector(".target_level_container").addEventListener("change", (e) => {
+
     for (let vital of Object.values(vitals)) {
         if (vital.DisplayName == qSelector("#targetvitals").value && vital.Level == qSelector(".target_level_container").value)
             selectedVitals = vital
     }
-    console.log(selectedVitals)
     getFinalDamage()
+
 })
 
-qSelector("#targetvitals").addEventListener("change", function change(e) {
+qSelector("#targetvitals").addEventListener("change", (e) => {
+    console.log(e.target.value)
     while (qSelector(".target_level_container").firstChild)
         qSelector(".target_level_container").removeChild(qSelector(".target_level_container").lastChild)
     for (let vital of Object.values(vitals)) {
         if (vital.DisplayName == e.target.value)
             qSelector(".target_level_container").appendChild(createItem("option", vital.Level, { class: "levelof_vital" }))
-        if (vital.DisplayName == qSelector("#targetvitals").value && vital.Level == qSelector(".target_level_container").value)
+        if ((vital.DisplayName == e.target.value && vital.Level == qSelector(".target_level_container").value))
             selectedVitals = vital
+        if (e.target.value == "Player")
+            selectedVitals = vitalsNameMAP["Player"]
     }
-    if (qSelector("#targetvitals").value == "Player")
+    if (selectedVitals.VitalsID == "Player") {
+
         qSelectorAll(".armor_rating").forEach(select => {
             select.classList.add("show")
             select.value = 0
         })
+    }
     else
         qSelectorAll(".armor_rating").forEach(select => select.classList.remove("show"))
     getFinalDamage()
@@ -1804,23 +1823,27 @@ function up() {
 ["mousedown"].forEach(type => {
 
     qSelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, function change(e) {
+        e.preventDefault()
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
             down(e, -10)
 
     }))
 
     qSelectorAll(".reduce1").forEach(bttn => bttn.addEventListener(type, function change(e) {
+        e.preventDefault()
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
             down(e, -1)
 
     }))
 
     qSelectorAll(".increase10").forEach(bttn => bttn.addEventListener(type, function change(e) {
+        e.preventDefault()
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 500)
             down(e, +10)
     }))
 
     qSelectorAll(".increase1").forEach(bttn => bttn.addEventListener(type, function change(e) {
+        e.preventDefault()
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 500)
             down(e, +1)
 
