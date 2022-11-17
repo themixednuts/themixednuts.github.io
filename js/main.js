@@ -1417,7 +1417,7 @@ function damageFormula(attk, arrDMG) {
             * (1 + mods[attk].BaseDamage)
             * (1 - mods[attk]["ABS" + finddmgtype()])
             * (1 - armorMitigation()[findDamageCategory])
-            
+
     }
 
     arrDMG[0] = (1 + mods[attk]["DMG" + finddmgtype()] + mods[attk].DMGVitalsCategory)
@@ -1687,11 +1687,14 @@ gearscore.addEventListener('input', dHandler)
 
 
 levelvalue.addEventListener('change', (e) => {
-    let x = ((levelvalue.value - levelvalue.min) * 100) / (levelvalue.max - levelvalue.min)
-    let color = `linear-gradient(90deg, rgb(117,252,117) ${x}%, rgb(214,214,214) ${x}%)`;
-    levelvalue.style.background = color;
-    level.textContent = `Level: ${e.target.value}`
-    getFinalDamage()
+    if (e.target.value > 60) {
+        e.target.value = 60
+    }
+    else if (e.target.value < 1) {
+        e.target.value = 1
+    }
+    else
+        getFinalDamage()
 })
 
 targetHP.addEventListener('change', function onCh(e) {
@@ -1762,6 +1765,12 @@ new Array("keyup", "touchend").forEach(type =>
     })
 )
 
+qSelectorAll(".armor_rating").forEach(item =>
+    item.addEventListener("change", (e) => {
+        getFinalDamage()
+    })
+)
+
 qSelector(".target_level_container").addEventListener("change", (e) => {
 
     for (let vital of Object.values(vitals)) {
@@ -1814,6 +1823,7 @@ function down(e, v) {
 }
 
 function up() {
+
     clearInterval(interval)
     clearInterval(timeoutInterval)
     safetyStop = true
@@ -1826,26 +1836,26 @@ function up() {
         e.preventDefault()
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
             down(e, -10)
-
     }))
 
     qSelectorAll(".reduce1").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
         if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
             down(e, -1)
-
     }))
 
     qSelectorAll(".increase10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
-        if (qSelector(`#${e.target.getAttribute("for")}`).value != 500)
+        if (qSelector(`#${e.target.getAttribute("for")}`).value != 500) {
             down(e, +10)
+        }
     }))
 
     qSelectorAll(".increase1").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
-        if (qSelector(`#${e.target.getAttribute("for")}`).value != 500)
+        if (qSelector(`#${e.target.getAttribute("for")}`).value != 500) {
             down(e, +1)
+        }
 
     }))
 

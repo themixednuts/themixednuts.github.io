@@ -9,9 +9,15 @@
     --blueBorder: brightness(0) saturate(100%) invert(75%) sepia(7%) saturate(3159%) hue-rotate(173deg) brightness(100%) contrast(106%);
     --normalColor: gray;
     --critColor: Rgba(246, 120, 23, 1.0);
-    --backstabColor: yellow;
     --headshotColor: teal;
     --critFilter: brightness(0) saturate(100%) invert(50%) sepia(93%) saturate(1522%) hue-rotate(351deg) brightness(99%) contrast(96%);
+    --tanColor: rgba(158, 148, 126, 1.0);
+    --tanFiler: brightness(0) saturate(100%) invert(66%) sepia(19%) saturate(333%) hue-rotate(3deg) brightness(87%) contrast(85%);
+    --tanDarkColor: rgba(84, 78, 66, 1.0);
+    --redColor: rgba(255, 46, 46, 1.0);
+    --xpColor: rgba(255, 211, 78, 1.0);
+    --xpDarkColor: rgba(197, 129, 22, 1.0) --masteryColor: rgba(124, 209, 254, 1.0);
+    --greenColor: rgba(48, 229, 171, 1.0);
 }
 
 * {
@@ -69,7 +75,8 @@ body {
     width: 100%;
     flex-grow: 1;
     flex-shrink: 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -88,17 +95,34 @@ body {
 
 }
 
+.playercondition_container{
+    position: relative;
+    display: inline-flex;
+    grid-column: 2/3;
+    grid-row: 1/-1;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    gap: 2rem;
+    flex: 1 1 auto;
+}
+
 .attributecontainer {
     position: relative;
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
     display: inline-flex;
     flex-wrap: nowrap;
     align-content: flex-start;
-
+    font-family: 'pica';
     gap: 2rem;
-    flex: 1 0 auto;
+    flex: 1 1 auto;
+}
 
+.playerequip_container{
+    position: relative;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    gap: 2rem;
+    flex: 1 1 auto;
 }
 
 
@@ -119,12 +143,14 @@ body {
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
+    font-family: 'caslonant';
 }
 
 .attr_arrow {
     position: relative;
     display: inline-block;
     flex: 0;
+    /* filter: var(--tanFiler); */
 }
 
 .bttn10 {
@@ -164,8 +190,9 @@ body {
     position: relative;
     min-width: 100px;
     display: grid;
+    grid-column: 3/4;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3,1fr);
+    grid-template-rows: repeat(3, 1fr);
     flex-direction: column;
     flex: 1 0 auto;
     gap: 1rem;
@@ -208,12 +235,11 @@ body {
 
 .weaponcontainer {
     position: relative;
-    grid-column: 3 / 4;
-    grid-row: 2 / 3;
+    grid-column: 1/ 2;
+    grid-row: 1 / -1;
     flex: 2;
     flex-direction: row;
     white-space: pre-line;
-    flex: 1 1 auto;
     display: inline-flex;
     flex-direction: column;
     align-items: space-evenly;
@@ -252,7 +278,6 @@ body {
     font-weight: 600;
     background-color: #1F1F1F;
     text-align: center;
-    color: #D4CFC4;
     width: 110px;
     flex-grow: 0;
 }
@@ -261,6 +286,30 @@ body {
     border: 1px solid;
     border-color: white;
 } */
+
+.attribute {
+    font-weight: 10;
+    align-self: center;
+    top: 50%;
+    transform: translateY(15%);
+    animation-name: attr;
+}
+
+.level {
+    font-weight: 10;
+    align-self: center;
+    top: 50%;
+    transform: translateY(15%);
+    
+}
+
+.attr_up{
+    animation: attrup 2s linear infinite;
+}
+
+.attr_down{
+    animation: attrdown 2s linear infinite;
+}
 
 .damagecontainer {
     position: relative;
@@ -867,7 +916,7 @@ option {
     container-type: inline-size;
     position: absolute;
     color: #1F1F1F;
-    background-color: yellow;
+    background-color: var(--xpColor);
     z-index: 5;
 
     /* color: Rgba(246, 120, 23, 1.0);  */
@@ -996,7 +1045,7 @@ option {
         height: 40px;
         white-space: nowrap;
         text-align: center;
-        background-color: var(--backstabColor);
+        background-color: var(--xpColor);
         border: 2px;
         border-radius: 10%;
         left: 420px;
@@ -1039,6 +1088,44 @@ option {
     }
 }
 
+ @media (max-width: 1380px) {
+    .topcontainer{
+        grid-template-columns: repeat(2,1fr);
+        grid-template-rows: repeat(2,1fr);
+    }
+    .weaponcontainer{
+        grid-column: 1/2;
+        grid-row: 2/3;
+    }
+    .target_container{
+        grid-column: 1/3;
+        grid-row: 1/2;
+    }
+    .playercondition_container{
+        grid-column: 2/3;
+        grid-row: 2/3;
+    }
+} 
+
+@media (max-width: 1090px) {
+    .topcontainer{
+        grid-template-columns: repeat(1,1fr);
+        grid-template-rows: repeat(3,1fr);
+    }
+    .weaponcontainer{
+        grid-column: 1/-1;
+        grid-row: 3/4;
+    }
+    .target_container{
+        grid-column: 1/-1;
+        grid-row: 1/2;
+    }
+    .playercondition_container{
+        grid-column: 1/-1;
+        grid-row: 2/3;
+    }
+}
+
 @font-face {
     font-family: 'defaulttest';
     src: url("../lyshineui/fonts/nimbussannov-reg.otf");
@@ -1057,6 +1144,16 @@ option {
     src: url('../lyshineui/fonts/nimbussannov-regita.otf');
 }
 
+@font-face {
+    font-family: 'caslonant';
+    src: url('../lyshineui/fonts/caslonant.otf');
+}
+
+@font-face {
+    font-family: 'pica';
+    src: url('../lyshineui/fonts/pica_regular.font');
+}
+
 /* @keyframes purshaseScale {
     0% {
 
@@ -1068,3 +1165,27 @@ option {
     }
 
 } */
+
+@keyframes attrup {
+
+    0%{
+        color: var(--greenColor);
+    }
+
+    100%{
+        color: var(--greenColor);
+    }
+    
+}
+
+@keyframes attrdown {
+
+    0%{
+        color: var(--redColor);
+    }
+
+    100%{
+        color: var(--redColor);
+    }
+    
+}
