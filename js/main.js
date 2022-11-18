@@ -461,10 +461,11 @@ async function loadWeaponData() {
 
     if (!qSelector(".target_level_container").value) {
         for (let vital of Object.values(vitals)) {
-            if (vital.DisplayName == qSelector("#targetvitals").value)
+            if (vital.DisplayName == qSelector("#targetvitals").value) {
                 qSelector(".target_level_container").appendChild(createItem("option", vital.Level, { class: "levelof_vital" }))
-            if (vital.DisplayName == qSelector("#targetvitals").value && vital.Level == qSelector(".target_level_container").value)
-                selectedVitals = vital
+                if (vital.Level == qSelector(".target_level_container").value)
+                    selectedVitals = vital
+            }
         }
     }
 
@@ -1026,7 +1027,7 @@ const checkCondition = (abilityID) => {
                             status.StatusID = status.StatusID.toUpperCase()
 
 
-                            const ifcapped = () => {
+                        const ifcapped = () => {
                             if ((new RegExp(/Empower|Weaken/).test(status.EffectCategories) && new RegExp(/^DMG/).test(propname)) || (new RegExp(/Fortify|Rend/).test(status.EffectCategories) && new RegExp(/^ABS/).test(propname)))
                                 return cappedSelfStatusProps
                             else
@@ -1130,7 +1131,7 @@ const checkCondition = (abilityID) => {
                             status.StatusID = status.StatusID.toUpperCase()
 
 
-                            const ifcapped = () => {
+                        const ifcapped = () => {
                             if ((new RegExp(/Empower|Weaken/).test(status.EffectCategories) && new RegExp(/^DMG/).test(propname)) || (new RegExp(/Fortify|Rend/).test(status.EffectCategories) && new RegExp(/^ABS/).test(propname)))
                                 return cappedOtherStatusProps
                             else
@@ -2026,7 +2027,7 @@ function up() {
         if (isDropdownListItem) {
             let parentDiv = e.target.parentNode.parentNode.children[0]
             parentDiv.value = itemPerkNameMAP[e.target.textContent].PerkID
-            parentDiv.setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
+            parentDiv.setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
             parentDiv.dispatchEvent(new Event('input'))
         }
 
