@@ -826,7 +826,7 @@ const checkCondition = (abilityID) => {
 
 
                     if (ability.StatusID) { //check if ability that passed conditions is a StatusEffect or Affix
-                        if (affixDataMAP[ability.StatusID.toUpperCase()]) { //check if StatusID is an Affix
+                        if (affixDataMAP[ability.StatusID]) { //check if StatusID is an Affix
                             selectedAffix[damageID].push(ability)
                         }
                         else
@@ -920,7 +920,6 @@ const checkCondition = (abilityID) => {
         selectedWeaponOnEndStatusEffect = [...new Set(selectedWeaponOnEndStatusEffect)]
         selectedWeaponOtherApplyStatusEffect = [...new Set(selectedWeaponOtherApplyStatusEffect)]
         selectedWeaponSelfApplyStatusEffect = [...new Set(selectedWeaponSelfApplyStatusEffect)]
-
 
         selectedSelfStatusEffects = [
             selectedPerkSelfApplyStatusEffect,
@@ -1240,11 +1239,11 @@ const checkCondition = (abilityID) => {
                         }
                         else {
                             affixProps[propname].push(perkapply[propname].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemAffixMAP[perkapply.StatusID.toUpperCase()]))
-                            console.log(itemScaling(itemAffixMAP[perkapply.StatusID.toUpperCase()]))
                         }
 
                     }
                 })
+
 
                 affixProps[propname] = myReduce(affixProps[propname])
 
@@ -1270,10 +1269,10 @@ const checkCondition = (abilityID) => {
                     statusSelfProps[propname] = cappedSelfStatusProps[propname] + uncappedSelfStatusProps[propname]
 
                 if (new RegExp(/^DMG/).test(propname) && propname != "DMGVitalsCategory") {
-                    statusOtherProps[propname] = Math.min(Math.max(cappedOtherStatusProps[propname] + uncappedOtherStatusProps[propname] + affixProps[propname], Math.min(uncappedOtherStatusProps[propname] + affixProps[propname], -0.5)), Math.max(uncappedOtherStatusProps[propname] + affixProps[propname], 0.5))
+                    statusOtherProps[propname] = Math.min(Math.max(cappedOtherStatusProps[propname] + uncappedOtherStatusProps[propname], Math.min(uncappedOtherStatusProps[propname], -0.5)), Math.max(uncappedOtherStatusProps[propname], 0.5))
                 }
                 else if (new RegExp(/^ABS/).test(propname) && propname != "ABSVitalsCategory") {
-                    statusOtherProps[propname] = Math.min(Math.max(cappedOtherStatusProps[propname] + uncappedOtherStatusProps[propname] + affixProps[propname], Math.min(uncappedOtherStatusProps[propname] + affixProps[propname], -0.3)), Math.max(uncappedOtherStatusProps[propname] + affixProps[propname], 0.5))
+                    statusOtherProps[propname] = Math.min(Math.max(cappedOtherStatusProps[propname] + uncappedOtherStatusProps[propname], Math.min(uncappedOtherStatusProps[propname], -0.3)), Math.max(uncappedOtherStatusProps[propname], 0.5))
                 }
                 else
                     statusOtherProps[propname] = cappedOtherStatusProps[propname] + uncappedOtherStatusProps[propname]
