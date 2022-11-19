@@ -172,7 +172,7 @@ body {
     height: 32px;
 }
 
-.addedperk{
+.addedperk {
     position: relative;
     left: 5px;
 }
@@ -918,6 +918,17 @@ option {
     background-repeat: no-repeat;
 }
 
+.removebttn {
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    top: -25%;
+    left: -25%;
+    background-image: url("../lyshineui/images/button_close_a.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: none;
+}
 
 .list_div {
     position: absolute;
@@ -1037,6 +1048,15 @@ option {
     transform: translateY(-50%);
 
 }
+
+.scale50 {
+    scale: 50%;
+}
+
+.translate25{
+    transform: translateX(25%) translateY(-25%);
+}
+
 
 .gem_bar {
     position: absolute;
