@@ -1667,29 +1667,28 @@ function damageFormula(damageID) {
         * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
 
 
+    if (findGem)
+        if (findGem.DamagePercentage) {
+            arrDMG[5] = (1 + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+                * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
+                * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
+            arrDMG[6] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+                * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
+                * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
+            arrDMG[7] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+                * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
+                * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
+            arrDMG[8] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+                * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
+                * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
 
-    if (affixstat.DamagePercentage) {
-        arrDMG[5] = (1 + self.modsSelf[damageID]["DMG" + affixstat.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-            * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
-            * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
-        arrDMG[6] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + affixstat.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-            * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
-            * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
-        arrDMG[7] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + affixstat.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-            * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
-            * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
-        arrDMG[8] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + affixstat.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-            * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
-            * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
-
-    }
+        }
 
 
     noGEM = normalDamage("nonsplit")
     GEM = normalDamage("split")
-    if (isStatusEffect || !GEM || !self.affixSelf[damageID].DamagePercentage)
+    if (isStatusEffect || !GEM || !findGem.DamagePercentage)
         GEM = 0
-
 
     return {
         normal: noGEM * arrDMG[0],
@@ -1712,7 +1711,6 @@ const getFinalDamage = () => {
     self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility))
 
     getStatScaling()
-    console.log(self.activeAffix)
 
 
     let findmaxDIV
