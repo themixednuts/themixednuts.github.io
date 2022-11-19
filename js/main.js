@@ -333,7 +333,7 @@ let targetHP = qSelector("#targethp")
 
 let self = {}
 let target = {}
-
+let selectedSelfAffix
 
 
 let shiftACTIVE
@@ -796,6 +796,7 @@ const checkCondition = (abilityID) => {
     let uncappedOtherStatusEffects = []
 
     let selectedAffix = []
+    let selectedAffixMAP = {}
     let selectedPerkOtherApplyStatusEffect = []
     let selectedPerkSelfApplyStatusEffect = []
     let selectedWeaponOnEndStatusEffect = []
@@ -1307,12 +1308,19 @@ const checkCondition = (abilityID) => {
         selfMods[abilitydamageID] = totalSelfProps
         otherMods[abilitydamageID] = statusOtherProps
 
+        for (const affix of Object.values(selectedAffix[abilitydamageID]))
+            selectedAffixMAP[affix.StatusID] = affix
     }
+
+
+
+
 
     return {
         affixSelf: affixSelfMods,
         modsSelf: selfMods,
-        modsOther: otherMods
+        modsOther: otherMods,
+        activeAffix: selectedAffixMAP
     }
 }
 
@@ -1627,31 +1635,53 @@ const dmgcoeforhealtmod = (damageID) => {
     return getDamageTableProp("DmgCoef")[damageID]
 }
 
-function damageFormula(damageID, arrDMG) {
+function damageFormula(damageID) {
     let noGEM
     let GEM
     let affixstat = self.affixSelf[equippedDamageIDMap.light_attack]
+    let findGem
+    let arrDMG = []
+
+    if (self.activeAffix[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()])
+        findGem = self.activeAffix[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()]
 
     function normalDamage(split) {
 
         return getWeaponDamage(damageID)[split]
             * dmgcoeforhealtmod(damageID)
             * (1 + self.modsSelf[damageID].BaseDamage)
-            * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
-            * (1 - armorMitigation()[findDamageCategory(damageID)])
 
     }
 
     arrDMG[0] = (1 + self.modsSelf[damageID]["DMG" + finddmgtype(damageID)] + self.modsSelf[damageID].DMGVitalsCategory)
+        * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
+        * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
     arrDMG[1] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + finddmgtype(damageID)] + self.modsSelf[damageID].DMGVitalsCategory)
+        * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
+        * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
     arrDMG[2] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + finddmgtype(damageID)] + self.modsSelf[damageID].DMGVitalsCategory)
+        * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
+        * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
     arrDMG[3] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + finddmgtype(damageID)] + self.modsSelf[damageID].DMGVitalsCategory)
+        * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
+        * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
 
-    if (self.affixSelf[0]) {
-        arrDMG[5] = (1 + self.modsSelf[damageID]["DMG" + affixstat[0].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-        arrDMG[6] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + affixstat[0].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-        arrDMG[7] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + affixstat[0].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-        arrDMG[8] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + affixstat[0].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+
+
+    if (affixstat.DamagePercentage) {
+        arrDMG[5] = (1 + self.modsSelf[damageID]["DMG" + affixstat.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+            * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
+            * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
+        arrDMG[6] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + affixstat.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+            * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
+            * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
+        arrDMG[7] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + affixstat.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+            * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
+            * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
+        arrDMG[8] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + affixstat.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+            * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
+            * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
+
     }
 
 
@@ -1682,13 +1712,8 @@ const getFinalDamage = () => {
     self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility))
 
     getStatScaling()
+    console.log(self.activeAffix)
 
-    let DMGARR = [
-        "damageDMG_normal",
-        "damageDMG_crit",
-        "damageDMG_backstab",
-        "damageDMG_headshot"
-    ]
 
     let findmaxDIV
     let maxDIV = {}
@@ -1699,23 +1724,23 @@ const getFinalDamage = () => {
         if (!attack)
             continue
 
-        qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(attack, DMGARR).normal)
-        qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).normal)
-        if (damageFormula(attack, DMGARR).normalGEM) {
-            qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM)
-            qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM)
-            /* qSelector(`#${key}_normalGEM_span`).textContent = damageFormula(attack, DMGARR).normalGEM */
+        qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(attack).normal)
+        qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(attack).normal)
+        if (damageFormula(attack).normalGEM) {
+            qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(attack).normal + damageFormula(attack).normalGEM)
+            qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(attack).normal + damageFormula(attack).normalGEM)
+            /* qSelector(`#${key}_normalGEM_span`).textContent = damageFormula(attack).normalGEM */
         }
 
         if (getDamageTableProp("CanCrit")[attack] != false) {
-            qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(attack, DMGARR).crit)
-            qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).crit)
+            qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(attack).crit)
+            qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(attack).crit)
             qSelector(`#${key}_crit`).classList.add("show")
             qSelector(`#${key}_crit`).classList.remove("hide")
             qSelector(`#${key}_crit_span_after`).classList.remove("hide")
-            if (damageFormula(attack, DMGARR).critGEM) {
-                qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(attack, DMGARR).crit + damageFormula(attack, DMGARR).critGEM)
-                qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).crit + damageFormula(attack, DMGARR).critGEM)
+            if (damageFormula(attack).critGEM) {
+                qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(attack).crit + damageFormula(attack).critGEM)
+                qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(attack).crit + damageFormula(attack).critGEM)
             }
         }
         else {
@@ -1725,14 +1750,14 @@ const getFinalDamage = () => {
         }
 
         if (getDamageTableProp("NoBackstab")[attack] != true) {
-            qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(attack, DMGARR).backstab)
-            qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).backstab)
+            qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(attack).backstab)
+            qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(attack).backstab)
             qSelector(`#${key}_backstab`).classList.add("show")
             qSelector(`#${key}_backstab`).classList.remove("hide")
             qSelector(`#${key}_backstab_span_after`).classList.remove("hide")
-            if (damageFormula(attack, DMGARR).backstabGEM) {
-                qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(attack, DMGARR).backstab + damageFormula(attack, DMGARR).backstabGEM)
-                qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).backstab + damageFormula(attack, DMGARR).backstabGEM)
+            if (damageFormula(attack).backstabGEM) {
+                qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(attack).backstab + damageFormula(attack).backstabGEM)
+                qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(attack).backstab + damageFormula(attack).backstabGEM)
             }
         }
         else {
@@ -1742,14 +1767,14 @@ const getFinalDamage = () => {
         }
 
         if (getDamageTableProp("NoHeadshot")[attack] != true) {
-            qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(attack, DMGARR).headshot)
-            qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).headshot)
+            qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(attack).headshot)
+            qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(attack).headshot)
             qSelector(`#${key}_headshot`).classList.add("show")
             qSelector(`#${key}_headshot`).classList.remove("hide")
             qSelector(`#${key}_headshot_span_after`).classList.remove("hide")
-            if (damageFormula(attack, DMGARR).headshotGEM) {
-                qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(attack, DMGARR).headshot + damageFormula(attack, DMGARR).headshotGEM)
-                qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(attack, DMGARR).headshot + damageFormula(attack, DMGARR).headshotGEM)
+            if (damageFormula(attack).headshotGEM) {
+                qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(attack).headshot + damageFormula(attack).headshotGEM)
+                qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(attack).headshot + damageFormula(attack).headshotGEM)
             }
         }
         else {
@@ -1761,28 +1786,28 @@ const getFinalDamage = () => {
 
 
         let maxDamage
-        maxDamage = Math.max(damageFormula(attack, DMGARR).normal, damageFormula(attack, DMGARR).crit, damageFormula(attack, DMGARR).backstab, damageFormula(attack, DMGARR).headshot)
-        if (damageFormula(attack, DMGARR).normalGEM)
-            maxDamage = Math.max(damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM, damageFormula(attack, DMGARR).crit + damageFormula(attack, DMGARR).critGEM, damageFormula(attack, DMGARR).backstab + damageFormula(attack, DMGARR).backstabGEM, damageFormula(attack, DMGARR).headshot + damageFormula(attack, DMGARR).headshotGEM)
+        maxDamage = Math.max(damageFormula(attack).normal, damageFormula(attack).crit, damageFormula(attack).backstab, damageFormula(attack).headshot)
+        if (damageFormula(attack).normalGEM)
+            maxDamage = Math.max(damageFormula(attack).normal + damageFormula(attack).normalGEM, damageFormula(attack).crit + damageFormula(attack).critGEM, damageFormula(attack).backstab + damageFormula(attack).backstabGEM, damageFormula(attack).headshot + damageFormula(attack).headshotGEM)
         maxDIV[attack] = maxDamage
 
         function isGEM(prop) {
-            if (damageFormula(attack, DMGARR)[prop])
-                return damageFormula(attack, DMGARR)[prop]
+            if (damageFormula(attack)[prop])
+                return damageFormula(attack)[prop]
             return 0
         }
 
-        qSelector(`#${key}_normal`).style.width = (damageFormula(attack, DMGARR).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
-        qSelector(`#${key}_crit`).style.width = (damageFormula(attack, DMGARR).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_backstab`).style.width = (damageFormula(attack, DMGARR).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_headshot`).style.width = (damageFormula(attack, DMGARR).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_normal_span`).style.width = (damageFormula(attack, DMGARR).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
-        qSelector(`#${key}_crit_span`).style.width = (damageFormula(attack, DMGARR).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_backstab_span`).style.width = (damageFormula(attack, DMGARR).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_headshot_span`).style.width = (damageFormula(attack, DMGARR).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_normal`).style.width = (damageFormula(attack).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+        qSelector(`#${key}_crit`).style.width = (damageFormula(attack).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_backstab`).style.width = (damageFormula(attack).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_headshot`).style.width = (damageFormula(attack).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_normal_span`).style.width = (damageFormula(attack).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+        qSelector(`#${key}_crit_span`).style.width = (damageFormula(attack).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_backstab_span`).style.width = (damageFormula(attack).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_headshot_span`).style.width = (damageFormula(attack).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
         qSelector(`#${key}_normal_gem`).style.width = 0 + "%"
         if (isGEM("normalGEM"))
-            qSelector(`#${key}_normal_gem`).style.width = damageFormula(attack, DMGARR).normalGEM / (damageFormula(attack, DMGARR).normal + damageFormula(attack, DMGARR).normalGEM) * 100 + "% "
+            qSelector(`#${key}_normal_gem`).style.width = damageFormula(attack).normalGEM / (damageFormula(attack).normal + damageFormula(attack).normalGEM) * 100 + "% "
 
 
     }
