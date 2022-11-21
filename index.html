@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" href="./css/style.css">
+    <script type="module" async src="./js/main.js"></script>
 </head>
 
 <body class="body">
@@ -143,7 +144,8 @@
                                     class="attr_arrow reduce10 bttn10" id="con_button_reduce10" for="con">
                                 <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt=""
                                     class="attr_arrow reduce1 bttn1" id="con_button_reduce1" for="con">
-                                <input id="con" name="Constitution" type="text" min="5" value="5" class="input attribute">
+                                <input id="con" name="Constitution" type="text" min="5" value="5"
+                                    class="input attribute">
                                 <img src="../lyshineui/images/attribrutes/attributebuttonbg.png" alt=""
                                     class="attr_arrow increase1 bttn1" id="con_button_increase1" for="con">
                                 <img src="../lyshineui/images/attribrutes/attributebuttonplus10bg.png" alt=""
@@ -158,183 +160,47 @@
                 </div>
             </div>
             <div class="playerequip_container">
-                <div class="headrow equiprow">
-                    <img src="../lyshineui/images/equipment/iconhead.png" alt="" class="headslot imgslot">
-                    <div class="headgem_button button">
-                        <input type="image" class="headgem gemslot gemicon bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png">
-                        <div class="headgem_list_div list_div" list-div></div>
+                <template id="equipmentTemplate">
+                    <div class="temprow equiprow">
+                        <img src="../lyshineui/images/equipment/iconhead.png" alt="" class="tempslot imgslot">
+                        <div class="tempgem_button button">
+                            <input type="image" class="tempgem gemslot gemicon bttn perks"
+                                src="../lyshineui/images/crafting/crafting_gemslot.png">
+                                <div class="list_container">
+                                    <input type="search" class="search">
+                                    <div class="tempgem_list_div list_div" list-div></div>
+                                </div>
+                        </div>
+                        <div class="tempperk_button button" id="temp_armorperk_1">
+                            <input type="image" class="tempperk perkslot bttn perks"
+                                src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_temp_armorperk_1">
+                            <div class="list_container">
+                                <input type="search" class="search">
+                                <div class="tempperk_list_div list_div" list-div></div>
+                            </div>
+                            <button class="removebttn bts" id="remove_temp_armorperk_1"
+                                for="bttn_temp_armorperk_1"></button>
+                        </div>
+                        <div class="tempperk_button button" id="temp_armorperk_2">
+                            <input type="image" class="tempperk perkslot bttn perks"
+                                src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_temp_armorperk_2">
+                                <div class="list_container">
+                                    <input type="search" class="search">
+                                    <div class="tempperk_list_div list_div" list-div></div>
+                                </div>
+                            <button class="removebttn" id="remove_temp_armorperk_2" for="bttn_temp_armorperk_2"></button>
+                        </div>
+                        <div class="tempperk_button button" id="temp_armorperk_3">
+                            <input type="image" class="tempperk perkslot bttn perks"
+                                src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_temp_armorperk_3">
+                                <div class="list_container">
+                                    <input type="search" class="search">
+                                    <div class="tempperk_list_div list_div" list-div></div>
+                                </div>
+                            <button class="removebttn" id="remove_temp_armorperk_3" for="bttn_temp_armorperk_3"></button>
+                        </div>
                     </div>
-                    <div class="headperk_button button" id="head_armorperk_1" >
-                        <input type="image" class="headperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_head_armorperk_1">
-                        <div class="headperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_head_armorperk_1"></button>
-                    </div>
-                    <div class="headperk_button button" id="head_armorperk_2">
-                        <input type="image" class="headperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_head_armorperk_2">
-                        <div class="headperk_list_div list_div" list-div></div>
-                        <button class="removebttn" id="remove_head_armorperk_2" for="bttn_head_armorperk_2"></button>
-                    </div>
-                    <div class="headperk_button button" id="head_armorperk_3">
-                        <input type="image" class="headperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_head_armorperk_3">
-                        <div class="headperk_list_div list_div" list-div></div>
-                        <button class="removebttn" id="remove_head_armorperk_3" for="bttn_head_armorperk_3"></button>
-                    </div>
-                </div>
-                <div class="chestrow equiprow">
-                    <img src="../lyshineui/images/equipment/iconchest.png" alt="" class="chestslot imgslot">
-                    <div class="chestgem_button button">
-                        <input type="image" class="chestgem gemslot gemicon bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png">
-                        <div class="chestgem_list_div list_div" list-div></div>
-                    </div>
-                    <div class="chestperk_button button" id="chest_armorperk_1">
-                        <input type="image" class="chestperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_chest_armorperk_1">
-                        <div class="chestperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_chest_armorperk_1"></button>
-                    </div>
-                    <div class="chestperk_button button" id="chest_armorperk_2">
-                        <input type="image" class="chestperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_chest_armorperk_2">
-                        <div class="chestperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_chest_armorperk_2"></button>
-                    </div>
-                    <div class="chestperk_button button" id="chest_armorperk_3">
-                        <input type="image" class="chestperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_chest_armorperk_3">
-                        <div class="chestperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_chest_armorperk_3"></button>
-                    </div>
-                </div>
-                <div class="handsrow equiprow">
-                    <img src="../lyshineui/images/equipment/iconhand.png" alt="" class="handsslot imgslot">
-                    <div class="handsgem_button button">
-                        <input type="image" class="handsgem gemslot gemicon bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png">
-                        <div class="handsgem_list_div list_div" list-div></div>
-                    </div>
-                    <div class="handsperk_button button" id="hands_armorperk_1">
-                        <input type="image" class="handsperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_hands_armorperk_1">
-                        <div class="handsperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_hands_armorperk_1"></button>
-                    </div>
-                    <div class="handsperk_button button" id="hands_armorperk_2">
-                        <input type="image" class="handsperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_hands_armorperk_2">
-                        <div class="handsperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_hands_armorperk_2"></button>
-                    </div>
-                    <div class="handsperk_button button" id="hands_armorperk_3">
-                        <input type="image" class="handsperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_hands_armorperk_3">
-                        <div class="handsperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_hands_armorperk_3"></button>
-                    </div>
-                </div>
-                <div class="legsrow equiprow">
-                    <img src="../lyshineui/images/equipment/iconlegs.png" alt="" class="legsslot imgslot">
-                    <div class="legsgem_button button">
-                        <input type="image" class="legsgem gemslot gemicon bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png">
-                        <div class="legsgem_list_div list_div" list-div></div>
-                    </div>
-                    <div class="legsperk_button button" id="legs_armorperk_1">
-                        <input type="image" class="legsperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_legs_armorperk_1">
-                        <div class="legsperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_legs_armorperk_1"></button>
-                    </div>
-                    <div class="legsperk_button button" id="legs_armorperk_2">
-                        <input type="image" class="legsperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_legs_armorperk_2">
-                        <div class="legsperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_legs_armorperk_2"></button>
-                    </div>
-                    <div class="legsperk_button button" id="legs_armorperk_3">
-                        <input type="image" class="legsperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_legs_armorperk_3">
-                        <div class="legsperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_legs_armorperk_3"></button>
-                    </div>
-                </div>
-                <div class="feetrow equiprow">
-                    <img src="../lyshineui/images/equipment/iconfeet.png" alt="" class="feetslot imgslot">
-                    <div class="feetgem_button button">
-                        <input type="image" class="feetgem gemslot gemicon bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png">
-                        <div class="feetgem_list_div list_div" list-div></div>
-                    </div>
-                    <div class="feetperk_button button" id="feet_armorperk_1">
-                        <input type="image" class="feetperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_feet_armorperk_1">
-                        <div class="feetperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_feet_armorperk_1"></button>
-                    </div>
-                    <div class="feetperk_button button" id="feet_armorperk_2">
-                        <input type="image" class="feetperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_feet_armorperk_2">
-                        <div class="feetperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_feet_armorperk_2"></button>
-                    </div>
-                    <div class="feetperk_button button" id="feet_armorperk_3">
-                        <input type="image" class="feetperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_feet_armorperk_3">
-                        <div class="feetperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_feet_armorperk_3"></button>
-                    </div>
-                </div>
-                <div class="amuletrow equiprow">
-                    <img src="../lyshineui/images/equipment/iconamulet.png" alt="" class="amuletslot imgslot">
-                    <div class="amuletgem_button button">
-                        <input type="image" class="amuletgem gemslot gemicon bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png">
-                        <div class="amuletgem_list_div list_div" list-div></div>
-                    </div>
-                    <div class="amuletperk_button button" id="amulet_armorperk_1">
-                        <input type="image" class="amuletperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_amulet_armorperk_1">
-                        <div class="amuletperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_amulet_armorperk_1"></button>
-                    </div>
-                    <div class="amuletperk_button button" id="amulet_armorperk_2">
-                        <input type="image" class="amuletperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_amulet_armorperk_2">
-                        <div class="amuletperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_amulet_armorperk_2"></button>
-                    </div>
-                    <div class="amuletperk_button button" id="amulet_armorperk_3">
-                        <input type="image" class="amuletperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_amulet_armorperk_3">
-                        <div class="amuletperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_amulet_armorperk_3"></button>
-                    </div>
-                </div>
-                <div class="ringrow equiprow">
-                    <img src="../lyshineui/images/equipment/iconring.png" alt="" class="ringslot imgslot">
-                    <div class="ringgem_button button">
-                        <input type="image" class="ringgem gemslot gemicon bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png">
-                        <div class="ringgem_list_div list_div" list-div></div>
-                    </div>
-                    <div class="ringperk_button button" id="ring_armorperk_1">
-                        <input type="image" class="ringperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_ring_armorperk_1">
-                        <div class="ringperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_ring_armorperk_1"></button>
-                    </div>
-                    <div class="ringperk_button button" id="ring_armorperk_2">
-                        <input type="image" class="ringperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_ring_armorperk_2">
-                        <div class="ringperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_ring_armorperk_2"></button>
-                    </div>
-                    <div class="ringperk_button button" id="ring_armorperk_3">
-                        <input type="image" class="ringperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_ring_armorperk_3">
-                        <div class="ringperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_ring_armorperk_3"></button>
-                    </div>
-                </div>
-                <div class="earringrow equiprow">
-                    <img src="../lyshineui/images/equipment/icontoken.png" alt="" class="earringslot imgslot">
-                    <div class="earringgem_button button">
-                        <input type="image" class="earringgem gemslot gemicon bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png">
-                        <div class="earringgem_list_div list_div" list-div></div>
-                    </div>
-                    <div class="earringperk_button button" id="earring_armorperk_1">
-                        <input type="image" class="earringperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_earring_armorperk_1">
-                        <div class="earringperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_earring_armorperk_1"></button>
-                    </div>
-                    <div class="earringperk_button button" id="earring_armorperk_2">
-                        <input type="image" class="earringperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_earring_armorperk_2">
-                        <div class="earringperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_earring_armorperk_2"></button>
-                    </div>
-                    <div class="earringperk_button button" id="earring_armorperk_3">
-                        <input type="image" class="earringperk perkslot bttn perks" src="../lyshineui/images/crafting/crafting_gemslot.png" id="bttn_earring_armorperk_3">
-                        <div class="earringperk_list_div list_div" list-div></div>
-                        <button class="removebttn bts" id="remove_head_armorperk_1" for="bttn_earring_armorperk_3"></button>
-                    </div>
-                </div>
-
+                </template>
             </div>
 
         </div>
@@ -355,11 +221,10 @@
             </div>
         </div>
 
-
         <div class="footer">
         </div>
     </div>
-    <script type="module" src="./js/main.js"></script>
+
 </body>
 
 </html>

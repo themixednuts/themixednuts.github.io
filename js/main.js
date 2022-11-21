@@ -194,13 +194,41 @@ const categoryIdMap = {
 
 const qSelector = (key) => document.querySelector(key)
 const qSelectorAll = (key) => document.querySelectorAll(key)
+const equipmentSlots = ["head", "chest", "hands", "legs", "feet", "amulet", "ring", "earring"]
+
+
+let template = qSelector("#equipmentTemplate").content
+equipmentSlots.forEach(slot => {
+    qSelector(".playerequip_container").appendChild(template.cloneNode(true))
+    qSelector(".temprow").classList.replace("temprow", `${slot}row`)
+    qSelector(".tempslot").setAttribute("src", `../lyshineui/images/equipment/icon${slot.replace("hands", "hand").replace("earring", "token")}.png`)
+    qSelector(".tempslot").classList.replace("tempslot", `${slot}slot`)
+    qSelector(".tempgem_button").classList.replace("tempgem_button", `${slot}gem_button`)
+    qSelectorAll(".tempperk_button").forEach(item => {
+        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+        item.classList.replace("tempperk_button", `${slot}gem_button`)
+
+    })
+    qSelectorAll(".tempgem").forEach(item => item.classList.replace("tempgem", `${slot}gem`))
+    qSelectorAll(".tempgem_list_div").forEach(item => item.classList.replace("tempgem_list_div", `${slot}gem_list_div`))
+    qSelectorAll(".tempperk").forEach(item => {
+        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+        item.classList.replace("tempperk", `${slot}perk`)
+    })
+    qSelectorAll(".removebttn").forEach(item => {
+        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+        item.setAttribute("for", item.getAttribute("for").replace("temp", slot))
+    })
+
+    qSelectorAll(".tempperk_list_div").forEach(item => item.classList.replace("tempperk_list_div", `${slot}perk_list_div`))
+
+})
 
 const iconAbility = "lyshineui/images/icons/abilities"
 const masteryIcon = "lyshineui/images/skills/mastery"
 
 let attrdefMAP = {}
 let attrdefAbilityMAP = {}
-const weaponItemDefinition = await loadWeaponItemDefinition()
 const attributeDefinitions = {}
 for (const attributeKey of Object.keys(ATTRIBUTES)) {
     attrdefMAP[ATTRIBUTES[attributeKey]] = {}
@@ -212,6 +240,11 @@ for (const attributeKey of Object.keys(ATTRIBUTES)) {
         attrdefAbilityMAP[ATTRIBUTES[attributeKey]][attributeDefinitions[attributeKey][key].EquipAbilities] = attributeDefinitions[attributeKey][key]
     }
 }
+
+let wepItemDefMAP = {}
+const weaponItemDefinition = await loadWeaponItemDefinition()
+for (const def of Object.values(weaponItemDefinition))
+    wepItemDefMAP[def.WeaponID.toLowerCase()] = def
 
 
 
@@ -227,7 +260,9 @@ let itemPerkNameMAP = {}
 let itemEquipAbilityMAP = {}
 let itemAffixMAP = {}
 
-new Array("head", "chest", "hands", "legs", "feet", "amulet", "ring", "earring").forEach(slot => {
+
+
+equipmentSlots.forEach(slot => {
     for (const num of Object.values([1, 2, 3])) {
         qSelectorAll(`#${slot}_armorperk_${num}`).forEach(button => button.appendChild(createItem("span", "", { class: "icon__button", id: `${slot}_icon__button`, width: "24", height: "24" })))
         qSelectorAll(`#${slot}_armorperk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablebg.png", class: "icon__button__bg", width: "24", height: "24", id: `${slot}_icon__button__bg` })))
@@ -258,6 +293,7 @@ for (let perks of Object.values(itemPerks)) {
 
 const wepAbilityTable = {}
 const attkToDamageID = await loadAttkToDamageID()
+let currentWeaponDamageMAP = {}
 
 const globalAbilityData = await loadGlobalAbilityData()
 let globalAbilityMAP = {}
@@ -315,7 +351,7 @@ let attributeAbilityMAP = {}
 for (let ability of Object.values(attributeAbilityTable))
     attributeAbilityMAP[ability.AbilityID] = ability
 
-let abilityName = {}
+let activeWeaponAbilities = {}
 let equippedDamageIDMap = {}
 
 let damageCategoryMAP = {}
@@ -448,13 +484,14 @@ async function loadWeaponData() {
     wepAbilityMAP = {}
     wepSpellDataMAP = {}
     equippedDamageIDMap = {}
+    currentWeaponDamageMAP = {}
     const abilityTreeID_0 = qSelector(".abilitytreeid_0")
     const abilityTreeID_1 = qSelector(".abilitytreeid_1")
 
 
     selectedWeapon = document.getElementById("weapon").value;
-    weaponData = weaponItemDefinition.find(item => item.WeaponID === selectedWeapon)
-    abilityName = attkToDamageID.find(item => item.WeaponID === selectedWeapon)
+    weaponData = wepItemDefMAP[selectedWeapon.toLowerCase()]
+    activeWeaponAbilities = attkToDamageID.find(item => item.WeaponID === selectedWeapon)
     selectedWeaponText = document.getElementById("weapon").options[document.getElementById("weapon").selectedIndex].text
     weaponStatusEffectTable = await loadWepStatusEffectTable(STATUSEFFECTS[selectedWeapon])
     for (let status of Object.values(weaponStatusEffectTable))
@@ -589,22 +626,26 @@ async function loadWeaponData() {
         qSelector(".dot_damage_bars").removeChild(qSelector(".dot_damage_bars").lastChild)
 
 
-    for (const key of Object.keys(abilityName)) {
+    for (const key of Object.keys(activeWeaponAbilities)) {
         if (key != 'WeaponID') {
 
             //set AttackName to respective div.textcontent
-            equippedDamageIDMap[key] = Object.values(abilityName[key])[0]
+            equippedDamageIDMap[key] = Object.values(activeWeaponAbilities[key])[0]
 
             if (!equippedDamageIDMap[key])
                 continue
 
             if (equippedDamageIDMap[key]) {
-                let findDamageType
 
-                if (getStatusEffectProp("DamageType")[equippedDamageIDMap[key]])
-                    findDamageType = getStatusEffectProp("DamageType")[equippedDamageIDMap[key]]
-                else
-                    findDamageType = getDamageTableProp("DamageType")[equippedDamageIDMap[key]]
+                if (wepStatusEffectMAP[equippedDamageIDMap[key].toUpperCase()])
+                    currentWeaponDamageMAP[equippedDamageIDMap[key]] = wepStatusEffectMAP[equippedDamageIDMap[key].toUpperCase()]
+                if (damageTableMAP[equippedDamageIDMap[key].toUpperCase()])
+                    currentWeaponDamageMAP[equippedDamageIDMap[key]] = damageTableMAP[equippedDamageIDMap[key].toUpperCase()]
+
+
+                let findDamageType = currentWeaponDamageMAP[equippedDamageIDMap[key]].DamageType
+
+
 
 
 
@@ -626,19 +667,19 @@ async function loadWeaponData() {
                 ]
 
                 if (key == "light_attack" || key == "heavy_attack" || key == "charged_heavy" || key == "special_attack") {
-                    qSelector(".standard_damage_bars").appendChild(createItem("div", ``, { id: key, value: Object.values(abilityName[key])[0], class: "bar_container" }))
+                    qSelector(".standard_damage_bars").appendChild(createItem("div", ``, { id: key, value: Object.values(activeWeaponAbilities[key])[0], class: "bar_container" }))
                 }
 
                 if (new RegExp("ability").test(key)) {
-                    qSelector(".ability_damage_bars").appendChild(createItem("div", ``, { id: key, value: Object.values(abilityName[key])[0], class: "bar_container" }))
+                    qSelector(".ability_damage_bars").appendChild(createItem("div", ``, { id: key, value: Object.values(activeWeaponAbilities[key])[0], class: "bar_container" }))
                 }
 
                 if (new RegExp("dot").test(key)) {
-                    qSelector(".dot_damage_bars").appendChild(createItem("div", ``, { id: key, value: Object.values(abilityName[key])[0], class: "bar_container" }))
+                    qSelector(".dot_damage_bars").appendChild(createItem("div", ``, { id: key, value: Object.values(activeWeaponAbilities[key])[0], class: "bar_container" }))
                 }
                 appendBars.forEach(x => qSelector(`#${key}`).appendChild(x))
-                qSelector(`#${key}_normal`).appendChild(createItem("div", `${Object.keys(abilityName[key])[0]}`, { class: `${key}_label label` }))
-                qSelector(`#${key}`).appendChild(createItem("div", `${Object.keys(abilityName[key])[0]}`, { class: `${key}_label_after label after` }))
+                qSelector(`#${key}_normal`).appendChild(createItem("div", `${Object.keys(activeWeaponAbilities[key])[0]}`, { class: `${key}_label label` }))
+                qSelector(`#${key}`).appendChild(createItem("div", `${Object.keys(activeWeaponAbilities[key])[0]}`, { class: `${key}_label_after label after` }))
                 qSelector(`#${key}_normal`).appendChild(createItem("div", "", { id: `${key}_normal_gem`, class: "normal gem_bar" }),)
             }
         }
@@ -686,18 +727,18 @@ async function loadWeaponData() {
 
 const conditionalChecks = (damageID, ability) => {
 
-    if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(getDamageTableProp("IsRanged")[damageID]))
-        && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(getDamageTableProp("IsRanged")[damageID]))
-        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(getDamageTableProp("DamageID")[damageID]))
-        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(getDamageTableProp("DamageID")[damageID]))
-        && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(getDamageTableProp("AttackType")[damageID]))
-        && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(getDamageTableProp("DamageType")[damageID]))
+    if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(currentWeaponDamageMAP[damageID].IsRanged))
+        && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(currentWeaponDamageMAP[damageID].IsRanged))
+        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].DamageID))
+        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].DamageID))
+        && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].AttackType))
+        && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].DamageType))
         && (!ability.TargetStatusEffectCategory || new RegExp(ability.TargetStatusEffectCategory.replace(/,/g, "|"), "gi").test(qSelector("#debuff_target").value))
         && (!ability.TargetHealthPercent || _is[ability.TargetComparisonType](targetHP.value, ability.TargetHealthPercent))
-        && (!ability.DamageCategory || ability.DamageCategory == findDamageCategory(damageID))
+        && (!ability.DamageCategory || ability.DamageCategory == findDamageCategory()[damageID])
         && (!ability.DMGVitalsCategory || new RegExp(ability.DMGVitalsCategory.split("=")[0]).test(selectedVitals.VitalsCategories))
         && (!ability.StatusEffect || ability.StatusEffect == qSelector(".player_statuseffects_select").value)
-        && (!ability.RequireReaction || ability.RequireReaction != getDamageTableProp("NoReaction")[damageID]))
+        && (!ability.RequireReaction || ability.RequireReaction != currentWeaponDamageMAP[damageID].NoReaction))
         return true
     else
         return false
@@ -1312,10 +1353,6 @@ const checkCondition = (abilityID) => {
             selectedAffixMAP[affix.StatusID] = affix
     }
 
-
-
-
-
     return {
         affixSelf: affixSelfMods,
         modsSelf: selfMods,
@@ -1349,40 +1386,7 @@ const armorMitigation = () => {
     }
 }
 
-const getDamageTableProp = (dmgkey) => {
 
-    let keyValues = {}
-
-    for (const damageid of Object.values(equippedDamageIDMap)) {
-        if (!damageid)
-            continue;
-
-        const damageInfo = damageTableMAP[damageid.toUpperCase()]
-        if (damageInfo)
-            keyValues[damageid] = damageInfo[dmgkey]
-
-    }
-
-    return keyValues
-}
-
-const getStatusEffectProp = (statusProp) => {
-
-    let keyValues = {}
-
-    for (const damageid of Object.values(equippedDamageIDMap)) {
-
-        if (!damageid)
-            continue;
-
-        const statusInfo = wepStatusEffectMAP[damageid.toUpperCase()]
-        if (statusInfo)
-            keyValues[damageid] = statusInfo[statusProp]
-
-    }
-
-    return keyValues
-}
 
 const getGSBasedDamage = () => weaponData.BaseDamage * (1.0112) ** (Math.floor((Math.min(500, Math.max(gearscore.value, 100)) - 100) / 5)) * (1 + 0.0112 * 0.6667) ** (Math.floor((Math.max(gearscore.value, 500) - 500) / 5));
 
@@ -1392,21 +1396,22 @@ const getStatScaling = () => {
     activeSelfAttributeAbility = []
     let statSum = 0;
     let affixStatSum = 0
-    if (self.affixSelf[equippedDamageIDMap.light_attack]) {
-        for (const attributeKey of Object.keys(ATTRIBUTES)) {
-            const tmpAttributeScaling = weaponData[`Scaling${ATTRIBUTES[attributeKey]}`]
-            const affixScaling = self.affixSelf[equippedDamageIDMap.light_attack][`Scaling${ATTRIBUTES[attributeKey]}`]
-            ATTRTHREHOLDS.forEach(threshold => {
-                if (attributeDefinitions[attributeKey][STATS[attributeKey] - 5].Level >= threshold)
-                    attrdefMAP[ATTRIBUTES[attributeKey]][threshold].EquipAbilities.split(",").forEach(x => activeSelfAttributeAbility.push(attributeAbilityMAP[x]))
+    for (const attributeKey of Object.keys(ATTRIBUTES)) {
+        const tmpAttributeScaling = weaponData[`Scaling${ATTRIBUTES[attributeKey]}`]
+
+        ATTRTHREHOLDS.forEach(threshold => {
+            if (attributeDefinitions[attributeKey][STATS[attributeKey] - 5].Level >= threshold)
+                attrdefMAP[ATTRIBUTES[attributeKey]][threshold].EquipAbilities.split(",").forEach(x => activeSelfAttributeAbility.push(attributeAbilityMAP[x]))
 
 
-            })
+        })
 
-            if (tmpAttributeScaling > 0) {
-                statSum += tmpAttributeScaling * attributeDefinitions[attributeKey][STATS[attributeKey] - 5].ModifierValueSum;
-            }
+        if (tmpAttributeScaling > 0) {
+            statSum += tmpAttributeScaling * attributeDefinitions[attributeKey][STATS[attributeKey] - 5].ModifierValueSum;
+        }
 
+        if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix) {
+            const affixScaling = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()][`Scaling${ATTRIBUTES[attributeKey]}`]
             if (affixScaling > 0) {
                 affixStatSum += affixScaling * attributeDefinitions[attributeKey][STATS[attributeKey] - 5].ModifierValueSum;
             }
@@ -1419,25 +1424,22 @@ const getStatScaling = () => {
     }
 }
 
+let wepdmg
+let wepdmgsplit
 //get Weapon Damage based off initial Weapon Base Damage * (Stat Scaling + Level Scaling)
 const getWeaponDamage = (damageID) => {
-    let isStatusEffect = false
+    let affixSplit = 0
 
-    if (getStatusEffectProp("DamageType")[damageID]) {
-        isStatusEffect = true
+    if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix) {
+        affixSplit = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
     }
-    else
-        isStatusEffect = false
 
 
-    let statusCheck = 0
-    if (!isStatusEffect)
-        statusCheck = self.affixSelf[damageID].DamagePercentage
-
-    return {
-        nonsplit: getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling()) * (1 - statusCheck),
-        split: getGSBasedDamage() * (getStatScaling().split + getLevelScaling()) * statusCheck
+    if (affixSplit) {
+        wepdmg = getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling()) * (1 - affixSplit)
+        wepdmgsplit = getGSBasedDamage() * (getStatScaling().split + getLevelScaling()) * affixSplit
     }
+    else wepdmg = getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling())
 
 }
 
@@ -1608,63 +1610,47 @@ const replaceToken = (ability) => {
 }
 
 const findDamageCategory = (damageID) => {
-
-    if (damageCategoryMAP[getStatusEffectProp("DamageType")[damageID]])
-        return damageCategoryMAP[getStatusEffectProp("DamageType")[damageID]].Category
-    else
-        return damageCategoryMAP[getDamageTableProp("DamageType")[damageID]].Category
+    return damageCategoryMAP[currentWeaponDamageMAP[damageID].DamageType].Category
 
 }
 
 let isStatusEffect = false
-const finddmgtype = (damageID) => {
-    if (getStatusEffectProp("DamageType")[damageID]) {
-        isStatusEffect = true
-        return getStatusEffectProp("DamageType")[damageID]
-    }
-    else {
-        isStatusEffect = false
-        return getDamageTableProp("DamageType")[damageID]
-    }
-}
+
 
 
 const dmgcoeforhealtmod = (damageID) => {
-    if (getStatusEffectProp("HealthModifierDamageBased")[damageID])
-        return Math.abs(getStatusEffectProp("HealthModifierDamageBased")[damageID])
-    return getDamageTableProp("DmgCoef")[damageID]
+    if (currentWeaponDamageMAP[damageID].HealthModifierDamageBased) {
+        isStatusEffect = true
+        return Math.abs(currentWeaponDamageMAP[damageID].HealthModifierDamageBased)
+    }
+    else {
+        isStatusEffect = false
+        return currentWeaponDamageMAP[damageID].DmgCoef
+    }
 }
 
 function damageFormula(damageID) {
     let noGEM
     let GEM
-    let affixstat = self.affixSelf[equippedDamageIDMap.light_attack]
-    let findGem
+    let findGem = null
     let arrDMG = []
 
-    if (self.activeAffix[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()])
-        findGem = self.activeAffix[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()]
+    if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase())
+        findGem = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()]
 
-    function normalDamage(split) {
 
-        return getWeaponDamage(damageID)[split]
-            * dmgcoeforhealtmod(damageID)
-            * (1 + self.modsSelf[damageID].BaseDamage)
-
-    }
-
-    arrDMG[0] = (1 + self.modsSelf[damageID]["DMG" + finddmgtype(damageID)] + self.modsSelf[damageID].DMGVitalsCategory)
+    arrDMG[0] = (1 + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
-        * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
-    arrDMG[1] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + finddmgtype(damageID)] + self.modsSelf[damageID].DMGVitalsCategory)
+        * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
+    arrDMG[1] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
-        * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
-    arrDMG[2] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + finddmgtype(damageID)] + self.modsSelf[damageID].DMGVitalsCategory)
+        * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
+    arrDMG[2] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
-        * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
-    arrDMG[3] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + finddmgtype(damageID)] + self.modsSelf[damageID].DMGVitalsCategory)
+        * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
+    arrDMG[3] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
-        * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
+        * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
 
 
     if (findGem)
@@ -1680,14 +1666,19 @@ function damageFormula(damageID) {
                 * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
             arrDMG[8] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
                 * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
-                * (1 - self.modsOther[damageID]["ABS" + finddmgtype(damageID)])
+                * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
 
         }
 
 
-    noGEM = normalDamage("nonsplit")
-    GEM = normalDamage("split")
-    if (isStatusEffect || !GEM || !findGem.DamagePercentage)
+    noGEM = wepdmg
+        * dmgcoeforhealtmod(damageID)
+        * (1 + self.modsSelf[damageID].BaseDamage)
+    GEM = wepdmgsplit
+        * dmgcoeforhealtmod(damageID)
+        * (1 + self.modsSelf[damageID].BaseDamage)
+
+    if (isStatusEffect || !GEM || !findGem)
         GEM = 0
 
     return {
@@ -1708,37 +1699,38 @@ function damageFormula(damageID) {
 const getFinalDamage = () => {
     self = {}
     target = {}
+    getWeaponDamage()
     self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility))
 
-    getStatScaling()
+    console.log(activeWeaponAbilities)
 
 
     let findmaxDIV
     let maxDIV = {}
 
 
-    for (let [key, attack] of Object.entries(equippedDamageIDMap)) {
+    for (let [key, damageID] of Object.entries(equippedDamageIDMap)) {
 
-        if (!attack)
+        if (!damageID)
             continue
 
-        qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(attack).normal)
-        qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(attack).normal)
-        if (damageFormula(attack).normalGEM) {
-            qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(attack).normal + damageFormula(attack).normalGEM)
-            qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(attack).normal + damageFormula(attack).normalGEM)
+        qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal)
+        qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal)
+        if (damageFormula(damageID).normalGEM) {
+            qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal + damageFormula(damageID).normalGEM)
+            qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal + damageFormula(damageID).normalGEM)
             /* qSelector(`#${key}_normalGEM_span`).textContent = damageFormula(attack).normalGEM */
         }
 
-        if (getDamageTableProp("CanCrit")[attack] != false) {
-            qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(attack).crit)
-            qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(attack).crit)
+        if (currentWeaponDamageMAP[damageID].CanCrit != false) {
+            qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(damageID).crit)
+            qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(damageID).crit)
             qSelector(`#${key}_crit`).classList.add("show")
             qSelector(`#${key}_crit`).classList.remove("hide")
             qSelector(`#${key}_crit_span_after`).classList.remove("hide")
-            if (damageFormula(attack).critGEM) {
-                qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(attack).crit + damageFormula(attack).critGEM)
-                qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(attack).crit + damageFormula(attack).critGEM)
+            if (damageFormula(damageID).critGEM) {
+                qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(damageID).crit + damageFormula(damageID).critGEM)
+                qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(damageID).crit + damageFormula(damageID).critGEM)
             }
         }
         else {
@@ -1747,15 +1739,15 @@ const getFinalDamage = () => {
             qSelector(`#${key}_crit_span_after`).classList.add("hide")
         }
 
-        if (getDamageTableProp("NoBackstab")[attack] != true) {
-            qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(attack).backstab)
-            qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(attack).backstab)
+        if (currentWeaponDamageMAP[damageID].NoBackstab != true) {
+            qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(damageID).backstab)
+            qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(damageID).backstab)
             qSelector(`#${key}_backstab`).classList.add("show")
             qSelector(`#${key}_backstab`).classList.remove("hide")
             qSelector(`#${key}_backstab_span_after`).classList.remove("hide")
-            if (damageFormula(attack).backstabGEM) {
-                qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(attack).backstab + damageFormula(attack).backstabGEM)
-                qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(attack).backstab + damageFormula(attack).backstabGEM)
+            if (damageFormula(damageID).backstabGEM) {
+                qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(damageID).backstab + damageFormula(damageID).backstabGEM)
+                qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(damageID).backstab + damageFormula(damageID).backstabGEM)
             }
         }
         else {
@@ -1764,15 +1756,15 @@ const getFinalDamage = () => {
             qSelector(`#${key}_backstab_span_after`).classList.add("hide")
         }
 
-        if (getDamageTableProp("NoHeadshot")[attack] != true) {
-            qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(attack).headshot)
-            qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(attack).headshot)
+        if (currentWeaponDamageMAP[damageID].NoHeadshot != true) {
+            qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(damageID).headshot)
+            qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(damageID).headshot)
             qSelector(`#${key}_headshot`).classList.add("show")
             qSelector(`#${key}_headshot`).classList.remove("hide")
             qSelector(`#${key}_headshot_span_after`).classList.remove("hide")
-            if (damageFormula(attack).headshotGEM) {
-                qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(attack).headshot + damageFormula(attack).headshotGEM)
-                qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(attack).headshot + damageFormula(attack).headshotGEM)
+            if (damageFormula(damageID).headshotGEM) {
+                qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(damageID).headshot + damageFormula(damageID).headshotGEM)
+                qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(damageID).headshot + damageFormula(damageID).headshotGEM)
             }
         }
         else {
@@ -1784,28 +1776,28 @@ const getFinalDamage = () => {
 
 
         let maxDamage
-        maxDamage = Math.max(damageFormula(attack).normal, damageFormula(attack).crit, damageFormula(attack).backstab, damageFormula(attack).headshot)
-        if (damageFormula(attack).normalGEM)
-            maxDamage = Math.max(damageFormula(attack).normal + damageFormula(attack).normalGEM, damageFormula(attack).crit + damageFormula(attack).critGEM, damageFormula(attack).backstab + damageFormula(attack).backstabGEM, damageFormula(attack).headshot + damageFormula(attack).headshotGEM)
-        maxDIV[attack] = maxDamage
+        maxDamage = Math.max(damageFormula(damageID).normal, damageFormula(damageID).crit, damageFormula(damageID).backstab, damageFormula(damageID).headshot)
+        if (damageFormula(damageID).normalGEM)
+            maxDamage = Math.max(damageFormula(damageID).normal + damageFormula(damageID).normalGEM, damageFormula(damageID).crit + damageFormula(damageID).critGEM, damageFormula(damageID).backstab + damageFormula(damageID).backstabGEM, damageFormula(damageID).headshot + damageFormula(damageID).headshotGEM)
+        maxDIV[damageID] = maxDamage
 
         function isGEM(prop) {
-            if (damageFormula(attack)[prop])
-                return damageFormula(attack)[prop]
+            if (damageFormula(damageID)[prop])
+                return damageFormula(damageID)[prop]
             return 0
         }
 
-        qSelector(`#${key}_normal`).style.width = (damageFormula(attack).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
-        qSelector(`#${key}_crit`).style.width = (damageFormula(attack).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_backstab`).style.width = (damageFormula(attack).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_headshot`).style.width = (damageFormula(attack).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_normal_span`).style.width = (damageFormula(attack).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
-        qSelector(`#${key}_crit_span`).style.width = (damageFormula(attack).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_backstab_span`).style.width = (damageFormula(attack).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_headshot_span`).style.width = (damageFormula(attack).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_normal`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+        qSelector(`#${key}_crit`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_backstab`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_headshot`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_normal_span`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+        qSelector(`#${key}_crit_span`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_backstab_span`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        qSelector(`#${key}_headshot_span`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
         qSelector(`#${key}_normal_gem`).style.width = 0 + "%"
         if (isGEM("normalGEM"))
-            qSelector(`#${key}_normal_gem`).style.width = damageFormula(attack).normalGEM / (damageFormula(attack).normal + damageFormula(attack).normalGEM) * 100 + "% "
+            qSelector(`#${key}_normal_gem`).style.width = damageFormula(damageID).normalGEM / (damageFormula(damageID).normal + damageFormula(damageID).normalGEM) * 100 + "% "
 
 
     }
@@ -1861,39 +1853,7 @@ function debounced(delay, fn) {
 
 
 // Event Listeners Start
-document.getElementById("weapon").addEventListener("input", () => {
-    loadWeaponData()
-    qSelectorAll(".wep_addedperk").forEach(x => x.remove())
-});
 
-
-
-qSelector("#debuff_target").addEventListener("input", getFinalDamage)
-qSelector(".player_statuseffects_select").addEventListener("input", () => {
-    equipWepAbility()
-    getFinalDamage()
-})
-qSelectorAll(".perks").forEach(x => x.addEventListener("input", () => {
-    getItemEqiup()
-    getFinalDamage()
-
-}))
-
-gearscorevalue.addEventListener("change", (e) => {
-    if (e.target.value > 625) {
-        e.target.value = 625
-    }
-    if (e.target.value < 100) {
-        e.target.value = 100
-    }
-    let x = ((gearscorevalue.value - gearscore.min) * 100) / (gearscore.max - gearscore.min)
-    let color = `linear-gradient(90deg, rgb(117,252,117) ${(x)}%, rgb(214,214,214) ${(x)}%)`;
-    gearscore.style.background = color;
-    gearscore.value = gearscorevalue.value
-    gearscore.setAttribute("value", x)
-    gearscore.setAttribute("data-content", gearscore.value)
-    getFinalDamage()
-})
 const eventHandler = (event) => {
     let x = ((gearscore.value - gearscore.min) * 100) / (gearscore.max - gearscore.min)
     let color = `linear-gradient(90deg, rgb(117,252,117) ${(x)}%, rgb(214,214,214) ${(x)}%)`;
@@ -1905,129 +1865,7 @@ const eventHandler = (event) => {
     getFinalDamage()
 }
 
-const dHandler = debounced(.2, eventHandler)
-
-gearscore.addEventListener('input', dHandler)
-
-
-levelvalue.addEventListener('change', (e) => {
-    if (e.target.value > 60) {
-        e.target.value = 60
-    }
-    else if (e.target.value < 1) {
-        e.target.value = 1
-    }
-    else
-        getFinalDamage()
-})
-
-targetHP.addEventListener('change', function onCh(e) {
-    if (e.target.value > 100) {
-        e.target.value = 100
-    }
-
-    getFinalDamage()
-})
-
-
-for (const attributeKey of Object.keys(ATTRIBUTES)) {
-    const attr = document.getElementById(attributeKey.toLowerCase());
-    attr.addEventListener('change', (e) => {
-        const target = e.target;
-        if (target.value > 500) {
-            target.value = 500
-            STATS[target.id.toUpperCase()] = 500
-        }
-        if (target.value < 5) {
-            target.value = 5
-            STATS[target.id.toUpperCase()] = 5
-        }
-        STATS[target.id.toUpperCase()] = Math.max(Math.min(parseInt(target.value), 500), 5)
-        getFinalDamage();
-    })
-}
-
-
-new Array("keydown", "touchstart").forEach(type =>
-    window.addEventListener(type, function check(e) {
-        if (e.keyCode == 16) {
-            if (qSelector(".appended_ability_div_tooltip")) {
-                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("shift_key"))
-                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("shift_key"))
-                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("shift_key"))
-            }
-        }
-        if (e.keyCode == 17) {
-            if (qSelector(".appended_ability_div_tooltip")) {
-                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("ctrl_key"))
-                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("ctrl_key"))
-                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("ctrl_key"))
-            }
-        }
-
-    })
-)
-
-new Array("keyup", "touchend").forEach(type =>
-
-    window.addEventListener(type, function check(e) {
-        if (e.keyCode == 16) {
-            if (qSelector(".appended_ability_div_tooltip")) {
-                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("shift_key"))
-                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("shift_key"))
-                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("shift_key"))
-            }
-        }
-        if (e.keyCode == 17) {
-            if (qSelector(".appended_ability_div_tooltip")) {
-                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("ctrl_key"))
-                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("ctrl_key"))
-                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("ctrl_key"))
-            }
-        }
-
-    })
-)
-
-qSelectorAll(".armor_rating").forEach(item =>
-    item.addEventListener("change", (e) => {
-        getFinalDamage()
-    })
-)
-
-qSelector(".target_level_container").addEventListener("change", (e) => {
-
-    for (let vital of Object.values(vitals)) {
-        if (vital.DisplayName == qSelector("#targetvitals").value && vital.Level == qSelector(".target_level_container").value)
-            selectedVitals = vital
-    }
-    getFinalDamage()
-
-})
-
-qSelector("#targetvitals").addEventListener("change", (e) => {
-    console.log(e.target.value)
-    while (qSelector(".target_level_container").firstChild)
-        qSelector(".target_level_container").removeChild(qSelector(".target_level_container").lastChild)
-    for (let vital of Object.values(vitals)) {
-        if (vital.DisplayName == e.target.value)
-            qSelector(".target_level_container").appendChild(createItem("option", vital.Level, { class: "levelof_vital" }))
-        if ((vital.DisplayName == e.target.value && vital.Level == qSelector(".target_level_container").value))
-            selectedVitals = vital
-        if (e.target.value == "Player")
-            selectedVitals = vitalsNameMAP["Player"]
-    }
-    if (selectedVitals.VitalsID == "Player") {
-
-        qSelectorAll(".armor_rating").forEach(select => {
-            select.classList.add("show")
-            select.value = 0
-        })
-    }
-    else
-        qSelectorAll(".armor_rating").forEach(select => select.classList.remove("show"))
-    getFinalDamage()
-})
+const dHandler = debounced(.1, eventHandler)
 
 let interval
 let safetyStop = false
@@ -2053,8 +1891,185 @@ function up() {
     safetyStop = true
 }
 
+new Array("change").forEach(type => {
 
-["mousedown"].forEach(type => {
+    gearscorevalue.addEventListener(type, (e) => {
+        if (e.target.value > 625) {
+            e.target.value = 625
+        }
+        if (e.target.value < 100) {
+            e.target.value = 100
+        }
+        let x = ((gearscorevalue.value - gearscore.min) * 100) / (gearscore.max - gearscore.min)
+        let color = `linear-gradient(90deg, rgb(117,252,117) ${(x)}%, rgb(214,214,214) ${(x)}%)`;
+        gearscore.style.background = color;
+        gearscore.value = gearscorevalue.value
+        gearscore.setAttribute("value", x)
+        gearscore.setAttribute("data-content", gearscore.value)
+        getFinalDamage()
+    })
+
+    levelvalue.addEventListener(type, (e) => {
+        if (e.target.value > 60) {
+            e.target.value = 60
+        }
+        else if (e.target.value < 1) {
+            e.target.value = 1
+        }
+        else
+            getFinalDamage()
+    })
+
+    targetHP.addEventListener(type, function onCh(e) {
+        if (e.target.value > 100) {
+            e.target.value = 100
+        }
+
+        getFinalDamage()
+    })
+
+    for (const attributeKey of Object.keys(ATTRIBUTES)) {
+        const attr = document.getElementById(attributeKey.toLowerCase());
+        attr.addEventListener(type, (e) => {
+            const target = e.target;
+            if (target.value > 500) {
+                target.value = 500
+                STATS[target.id.toUpperCase()] = 500
+            }
+            if (target.value < 5) {
+                target.value = 5
+                STATS[target.id.toUpperCase()] = 5
+            }
+            STATS[target.id.toUpperCase()] = Math.max(Math.min(parseInt(target.value), 500), 5)
+            getFinalDamage();
+        })
+    }
+
+    qSelectorAll(".armor_rating").forEach(item =>
+        item.addEventListener(type, (e) => {
+            getFinalDamage()
+        })
+    )
+
+    qSelector(".target_level_container").addEventListener(type, (e) => {
+
+        for (let vital of Object.values(vitals)) {
+            if (vital.DisplayName == qSelector("#targetvitals").value && vital.Level == qSelector(".target_level_container").value)
+                selectedVitals = vital
+        }
+        getFinalDamage()
+
+    })
+
+    qSelector("#targetvitals").addEventListener(type, (e) => {
+
+        while (qSelector(".target_level_container").firstChild)
+            qSelector(".target_level_container").removeChild(qSelector(".target_level_container").lastChild)
+        for (let vital of Object.values(vitals)) {
+            if (vital.DisplayName == e.target.value)
+                qSelector(".target_level_container").appendChild(createItem("option", vital.Level, { class: "levelof_vital" }))
+            if ((vital.DisplayName == e.target.value && vital.Level == qSelector(".target_level_container").value))
+                selectedVitals = vital
+            if (e.target.value == "Player")
+                selectedVitals = vitalsNameMAP["Player"]
+        }
+        if (selectedVitals.VitalsID == "Player") {
+
+            qSelectorAll(".armor_rating").forEach(select => {
+                select.classList.add("show")
+                select.value = 0
+            })
+        }
+        else
+            qSelectorAll(".armor_rating").forEach(select => select.classList.remove("show"))
+        getFinalDamage()
+    })
+
+
+})
+
+
+new Array("keydown").forEach(type =>
+    window.addEventListener(type, function check(e) {
+        if (e.keyCode == 16) {
+            if (qSelector(".appended_ability_div_tooltip")) {
+                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("shift_key"))
+                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("shift_key"))
+                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("shift_key"))
+            }
+        }
+        if (e.keyCode == 17) {
+            if (qSelector(".appended_ability_div_tooltip")) {
+                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.add("ctrl_key"))
+                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.add("ctrl_key"))
+                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.add("ctrl_key"))
+            }
+        }
+
+        if (e.keyCode == 27) {
+            if (qSelector(".active_list"))
+                qSelector(".active_list").classList.remove("active_list")
+        }
+
+    })
+)
+
+new Array("keyup").forEach(type =>
+
+    window.addEventListener(type, function check(e) {
+        if (e.keyCode == 16) {
+            if (qSelector(".appended_ability_div_tooltip")) {
+                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("shift_key"))
+                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("shift_key"))
+                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("shift_key"))
+            }
+        }
+        if (e.keyCode == 17) {
+            if (qSelector(".appended_ability_div_tooltip")) {
+                qSelectorAll(".appended_ability_div_tooltip").forEach(div => div.classList.remove("ctrl_key"))
+                qSelectorAll(".appended_ability_div_tooltip_extra").forEach(div => div.classList.remove("ctrl_key"))
+                qSelectorAll(".appended_ability_div_tooltip_ctrl").forEach(div => div.classList.remove("ctrl_key"))
+            }
+        }
+
+    })
+)
+
+
+
+new Array("input").forEach(type => {
+
+    document.getElementById("weapon").addEventListener(type, () => {
+        loadWeaponData()
+        qSelectorAll(".wep_addedperk").forEach(x => x.remove())
+    });
+
+    qSelector("#debuff_target").addEventListener(type, getFinalDamage)
+
+    qSelector(".player_statuseffects_select").addEventListener(type, () => {
+        equipWepAbility()
+        getFinalDamage()
+    })
+
+    qSelectorAll(".perks").forEach(x => x.addEventListener(type, () => {
+        getItemEqiup()
+        getFinalDamage()
+
+    }))
+
+    gearscore.addEventListener(type, dHandler)
+
+    qSelectorAll(".search").forEach(search => search.addEventListener(type, (e) => {
+        const value = e.target.value.toLowerCase()
+        e.target.parentNode.querySelectorAll(".armorperk").forEach(perk => {
+            const isVisible = perk.textContent.toLowerCase().includes(value)
+            perk.classList.toggle("hide", !isVisible)
+        })
+    }))
+})
+
+
+new Array("mousedown").forEach(type => {
 
     qSelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
@@ -2084,29 +2099,30 @@ function up() {
     }))
 
     document.addEventListener(type, e => {
-
-        let currentDropdown = e.target.nextElementSibling
+        let currentDropdown = e.target.parentNode.querySelector(".list_container")
         const isDropdownButton = e.target.matches(".bttn")
-        if (!isDropdownButton)
-            qSelectorAll("[list-div].show").forEach(dropdown => {
-                dropdown.classList.remove("show")
+        const isDropdownListItem = e.target.matches(".addedperk")
+        if (!isDropdownButton && !isDropdownListItem && !e.target.matches(".list_container") && !e.target.matches(".search"))
+            qSelectorAll(".active_list").forEach(dropdown => {
                 dropdown.classList.remove("active_list")
             })
 
         if (isDropdownButton) {
-            currentDropdown.classList.toggle('show')
             currentDropdown.classList.toggle('active_list')
 
-            qSelectorAll("[list-div].show").forEach(dropdown => {
+            qSelectorAll("[list-div].active_list").forEach(dropdown => {
                 if (dropdown === currentDropdown) return
-                dropdown.classList.remove("show")
                 dropdown.classList.remove("active_list")
             })
         }
 
-        const isDropdownListItem = e.target.matches(".addedperk")
+
+
+
         if (isDropdownListItem) {
-            let parentDiv = e.target.parentNode.parentNode.children
+
+            let parentDiv = e.target.parentNode.parentNode.parentNode.children
+            console.log(parentDiv)
             parentDiv[0].value = itemPerkNameMAP[e.target.textContent].PerkID
             parentDiv[0].setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
 
@@ -2118,7 +2134,10 @@ function up() {
                 parentDiv[4].setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
             if (parentDiv[5])
                 parentDiv[5].setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
+
             parentDiv[0].dispatchEvent(new Event('input'))
+            parentDiv[1].classList.remove("active_list")
+
         }
 
         if (e.target.classList[0] == "removebttn") {
