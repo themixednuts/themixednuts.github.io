@@ -449,6 +449,20 @@ body {
 
 }
 
+.gem_bg{
+    position: relative;
+    display: block;
+    width: 42px;
+    height: 42px;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%); 
+    overflow: hidden;
+    border-radius: 50%;
+    border: 1px solid white;
+    background-color: #000000;
+}
+
 .tippy-box[data-theme~='ability-tooltip'] {
     position: relative;
     width: 400px;
@@ -978,9 +992,24 @@ option {
 
 .bttn,
 .gemslot {
+    position: relative;
+
+    overflow: hidden;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+}
+
+.bttn{
     width: 52px;
     height: 52px;
 }
+
+.gemslot{
+    width: 42px;
+    height: 42px;
+}
+
 
 .span {
     container-type: inline-size;

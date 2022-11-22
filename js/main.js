@@ -1133,7 +1133,7 @@ const checkCondition = (abilityID) => {
                             }
                         }
                         else {
-                                ifcapped()[prop].push((status[prop] * maxStack) || 0)
+                            ifcapped()[prop].push((status[prop] * maxStack) || 0)
                         }
                     }
                 }
@@ -1179,7 +1179,7 @@ const checkCondition = (abilityID) => {
                                 uncappedSelfStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID]) * maxStack)
                         }
                         else {
-                                uncappedSelfStatusProps[prop].push((status[prop] * maxStack) || 0)
+                            uncappedSelfStatusProps[prop].push((status[prop] * maxStack) || 0)
                         }
                     }
                 }
@@ -1232,8 +1232,8 @@ const checkCondition = (abilityID) => {
                             }
 
                         else {
-                                ifcapped()[prop].push((status[prop] * maxStack) || 0)
-                            
+                            ifcapped()[prop].push((status[prop] * maxStack) || 0)
+
                         }
                     }
                 }
@@ -1278,7 +1278,7 @@ const checkCondition = (abilityID) => {
                                 uncappedOtherStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID]) * maxStack)
                         }
                         else {
-                                uncappedOtherStatusProps[prop].push((status[prop] * maxStack) || 0)
+                            uncappedOtherStatusProps[prop].push((status[prop] * maxStack) || 0)
                         }
                     }
                 }
@@ -1424,8 +1424,8 @@ let wepdmgsplit
 //get Weapon Damage based off initial Weapon Base Damage * (Stat Scaling + Level Scaling)
 const getWeaponDamage = (damageID) => {
 
-        wepdmg = getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling())
-        wepdmgsplit = getGSBasedDamage() * (getStatScaling().split + getLevelScaling())
+    wepdmg = getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling())
+    wepdmgsplit = getGSBasedDamage() * (getStatScaling().split + getLevelScaling())
 
 }
 
@@ -2062,7 +2062,7 @@ new Array("input").forEach(type => {
 })
 
 qSelectorAll(".search").forEach(search => search.addEventListener("keydown", (e) => {
-    let parentDiv = e.target.parentNode.parentNode.children
+    let parentDiv = e.target.parentNode.parentNode
     if (e.keyCode == 13) {
         let value = e.target.value.toLowerCase()
         const target = e.target.parentNode.querySelector(".addedperk:not(.hide)")
@@ -2070,18 +2070,14 @@ qSelectorAll(".search").forEach(search => search.addEventListener("keydown", (e)
 
         if (target.textContent.toLowerCase().includes(value))
             input.setAttribute("value", target.textContent)
-        parentDiv[0].dispatchEvent(new Event('input'))
-        parentDiv[0].setAttribute('src', `../${itemPerkNameMAP[target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[target.textContent].PerkID}`)
 
-        if (parentDiv[2])
-            parentDiv[2].classList.add("show")
-        if (parentDiv[3])
-            parentDiv[3].setAttribute("for", itemPerkNameMAP[target.textContent].PerkID)
-        if (parentDiv[4])
-            parentDiv[4].setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_bg`)
-        if (parentDiv[5])
-            parentDiv[5].setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_border`)
-        parentDiv[1].classList.remove("active_list")
+        parentDiv.querySelector(".perks").dispatchEvent(new Event('input'))
+        parentDiv.querySelector(".perks").setAttribute('src', `../${itemPerkNameMAP[target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[target.textContent].PerkID}`)
+        parentDiv.querySelector(".removebttn").classList.add("show")
+        parentDiv.querySelector(".icon__button").setAttribute("for", itemPerkNameMAP[target.textContent].PerkID)
+        parentDiv.querySelector(".icon__button__bg").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_bg`)
+        parentDiv.querySelector(".icon__button__border").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_border`)
+        parentDiv.querySelector(".list_container").classList.remove("active_list")
         e.target.value = ""
         e.target.parentNode.querySelectorAll(".addedperk").forEach(perk => perk.classList.remove("hide"))
     }
@@ -2122,45 +2118,46 @@ new Array("mousedown").forEach(type => {
         let currentDropdown = e.target.parentNode.querySelector(".list_container")
         const isDropdownButton = e.target.matches(".bttn")
         const isDropdownListItem = e.target.matches(".addedperk")
+
         if (!isDropdownButton && !isDropdownListItem && !e.target.matches(".list_container") && !e.target.matches(".search"))
             qSelectorAll(".active_list").forEach(dropdown => {
                 dropdown.classList.remove("active_list")
             })
 
         if (isDropdownButton) {
-            currentDropdown.classList.toggle('active_list')
+            currentDropdown?.classList.toggle('active_list')
+            if (!currentDropdown)
+                e.target.parentNode.parentNode.querySelector(".list_container").classList.toggle('active_list')
 
             qSelectorAll(".active_list").forEach(dropdown => {
-                if (dropdown === currentDropdown) return
+                if (currentDropdown)
+                    if (dropdown === currentDropdown) return
+                if (!currentDropdown && e.target.parentNode.parentNode.querySelector(".list_container"))
+                    if (dropdown === e.target.parentNode.parentNode.querySelector(".list_container")) return
                 dropdown.classList.remove("active_list")
             })
         }
 
 
-
-
         if (isDropdownListItem) {
 
-            let parentDiv = e.target.parentNode.parentNode.parentNode.children
-            console.log(parentDiv)
-            parentDiv[0].value = itemPerkNameMAP[e.target.textContent].PerkID
-            parentDiv[0].setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
+            let parentDiv = e.target.parentNode.parentNode.parentNode
 
-            if (parentDiv[2])
-                parentDiv[2].classList.add("show")
-            if (parentDiv[3])
-                parentDiv[3].setAttribute("for", itemPerkNameMAP[e.target.textContent].PerkID)
-            if (parentDiv[4])
-                parentDiv[4].setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
-            if (parentDiv[5])
-                parentDiv[5].setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
-
-            parentDiv[0].dispatchEvent(new Event('input'))
-            parentDiv[1].classList.remove("active_list")
+            parentDiv.querySelector(".perks").value = itemPerkNameMAP[e.target.textContent].PerkID
+            parentDiv.querySelector(".perks").setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
+            parentDiv.querySelector(".removebttn").classList.add("show")
+            parentDiv.querySelector(".icon__button").setAttribute("for", itemPerkNameMAP[e.target.textContent].PerkID)
+            parentDiv.querySelector(".icon__button__bg").setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
+            parentDiv.querySelector(".icon__button__border").setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
+            parentDiv.querySelector(".perks").dispatchEvent(new Event('input'))
+            parentDiv.querySelector(".list_container").classList.remove("active_list")
 
         }
 
-        if (e.target.classList[0] == "removebttn") {
+
+
+        if (e.target.matches(".removebttn")) {
+            console.log(e.target.parentNode.parentNode)
             e.target.parentNode.querySelector(".icon__button").classList.remove("show")
             e.target.parentNode.querySelector(".icon__button").setAttribute("for", "")
             e.target.parentNode.querySelector(".icon__button__bg").classList.remove("show")
