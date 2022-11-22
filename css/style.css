@@ -449,6 +449,19 @@ body {
 
 }
 
+.tippy-box[data-theme~='ability-tooltip'] {
+    position: relative;
+    width: 400px;
+    height: fit-content;
+    top: 15%;
+    left: 50%;
+    background-color: black;
+    display: none;
+    padding: 10%;
+    transform: translateX(-50%);
+
+}
+
 .appended_ability_div_tooltip_extra {
     position: relative;
     width: 400px;

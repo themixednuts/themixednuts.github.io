@@ -102,12 +102,12 @@ const MODIFIERS = [
 ]
 
 const abilitydmgMap = {
-    "Ability_Greataxe_Charge": ["GreatAxe_Engage1"],
-    "Ability_Greataxe_Reap": ["GreatAxe_JudgementsReach"],
-    "Ability_Greataxe_Executioner": ["GreatAxe_Executioner"],
-    "Ability_Greataxe_Whirlwind": ["GreatAxe_Whirlwind"],
-    "Ability_Greataxe_GravityWell": ["GreatAxe_GravityWell"],
-    "Ability_Greataxe_Maelstorm": ["GreatAxe_Maelstrom"],
+    "Ability_Greataxe_Charge": "GreatAxe_Engage1",
+    "Ability_Greataxe_Reap": "GreatAxe_JudgementsReach",
+    "Ability_Greataxe_Executioner": "GreatAxe_Executioner",
+    "Ability_Greataxe_Whirlwind": "GreatAxe_Whirlwind",
+    "Ability_Greataxe_GravityWell": "GreatAxe_GravityWell",
+    "Ability_Greataxe_Maelstorm": "GreatAxe_Maelstrom",
 
     "Ability_Greatsword_DashAttack": ["Greatsword_DashAttack1", "Greatsword_DashAttack2"],
     "Ability_Greatsword_Combo": ["Greatsword_Combo1", "Greatsword_Combo2", "Greatsword_Combo3"],
@@ -626,6 +626,50 @@ async function loadWeaponData() {
         qSelector(".dot_damage_bars").removeChild(qSelector(".dot_damage_bars").lastChild)
 
 
+
+
+
+    qSelectorAll(".appended_ability_div").forEach(item => {
+        item.addEventListener("click", () => {
+            equipWepAbility()
+            getFinalDamage()
+        })
+    })
+
+    let a = 1
+
+    qSelectorAll(`.icon__button`).forEach(button => button.addEventListener("click", (e) => {
+        a++
+        if (a > e.target.getAttribute("value"))
+            a = 1
+        e.target.textContent = a
+        getFinalDamage()
+    }))
+
+    for (let [key, value] of Object.entries(ITEMCLASS)) {
+        if (key === selectedWeapon)
+            activeWepItemClass = value
+    }
+
+    itemPerks.forEach(x => {
+        if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(activeWepItemClass)) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(activeWepItemClass)))
+            itemWepPerkList.forEach(perk => {
+                perk.appendChild(createItem("option", x.DisplayName, { value: x.PerkID, class: "addedperk wep_addedperk" }))
+            })
+
+        if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(activeWepItemClass)) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(activeWepItemClass)))
+            weaponGem.appendChild(createItem("option", x.DisplayName, { value: x.PerkID, class: "addedperk wep_addedperk" }))
+
+    })
+
+    setWeaponDamageInfo()
+    getItemEqiup()
+    equipWepAbility()
+    getFinalDamage()
+}
+
+const setWeaponDamageInfo = () => {
+
     for (const key of Object.keys(activeWeaponAbilities)) {
         if (key != 'WeaponID') {
 
@@ -644,10 +688,6 @@ async function loadWeaponData() {
 
 
                 let findDamageType = currentWeaponDamageMAP[equippedDamageIDMap[key]].DamageType
-
-
-
-
 
                 let appendBars = [
                     createItem("div", "", { id: `${key}_normal`, class: "normal bar" }),
@@ -685,43 +725,7 @@ async function loadWeaponData() {
         }
     }
 
-
-    qSelectorAll(".appended_ability_div").forEach(item => {
-        item.addEventListener("click", () => {
-            equipWepAbility()
-            getFinalDamage()
-        })
-    })
-
-    let a = 1
-
-    qSelectorAll(`.icon__button`).forEach(button => button.addEventListener("click", (e) => {
-        a++
-        if (a > e.target.getAttribute("value"))
-            a = 1
-        e.target.textContent = a
-        getFinalDamage()
-    }))
-
-    for (let [key, value] of Object.entries(ITEMCLASS)) {
-        if (key === selectedWeapon)
-            activeWepItemClass = value
-    }
-
-    itemPerks.forEach(x => {
-        if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(activeWepItemClass)) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(activeWepItemClass)))
-            itemWepPerkList.forEach(perk => {
-                perk.appendChild(createItem("option", x.DisplayName, { value: x.PerkID, class: "addedperk wep_addedperk" }))
-            })
-
-        if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(activeWepItemClass)) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(activeWepItemClass)))
-            weaponGem.appendChild(createItem("option", x.DisplayName, { value: x.PerkID, class: "addedperk wep_addedperk" }))
-
-    })
-
-    getItemEqiup()
-    equipWepAbility()
-    getFinalDamage()
+    console.log(equippedDamageIDMap)
 }
 
 
@@ -735,7 +739,7 @@ const conditionalChecks = (damageID, ability) => {
         && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].DamageType))
         && (!ability.TargetStatusEffectCategory || new RegExp(ability.TargetStatusEffectCategory.replace(/,/g, "|"), "gi").test(qSelector("#debuff_target").value))
         && (!ability.TargetHealthPercent || _is[ability.TargetComparisonType](targetHP.value, ability.TargetHealthPercent))
-        && (!ability.DamageCategory || ability.DamageCategory == findDamageCategory()[damageID])
+        && (!ability.DamageCategory || ability.DamageCategory == findDamageCategory(damageID))
         && (!ability.DMGVitalsCategory || new RegExp(ability.DMGVitalsCategory.split("=")[0]).test(selectedVitals.VitalsCategories))
         && (!ability.StatusEffect || ability.StatusEffect == qSelector(".player_statuseffects_select").value)
         && (!ability.RequireReaction || ability.RequireReaction != currentWeaponDamageMAP[damageID].NoReaction))
@@ -1361,29 +1365,33 @@ const checkCondition = (abilityID) => {
     }
 }
 
+
+const armorMit = {
+    Physical: 0,
+    Elemental: 0
+}
+
 const armorMitigation = () => {
 
     let physRating = 0
     let eleRating = 0
-    let physmit = 0
-    let elemit = 0
+    armorMit.Physical = 0
+    armorMit.Elemental = 0
 
     if (selectedVitals.VitalsID != "Player") {
         physRating = Math.pow(selectedVitals.GearScoreOverride, 1.2) * selectedVitals.PhysicalMitigation / (1 - selectedVitals.PhysicalMitigation)
         eleRating = Math.pow(selectedVitals.GearScoreOverride, 1.2) * selectedVitals.ElementalMitigation / (1 - selectedVitals.ElementalMitigation)
-        physmit = Math.min(1 - 1 / (1 + Math.floor(physRating) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
-        elemit = Math.min(1 - 1 / (1 + Math.floor(eleRating) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+        armorMit.Physical = Math.min(1 - 1 / (1 + Math.floor(physRating) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+        armorMit.Elemental = Math.min(1 - 1 / (1 + Math.floor(eleRating) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
 
     }
 
     if (selectedVitals.VitalsID == "Player") {
-        physmit = Math.min(1 - 1 / (1 + Math.floor(qSelector("#phys_armorrating").value) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
-        elemit = Math.min(1 - 1 / (1 + Math.floor(qSelector("#ele_armorrating").value) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+        armorMit.Physical = Math.min(1 - 1 / (1 + Math.floor(qSelector("#phys_armorrating").value) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+        armorMit.Elemental = Math.min(1 - 1 / (1 + Math.floor(qSelector("#ele_armorrating").value) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
     }
-    return {
-        Physical: physmit,
-        Elemental: elemit
-    }
+
+    return
 }
 
 
@@ -1428,18 +1436,9 @@ let wepdmg
 let wepdmgsplit
 //get Weapon Damage based off initial Weapon Base Damage * (Stat Scaling + Level Scaling)
 const getWeaponDamage = (damageID) => {
-    let affixSplit = 0
 
-    if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix) {
-        affixSplit = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
-    }
-
-
-    if (affixSplit) {
-        wepdmg = getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling()) * (1 - affixSplit)
-        wepdmgsplit = getGSBasedDamage() * (getStatScaling().split + getLevelScaling()) * affixSplit
-    }
-    else wepdmg = getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling())
+        wepdmg = getGSBasedDamage() * (getStatScaling().nonsplit + getLevelScaling())
+        wepdmgsplit = getGSBasedDamage() * (getStatScaling().split + getLevelScaling())
 
 }
 
@@ -1634,49 +1633,57 @@ function damageFormula(damageID) {
     let GEM
     let findGem = null
     let arrDMG = []
+    let affixSplit = 0
+
+    if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix && !isStatusEffect) {
+        affixSplit = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
+    }
 
     if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase())
         findGem = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()]
 
+    noGEM = wepdmg
+        * dmgcoeforhealtmod(damageID)
+        * (1 + self.modsSelf[damageID].BaseDamage)
+        * (1 - affixSplit)
+    GEM = wepdmgsplit
+        * dmgcoeforhealtmod(damageID)
+        * (1 + self.modsSelf[damageID].BaseDamage)
+        * affixSplit
 
     arrDMG[0] = (1 + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-        * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
+        * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
         * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
     arrDMG[1] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-        * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
+        * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
         * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
     arrDMG[2] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-        * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
+        * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
         * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
     arrDMG[3] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-        * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
+        * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
         * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
 
 
-    if (findGem)
+    if (findGem && !isStatusEffect)
         if (findGem.DamagePercentage) {
             arrDMG[5] = (1 + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-                * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
+                * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
                 * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
             arrDMG[6] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-                * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
+                * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
                 * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
             arrDMG[7] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-                * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
+                * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
                 * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
             arrDMG[8] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-                * (1 - (armorMitigation()[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
+                * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
                 * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
 
         }
 
 
-    noGEM = wepdmg
-        * dmgcoeforhealtmod(damageID)
-        * (1 + self.modsSelf[damageID].BaseDamage)
-    GEM = wepdmgsplit
-        * dmgcoeforhealtmod(damageID)
-        * (1 + self.modsSelf[damageID].BaseDamage)
+
 
     if (isStatusEffect || !GEM || !findGem)
         GEM = 0
@@ -1699,10 +1706,9 @@ function damageFormula(damageID) {
 const getFinalDamage = () => {
     self = {}
     target = {}
+    armorMitigation()
     getWeaponDamage()
     self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility))
-
-    console.log(activeWeaponAbilities)
 
 
     let findmaxDIV
@@ -2061,12 +2067,39 @@ new Array("input").forEach(type => {
 
     qSelectorAll(".search").forEach(search => search.addEventListener(type, (e) => {
         const value = e.target.value.toLowerCase()
-        e.target.parentNode.querySelectorAll(".armorperk").forEach(perk => {
+        e.target.parentNode.querySelectorAll(".addedperk").forEach(perk => {
             const isVisible = perk.textContent.toLowerCase().includes(value)
             perk.classList.toggle("hide", !isVisible)
         })
     }))
 })
+
+qSelectorAll(".search").forEach(search => search.addEventListener("keydown", (e) => {
+    let parentDiv = e.target.parentNode.parentNode.children
+    if (e.keyCode == 13) {
+        let value = e.target.value.toLowerCase()
+        const target = e.target.parentNode.querySelector(".addedperk:not(.hide)")
+        const input = e.target.parentNode.parentNode.querySelector(".bttn")
+
+        if (target.textContent.toLowerCase().includes(value))
+            input.setAttribute("value", target.textContent)
+        parentDiv[0].dispatchEvent(new Event('input'))
+        parentDiv[0].setAttribute('src', `../${itemPerkNameMAP[target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[target.textContent].PerkID}`)
+
+        if (parentDiv[2])
+            parentDiv[2].classList.add("show")
+        if (parentDiv[3])
+            parentDiv[3].setAttribute("for", itemPerkNameMAP[target.textContent].PerkID)
+        if (parentDiv[4])
+            parentDiv[4].setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_bg`)
+        if (parentDiv[5])
+            parentDiv[5].setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_border`)
+        parentDiv[1].classList.remove("active_list")
+        e.target.value = ""
+        e.target.parentNode.querySelectorAll(".addedperk").forEach(perk => perk.classList.remove("hide"))
+    }
+}))
+
 
 
 new Array("mousedown").forEach(type => {
@@ -2110,7 +2143,7 @@ new Array("mousedown").forEach(type => {
         if (isDropdownButton) {
             currentDropdown.classList.toggle('active_list')
 
-            qSelectorAll("[list-div].active_list").forEach(dropdown => {
+            qSelectorAll(".active_list").forEach(dropdown => {
                 if (dropdown === currentDropdown) return
                 dropdown.classList.remove("active_list")
             })
