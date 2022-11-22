@@ -2145,10 +2145,10 @@ new Array("mousedown").forEach(type => {
 
             parentDiv.querySelector(".perks").value = itemPerkNameMAP[e.target.textContent].PerkID
             parentDiv.querySelector(".perks").setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
-            parentDiv.querySelector(".removebttn").classList.add("show")
-            parentDiv.querySelector(".icon__button").setAttribute("for", itemPerkNameMAP[e.target.textContent].PerkID)
-            parentDiv.querySelector(".icon__button__bg").setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
-            parentDiv.querySelector(".icon__button__border").setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
+            parentDiv.querySelector(".removebttn")?.classList.add("show")
+            parentDiv.querySelector(".icon__button")?.setAttribute("for", itemPerkNameMAP[e.target.textContent].PerkID)
+            parentDiv.querySelector(".icon__button__bg")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
+            parentDiv.querySelector(".icon__button__border")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
             parentDiv.querySelector(".perks").dispatchEvent(new Event('input'))
             parentDiv.querySelector(".list_container").classList.remove("active_list")
 
@@ -2163,7 +2163,7 @@ new Array("mousedown").forEach(type => {
             e.target.parentNode.querySelector(".icon__button__bg").classList.remove("show")
             e.target.parentNode.querySelector(".icon__button__border").classList.remove("show")
             qSelector(`#${e.target.getAttribute("for")}`).setAttribute("value", "")
-            qSelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_gemslot.png")
+            qSelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_perkbackground.png")
             e.target.classList.remove("show")
             getItemEqiup()
             getFinalDamage()
