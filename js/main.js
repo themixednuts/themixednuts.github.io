@@ -669,9 +669,11 @@ async function loadWeaponData() {
 }
 
 const setWeaponDamageInfo = () => {
-
+let activeAbilityMAP = {}
     for (const key of Object.keys(activeWeaponAbilities)) {
+
         if (key != 'WeaponID') {
+            activeAbilityMAP[Object.keys(activeWeaponAbilities[key])[0]] = activeWeaponAbilities[key]
 
             //set AttackName to respective div.textcontent
             equippedDamageIDMap[key] = Object.values(activeWeaponAbilities[key])[0]
@@ -724,7 +726,7 @@ const setWeaponDamageInfo = () => {
             }
         }
     }
-
+    console.log(activeAbilityMAP)
     console.log(equippedDamageIDMap)
 }
 
@@ -2085,7 +2087,7 @@ qSelectorAll(".search").forEach(search => search.addEventListener("keydown", (e)
 
 
 
-new Array("mousedown").forEach(type => {
+new Array("mousedown", "touchstart").forEach(type => {
 
     qSelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
