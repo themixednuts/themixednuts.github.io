@@ -1133,10 +1133,7 @@ const checkCondition = (abilityID) => {
                             }
                         }
                         else {
-                            if (!status[prop])
-                                ifcapped()[prop].push(0)
-                            else
-                                ifcapped()[prop].push(status[prop] * maxStack)
+                                ifcapped()[prop].push((status[prop] * maxStack) || 0)
                         }
                     }
                 }
@@ -1182,10 +1179,7 @@ const checkCondition = (abilityID) => {
                                 uncappedSelfStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID]) * maxStack)
                         }
                         else {
-                            if (!status[prop])
-                                uncappedSelfStatusProps[prop].push(0)
-                            else
-                                uncappedSelfStatusProps[prop].push(status[prop] * maxStack)
+                                uncappedSelfStatusProps[prop].push((status[prop] * maxStack) || 0)
                         }
                     }
                 }
@@ -1238,12 +1232,8 @@ const checkCondition = (abilityID) => {
                             }
 
                         else {
-                            if (!status[prop])
-                                ifcapped()[prop].push(0)
-                            else {
-                                /* console.log("Didnt Pass: ", status) */
-                                ifcapped()[prop].push(status[prop] * maxStack)
-                            }
+                                ifcapped()[prop].push((status[prop] * maxStack) || 0)
+                            
                         }
                     }
                 }
@@ -1288,10 +1278,7 @@ const checkCondition = (abilityID) => {
                                 uncappedOtherStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID]) * maxStack)
                         }
                         else {
-                            if (!status[prop])
-                                uncappedOtherStatusProps[prop].push(0)
-                            else
-                                uncappedOtherStatusProps[prop].push(status[prop] * maxStack)
+                                uncappedOtherStatusProps[prop].push((status[prop] * maxStack) || 0)
                         }
                     }
                 }
