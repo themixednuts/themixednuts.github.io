@@ -345,14 +345,14 @@ body {
 }
 
 .abilitytablecheckbox {
-    position: relative;
+    position: absolute;
+    display: block;
     z-index: 1;
     opacity: 0%;
-    height: 100%;
-    width: 100%;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
+    flex: 1 0 auto;
 }
 
 
@@ -422,10 +422,13 @@ body {
 
 .appended_ability_div {
     position: relative;
+    display: flex;
     max-width: 72px;
     min-width: 56px;
     max-height: 72px;
     min-height: 56px;
+    align-items: center;
+    justify-content: center;
     z-index: 1;
     top: 50%;
     left: 50%;
@@ -449,32 +452,26 @@ body {
 
 }
 
-.gem_bg{
+.gem_bg {
     position: relative;
     display: block;
     width: 42px;
     height: 42px;
     top: 50%;
     left: 50%;
-    transform: translateY(-50%) translateX(-50%); 
+    transform: translateY(-50%) translateX(-50%);
     overflow: hidden;
     border-radius: 50%;
     border: 1px solid white;
     background-color: #000000;
 }
 
-.tippy-box[data-theme~='ability-tooltip'] {
-    position: relative;
-    width: 400px;
-    height: fit-content;
-    top: 15%;
-    left: 50%;
-    background-color: black;
-    display: none;
-    padding: 10%;
-    transform: translateX(-50%);
 
+.tippy-box[data-theme~='ability-tooltip'] {
+    background-color: black;
+    overflow-wrap: break-word;
 }
+
 
 .appended_ability_div_tooltip_extra {
     position: relative;
@@ -488,6 +485,10 @@ body {
     transform: translateX(-50%);
     overflow-wrap: break-word;
 
+}
+
+.tippy-content {
+    white-space: pre-line;
 }
 
 .appended_ability_div_tooltip_ctrl {
@@ -630,6 +631,18 @@ body {
 
 .maxStack {
     z-index: 2;
+}
+
+input[type="checkbox"] {
+    position: absolute;
+    box-sizing: border-box;
+    display: block;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    padding: 0;
+    transform: translateY(-50%) translateX(-50%);
+    transform-origin: 0 0;
 }
 
 .icon {
@@ -957,7 +970,8 @@ option {
     background-position: 0 0;
     display: none;
 }
-.list_container{
+
+.list_container {
     position: absolute;
     top: calc(100% + .5rem);
     height: 15rem;
@@ -970,7 +984,7 @@ option {
     font-size: 1.5rem;
 }
 
-.search{
+.search {
     position: relative;
 }
 
@@ -1001,12 +1015,12 @@ option {
     transform: translateY(-50%) translateX(-50%);
 }
 
-.bttn{
+.bttn {
     width: 52px;
     height: 52px;
 }
 
-.gemslot{
+.gemslot {
     width: 42px;
     height: 42px;
 }
@@ -1107,7 +1121,7 @@ option {
     scale: 50%;
 }
 
-.translate25{
+.translate25 {
     transform: translateX(25%) translateY(-25%);
 }
 

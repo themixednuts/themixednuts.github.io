@@ -39,7 +39,7 @@
             "": ""
         },
         "dot1": {
-            "Barbed Netting": "Blunderbuss_BarbedNet"
+            "Barbed Netting DoT": "Blunderbuss_BarbedNet"
         },
         "dot2": {
             "Incendiary Bursts": "Blunderbuss_SplittingGrenade_Burn"
@@ -178,6 +178,12 @@
             "Special Attack": ""
         },
         "ability_attack1": {
+            "Charge": "GreatAxe_Engage1"
+        },
+        "ability_attack2": {
+            "Unpredicatable Strike": "GreatAxe_Engage_Swing3"
+        },
+        "ability_attack3": {
             "Maelstrom": "GreatAxe_Maelstrom",
             "Maelstrom Gravity": "GreatAxe_Maelstrom_RP2",
             "Storm's Reach": "GreatAxe_Maelstrom_Reach",
@@ -185,27 +191,20 @@
             "No Reprieve": "GreatAxe_Maelstrom_NoReprieve",
             "No Reprieve Gravity": "GreatAxe_Maelstrom_NoReprieve_RP2"
         },
-        "ability_attack2": {
-            "Whirlwind": "GreatAxe_Whirlwind"
-        },
-        "ability_attack3": {
-            "Charge": "GreatAxe_Engage1",
-            "Unpredicatable Strike": "GreatAxe_Engage_Swing3"
-        },
         "ability_attack4": {
             "Reap": "GreatAxe_JudgementsReach"
         },
         "ability_attack5": {
-            "Execute": "GreatAxe_Executioner"
+            "Whirlwind": "GreatAxe_Whirlwind"
         },
         "ability_attack6": {
-            "Gravity Well": "GreatAxe_GravityWell"
+            "Execute": "GreatAxe_Executioner"
         },
         "ability_attack7": {
-            "Gravity Burst": "GreatAxe_GravityWell_Burst"
+            "Gravity Well": "GreatAxe_GravityWell"
         },
         "ability_attack8": {
-            "": ""
+            "Gravity Burst": "GreatAxe_GravityWell_Burst"
         },
         "dot1": {
             "": ""
@@ -234,7 +233,6 @@
         "charged_heavy": {
             "Charged Heavy": "Hatchet_Damage_HeavyAttack_Charged"
         },
-      
         "ability_attack1": {
             "Feral Rush 1": "Hatchet_Damage_SprintAttack1"
         },
@@ -442,7 +440,6 @@
         "charged_heavy": {
             "Charged Heavy": "1H_Rapier_HeavyAttack_Charged"
         },
-        
         "ability_attack1": {
             "Tondo": "1H_Rapier_Slash"
         },
@@ -498,7 +495,7 @@
         },
         "ability_attack1": {
             "Javelin": "2H_Spear_Javelin",
-            "Forcefull Impact": "2H_Spear_Javelin_Knockback"
+            "Forceful Impact": "2H_Spear_Javelin_Knockback"
         },
         "ability_attack2": {
             "Skewer": "2H_Spear_Skewer_Stab"
@@ -691,7 +688,6 @@
             "": ""
         }
     },
-
     {
         "WeaponID": "2hGreatSwordT5",
         "light_attack": {
