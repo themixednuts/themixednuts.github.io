@@ -289,6 +289,33 @@ equipmentSlots.forEach(slot => {
 
 })
 
+equipmentSlots.forEach(slot => {
+    qSelector(".targetequip_container").appendChild(template.cloneNode(true))
+    qSelector(".targetequip_container").querySelector(".temprow").classList.replace("temprow", `${slot}row`)
+    qSelector(".targetequip_container").querySelector(".tempslot").setAttribute("src", `../lyshineui/images/equipment/icon${slot.replace("hands", "hand").replace("earring", "token")}.png`)
+    qSelector(".targetequip_container").querySelector(".tempslot").classList.replace("tempslot", `${slot}slot`)
+    qSelector(".targetequip_container").querySelector(".tempgem_button").classList.replace("tempgem_button", `${slot}gem_button`)
+    qSelector(".targetequip_container").querySelectorAll(".tempperk_button").forEach(item => {
+        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+        item.classList.replace("tempperk_button", `${slot}gem_button`)
+
+    })
+    qSelector(".targetequip_container").querySelectorAll('.perks').forEach(item => item.classList.replace("perks", "targetperks"))
+    qSelector(".targetequip_container").querySelectorAll(".tempgem").forEach(item => item.classList.replace("tempgem", `${slot}gem`))
+    qSelector(".targetequip_container").querySelectorAll(".tempgem_list_div").forEach(item => item.classList.replace("tempgem_list_div", `${slot}gem_list_div`))
+    qSelector(".targetequip_container").querySelectorAll(".tempperk").forEach(item => {
+        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+        item.classList.replace("tempperk", `${slot}perk`)
+    })
+    qSelector(".targetequip_container").querySelectorAll(".removebttn").forEach(item => {
+        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+        item.setAttribute("for", item.getAttribute("for").replace("temp", slot))
+    })
+
+    qSelector(".targetequip_container").querySelectorAll(".tempperk_list_div").forEach(item => item.classList.replace("tempperk_list_div", `${slot}perk_list_div`))
+
+})
+
 const iconAbility = "lyshineui/images/icons/abilities"
 const masteryIcon = "lyshineui/images/skills/mastery"
 
@@ -340,7 +367,7 @@ equipmentSlots.forEach(slot => {
         }
 
         if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot])))
-            qSelector(`.${slot}gem_list_div`).appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorgem" }))
+            qSelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorgem" })))
 
     })
 
@@ -417,6 +444,7 @@ const itemWepPerkList = qSelectorAll(".wepperks")
 const weaponGem = qSelector("#gemslot_select")
 
 let activeSelfItemPerks = []
+let activeTargetItemPerks = []
 let activeWepItemClass
 const attributeAbilityTable = await loadAttributeAbilityTable()
 let attributeAbilityMAP = {}
@@ -424,7 +452,7 @@ for (let ability of Object.values(attributeAbilityTable))
     attributeAbilityMAP[ability.AbilityID] = ability
 
 let activeWeaponAbilities = {}
-let equippedDamageIDMap = {}
+let selfDamageIDMap = {}
 
 let damageCategoryMAP = {}
 const damageCategory = await loadDamageTypes()
@@ -557,7 +585,7 @@ async function loadWeaponData() {
     wepStatusEffectMAP = {}
     wepAbilityMAP = {}
     wepSpellDataMAP = {}
-    equippedDamageIDMap = {}
+    selfDamageIDMap = {}
     currentWeaponDamageMAP = {}
     const abilityTreeID_0 = qSelector(".abilitytreeid_0")
     const abilityTreeID_1 = qSelector(".abilitytreeid_1")
@@ -720,25 +748,6 @@ async function loadWeaponData() {
 
     })
 
-
-
-    /* await tippy(`#${ability.AbilityID.toUpperCase()}_appended`, {
-        content: replaceToken(ability).extra,
-        allowHTML: true,
-        theme: "ability-tooltip_shift",
-        placement: 'bottom',
-        arrow: false,
-
-    })
-    await tippy(`#${ability.AbilityID.toUpperCase()}_appended`, {
-        content: replaceToken(ability).ctrl,
-        allowHTML: true,
-        theme: "ability-tooltip_ctrl",
-        placement: 'bottom',
-        arrow: false,
-
-
-    }) */
     abilityTippy = null
     getItemEqiup()
     equipWepAbility()
@@ -766,15 +775,18 @@ const setWeaponDamageInfo = () => {
 
         if (key != 'WeaponID') {
 
-            equippedDamageIDMap[key] = Object.values(activeWeaponAbilities[key])[0]
+            selfDamageIDMap[key] = Object.values(activeWeaponAbilities[key])[0]
             equippedDamageKey = Object.keys(activeWeaponAbilities[key])[0]
 
             for (const ability of Object.keys(abilitydmgMap)) {
                 checkedSelfAbility.forEach(checkedability => {
-                    if (checkedability?.AbilityID.toUpperCase() == ability.toUpperCase())
+
+                    if (!checkedability?.AbilityID)
+                        return
+                    if ((checkedability?.AbilityID?.toUpperCase() == ability.toUpperCase()) || false)
                         for (const attk of Object.keys(abilitydmgMap[ability])) {
                             if (activeWeaponAbilities[key].hasOwnProperty(attk)) {
-                                equippedDamageIDMap[key] = Object.values(activeWeaponAbilities[key])[Object.values(activeWeaponAbilities[key]).indexOf(abilitydmgMap[ability][attk])]
+                                selfDamageIDMap[key] = Object.values(activeWeaponAbilities[key])[Object.values(activeWeaponAbilities[key]).indexOf(abilitydmgMap[ability][attk])]
                                 equippedDamageKey = Object.keys(activeWeaponAbilities[key])[Object.keys(activeWeaponAbilities[key]).indexOf(attk)]
                             }
                         }
@@ -785,12 +797,12 @@ const setWeaponDamageInfo = () => {
 
             //set AttackName to respective div.textcontent
 
-            if (!equippedDamageIDMap[key])
+            if (!selfDamageIDMap[key])
                 continue
 
-            currentWeaponDamageMAP[equippedDamageIDMap[key]] = wepStatusEffectMAP[equippedDamageIDMap[key].toUpperCase()] || damageTableMAP[equippedDamageIDMap[key].toUpperCase()]
+            currentWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()] 
 
-            let findDamageType = currentWeaponDamageMAP[equippedDamageIDMap[key]].DamageType
+            let findDamageType = currentWeaponDamageMAP[selfDamageIDMap[key]].DamageType
 
             let appendBars = [
                 createItem("div", "", { id: `${key}_normal`, class: "normal bar" }),
@@ -810,15 +822,15 @@ const setWeaponDamageInfo = () => {
             ]
 
             if (key == "light_attack" || key == "heavy_attack" || key == "charged_heavy" || key == "special_attack") {
-                qSelector(".standard_damage_bars").appendChild(createItem("div", ``, { id: key, value: equippedDamageIDMap[key], class: "bar_container" }))
+                qSelector(".standard_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
 
             if (new RegExp("ability").test(key)) {
-                qSelector(".ability_damage_bars").appendChild(createItem("div", ``, { id: key, value: equippedDamageIDMap[key], class: "bar_container" }))
+                qSelector(".ability_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
 
             if (new RegExp("dot").test(key)) {
-                qSelector(".dot_damage_bars").appendChild(createItem("div", ``, { id: key, value: equippedDamageIDMap[key], class: "bar_container" }))
+                qSelector(".dot_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
             appendBars.forEach(x => qSelector(`#${key}`).appendChild(x))
             qSelector(`#${key}_normal`).appendChild(createItem("div", equippedDamageKey, { class: `${key}_label label` }))
@@ -860,6 +872,15 @@ const setDescription = () => {
 
 }
 
+let colorYellow = "#ffd34e"
+
+const changeTextColor = (text, color) => {
+
+    return `\u003cfont style=\"font-family: 'tooltipyellow-bold';\" face=\"/lyshineui/fonts/Nimbus_SemiBold.font\" color=\"${color}\"\u003e ${text}\u003c/font\u003e`
+
+}
+
+
 const setBarDescription = () => {
 
     dmgBarTippy?.forEach(instance => instance.destroy())
@@ -876,37 +897,36 @@ const setBarDescription = () => {
         let stunbreakout = ""
         let threatmulti = ""
         let attkrunecharge = ""
-        if (affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()]?.Affix.toUpperCase()]?.DamagePercentage && !isStatusEffect) {
-            gem = `Gem Split: ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normalGEM)}` + "\n"
+        if (affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()]?.Affix.toUpperCase()]?.DamagePercentage && damageTableMAP[instance.reference.getAttribute("value")?.toUpperCase()]) {
+            gem = `${changeTextColor("Gem Split:", colorYellow)} ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normalGEM)}` + "\n"
         }
-        console.log()
+
+
         if (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]) {
-            isStatusEffect = false
-            dmgCoef = "DmgCoef"
+            dmgCoef = `${changeTextColor("DmgCoef:", colorYellow)}`
             reaction = !damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoReaction
-            tickORattackType = "AttackType"
-            canCrit = `CanCrit: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.CanCrit != false}` + "\n"
-            noBackstab = `NoBackstab: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoBackstab == true}` + "\n"
-            noHeadshot = `NoHeadshot: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoHeadshot == true}` + "\n"
-            impacty = `ImpactDistanceY: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ImpactDistanceY}` + "\n"
-            stunbreakout = `StunBreakoutIncrement: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.StunBreakoutIncrement}` + "\n"
-            threatmulti = `ThreatMultiplier: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ThreatMultiplier}` + "\n"
-            attkrunecharge = `AttackRuneCharge: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackRuneCharge}` + "\n"
+            tickORattackType = `${changeTextColor("AttackType:", colorYellow)}`
+            canCrit = `${changeTextColor("CanCrit:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.CanCrit != false}` + "\n"
+            noBackstab = `${changeTextColor("NoBackstab:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoBackstab == true}` + "\n"
+            noHeadshot = `${changeTextColor("NoHeadshot:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoHeadshot == true}` + "\n"
+            impacty = `${changeTextColor("ImpactDistanceY:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ImpactDistanceY}` + "\n"
+            stunbreakout = `${changeTextColor("StunBreakoutIncrement:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.StunBreakoutIncrement}` + "\n"
+            threatmulti = `${changeTextColor("ThreatMultiplier:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ThreatMultiplier}` + "\n"
+            attkrunecharge = `${changeTextColor("AttackRuneCharge:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackRuneCharge}` + "\n"
         }
         else {
-            isStatusEffect = true
-            dmgCoef = "HealthModifierDamageBased"
+            dmgCoef = `${changeTextColor("HealthModifierDamageBased:", colorYellow)}`
             reaction = false
-            tickORattackType = "TickRate"
-            attkrunecharge = `SourceRuneChargeOnTick: ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.SourceRuneChargeOnTick}` + "\n"
+            tickORattackType = `${changeTextColor("TickRate:", colorYellow)}`
+            attkrunecharge = `${changeTextColor("SourceRuneChargeOnTick:", colorYellow)} ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.SourceRuneChargeOnTick}` + "\n"
         }
         instance.setContent(
-            `Normal: ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normal)}` + "\n" +
+            `${changeTextColor("Normal:", colorYellow)} ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normal)}` + "\n" +
             `${gem}` +
-            `${dmgCoef}: ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.HealthModifierDamageBased || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DmgCoef}` + "\n" +
-            `Reaction: ${reaction} ` + "\n" +
-            `${tickORattackType}: ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.TickRate || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackType}` + "\n" +
-            `DamageType: ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType}` + "\n" +
+            `${dmgCoef}: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DmgCoef || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.HealthModifierDamageBased}` + "\n" +
+            `${changeTextColor("Reaction:", colorYellow)} ${reaction} ` + "\n" +
+            `${tickORattackType} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackType || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.TickRate}` + "\n" +
+            `${changeTextColor("DamageType:", colorYellow)} ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType}` + "\n" +
             `${canCrit}` +
             `${noBackstab}` +
             `${noHeadshot}` +
@@ -914,12 +934,15 @@ const setBarDescription = () => {
             `${stunbreakout}` +
             `${threatmulti}` +
             `${attkrunecharge}` +
-            `BaseDamage: ${roundNumber(self.modsSelf[instance.reference.getAttribute("value")].BaseDamage * 100)}%` + "\n" +
-            `Empower: ${roundNumber((self.modsSelf[instance.reference.getAttribute("value")]["DMG" + (wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)] + self.modsSelf[instance.reference.getAttribute("value")].DMGVitalsCategory) * 100)}%` + "\n" +
-            `Rend: ${roundNumber((self.modsOther[instance.reference.getAttribute("value")]["ABS" + (wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)] + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%`
+            `${changeTextColor("BaseDamage:", colorYellow)} ${roundNumber(self.modsSelf[instance.reference.getAttribute("value")].BaseDamage * 100)}%` + "\n" +
+            `${changeTextColor("DMG:", colorYellow)} ${roundNumber((DMG(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)) + self.modsSelf[instance.reference.getAttribute("value")].DMGVitalsCategory) * 100)}%` + "\n" +
+            `${changeTextColor("ABS:", colorYellow)} ${roundNumber((ABS(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)) + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%`
         )
         instance.setProps({
-            placement: "top-start"
+            placement: "top-start",
+            followCursor: true,
+            allowHTML: true,
+            delay: [100, 0]
         })
     })
 }
@@ -952,7 +975,7 @@ const equipWepAbility = () => {
     for (const ability of Object.values(weaponAbilityTable)) {
 
         if (ability.TreeId != null && ability.DisplayName && !ability.UnlockDefault) {
-            checked = null
+
             checked = qSelector(`#${ability.AbilityID.toUpperCase()}_checkbox`).checked
 
             if (checked) {
@@ -984,9 +1007,11 @@ const equipWepAbility = () => {
                     checkedSelfAbility.push(ability)
 
             })
-            if (ability.StatusEffect) {
-                options.push(wepStatusEffectMAP[ability.StatusEffect.toUpperCase()])
-            }
+
+
+        }
+        if (ability.StatusEffect) {
+            options.push(wepStatusEffectMAP[ability.StatusEffect.toUpperCase()])
         }
     }
 
@@ -1007,7 +1032,7 @@ const equipWepAbility = () => {
 
 
 
-const checkCondition = (abilityID) => {
+const checkCondition = (abilityID, damageIDREFERENCE) => {
 
     if (abilityID) {
         if (abilityID.StatusID)
@@ -1036,6 +1061,10 @@ const checkCondition = (abilityID) => {
     let cappedOtherStatusEffects = []
     let uncappedSelfStatusEffects = []
     let uncappedOtherStatusEffects = []
+    let cappedSelfStatusMods = {}
+    let cappedOtherStatusMods = {}
+    let uncappedSelfStatusMods = {}
+    let uncappedOtherStatusMods = []
 
     let selectedAffix = []
     let selectedAffixMAP = {}
@@ -1047,7 +1076,7 @@ const checkCondition = (abilityID) => {
 
     let abilitySelfApplyMAP = {}
     let abilityOtherApplyMAP = {}
-    for (let [damagekey, damageID] of Object.entries(equippedDamageIDMap)) {
+    for (let [damagekey, damageID] of Object.entries(damageIDREFERENCE)) {
         if (!damageID)
             continue
 
@@ -1321,7 +1350,7 @@ const checkCondition = (abilityID) => {
                     if (!status[prop] || ((prop == 'DMGVitalsCategory' || prop == 'ABSVitalsCategory') && typeof status[prop] === "number"))
                         ifcapped()[prop].push(0)
                     else {
-                        if (itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID]) {
+                        if (itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID]?.AbilityID]) {
                             if (!itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID].ScalingPerGearScore) {
                                 ifcapped()[prop].push(status[prop] * maxStack)
                             }
@@ -1536,6 +1565,10 @@ const checkCondition = (abilityID) => {
         affixSelfMods[abilitydamageID] = affixSelfProps
         selfMods[abilitydamageID] = totalSelfProps
         otherMods[abilitydamageID] = statusOtherProps
+        cappedSelfStatusMods[abilitydamageID] = cappedSelfStatusProps
+        cappedOtherStatusMods[abilitydamageID] = cappedOtherStatusProps
+        uncappedSelfStatusMods[abilitydamageID] = uncappedSelfStatusProps
+        uncappedOtherStatusMods[abilitydamageID] = uncappedOtherStatusProps
 
         for (const affix of Object.values(selectedAffix[abilitydamageID]))
             selectedAffixMAP[affix.StatusID] = affix
@@ -1545,6 +1578,10 @@ const checkCondition = (abilityID) => {
         affixSelf: affixSelfMods,
         modsSelf: selfMods,
         modsOther: otherMods,
+        modsSelfCapped: cappedSelfStatusMods,
+        modsSelfUncapped: uncappedSelfStatusMods,
+        modsOtherCapped: cappedOtherStatusMods,
+        modsOtherUncapped: uncappedOtherStatusMods,
         activeAffix: selectedAffixMAP
     }
 }
@@ -1627,76 +1664,86 @@ const getWeaponDamage = (damageID) => {
 }
 
 const getItemEqiup = () => {
-
+    activeTargetItemPerks = []
     activeSelfItemPerks = []
-    let notstackable = []
+    let notstackableTarget = []
+    let notstackableSelf = []
     let hasStacks = false
     let stackMax
-    qSelectorAll(".perks").forEach(item => {
-        hasStacks = false
-        stackMax = null
 
-        if (itemPerkMAP[item.value.toUpperCase()]) {
-            if (itemPerkMAP[item.value.toUpperCase()].EquipAbility) {
-                itemPerkMAP[item.value.toUpperCase()].EquipAbility.split(",").forEach(ability => {
-                    if (!globalAbilityMAP[ability.toUpperCase()].IsStackableAbility)
-                        notstackable.push(globalAbilityMAP[ability.toUpperCase()])
-                    else activeSelfItemPerks.push(globalAbilityMAP[ability.toUpperCase()])
-
-                    if (globalAbilityMAP[ability.toUpperCase()].PerStatusEffectOnSelf) {
-                        hasStacks = true
-                        stackMax = globalAbilityMAP[ability.toUpperCase()].PerStatusEffectOnSelfMax
-
-                    }
-
-                    if (globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect) {
-                        if (perkStatusEffectMAP[globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect.toUpperCase()].StackMax > 1) {
-                            hasStacks = true
-                            stackMax = perkStatusEffectMAP[globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect.toUpperCase()].StackMax
-                        }
-                    }
-
-                })
-            }
-            if (itemPerkMAP[item.value.toUpperCase()].Affix) {
-                activeSelfItemPerks.push(affixDataMAP[itemPerkMAP[item.value.toUpperCase()].Affix.toUpperCase()])
-            }
+    new Array(".perks", ".targetperks").forEach(object => {
+        qSelectorAll(object).forEach(item => {
+            hasStacks = false
+            stackMax = null
+            let whichnonstackable = object == ".perks" ? notstackableSelf : notstackableTarget
+            let whichtargetItemPerks = object == ".perks" ? activeSelfItemPerks : activeTargetItemPerks
 
             if (itemPerkMAP[item.value.toUpperCase()]) {
-                let perkIcon = qSelectorAll(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`)
-                if (perkIcon[0]) {
-                    if (hasStacks) {
-                        for (const btn of Object.values(perkIcon)) {
-                            if (!btn.textContent)
-                                btn.textContent = 1
-                            btn.setAttribute("value", stackMax)
-                            btn.classList.add("show", "maxStack", "scale50")
-                            btn.parentNode.querySelector(".icon__button__bg").classList.add("show", "scale50", "translate25")
-                            btn.parentNode.querySelector(".icon__button__border").classList.add("show", "scale50", "translate25")
+                if (itemPerkMAP[item.value.toUpperCase()].EquipAbility) {
+                    itemPerkMAP[item.value.toUpperCase()].EquipAbility.split(",").forEach(ability => {
+                        if (!globalAbilityMAP[ability.toUpperCase()].IsStackableAbility) {
+                            whichnonstackable.push(globalAbilityMAP[ability.toUpperCase()])
+                        }
+                        else whichtargetItemPerks.push(globalAbilityMAP[ability.toUpperCase()])
+
+                        if (globalAbilityMAP[ability.toUpperCase()].PerStatusEffectOnSelf) {
+                            hasStacks = true
+                            stackMax = globalAbilityMAP[ability.toUpperCase()].PerStatusEffectOnSelfMax
+
+                        }
+
+                        if (globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect) {
+                            if (perkStatusEffectMAP[globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect.toUpperCase()].StackMax > 1) {
+                                hasStacks = true
+                                stackMax = perkStatusEffectMAP[globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect.toUpperCase()].StackMax
+                            }
+                        }
+
+                    })
+                }
+                if (itemPerkMAP[item.value.toUpperCase()].Affix) {
+                    whichtargetItemPerks.push(affixDataMAP[itemPerkMAP[item.value.toUpperCase()].Affix.toUpperCase()])
+                }
+
+                if (itemPerkMAP[item.value.toUpperCase()]) {
+                    let perkIcon = qSelectorAll(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`)
+                    if (perkIcon[0]) {
+                        if (hasStacks) {
+                            for (const btn of Object.values(perkIcon)) {
+                                if (!btn.textContent)
+                                    btn.textContent = 1
+                                btn.setAttribute("value", stackMax)
+                                btn.classList.add("show", "maxStack", "scale50")
+                                btn.parentNode.querySelector(".icon__button__bg").classList.add("show", "scale50", "translate25")
+                                btn.parentNode.querySelector(".icon__button__border").classList.add("show", "scale50", "translate25")
+                            }
+
+                        }
+                        else {
+                            qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`).classList.remove("show", "maxStack")
+                            qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`).textContent = 1
+                            qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}_bg]`).classList.remove("show")
+                            qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}_border]`).classList.remove("show")
                         }
 
                     }
-                    else {
-                        qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`).classList.remove("show", "maxStack")
-                        qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`).textContent = 1
-                        qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}_bg]`).classList.remove("show")
-                        qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}_border]`).classList.remove("show")
-                    }
-
                 }
+
+
             }
 
-
-        }
-
-
-
-
+        })
     })
 
-    notstackable = [...new Set(notstackable)]
-    activeSelfItemPerks = activeSelfItemPerks.concat(notstackable)
 
+
+    notstackableSelf = [...new Set(notstackableSelf)]
+    activeSelfItemPerks = activeSelfItemPerks.concat(notstackableSelf)
+    notstackableTarget = [...new Set(notstackableTarget)]
+    activeTargetItemPerks = activeTargetItemPerks.concat(notstackableSelf)
+
+    console.log(activeSelfItemPerks)
+    console.log(activeTargetItemPerks)
 }
 
 
@@ -1795,6 +1842,47 @@ const replaceToken = (ability) => {
 
 }
 
+const DMG = (damageID, damageType) => {
+    return (Math.min(Math.max(
+        self.modsSelfCapped[damageID]["DMG" + damageType]
+        + self.modsSelfUncapped[damageID]["DMG" + damageType]
+        + target.modsOtherCapped[damageID]["DMG" + damageType]
+        + target.modsOtherUncapped[damageID]["DMG" + damageType]
+        + self.affixSelf[damageID]["DMG" + damageType],
+        Math.min(
+            self.modsSelfUncapped[damageID]["DMG" + damageType]
+            + target.modsOtherUncapped[damageID]["DMG" + damageType]
+            + self.affixSelf[damageID]["DMG" + damageType],
+            -0.5)),
+        Math.max(
+            self.modsSelfUncapped[damageID]["DMG" + damageType]
+            + target.modsOtherUncapped[damageID]["DMG" + damageType]
+            + self.affixSelf[damageID]["DMG" + damageType],
+            0.5
+        )))
+}
+
+
+const ABS = (damageID, damageType) => {
+    return (Math.min(Math.max(
+        self.modsOtherCapped[damageID]["ABS" + damageType]
+        + self.modsOtherUncapped[damageID]["ABS" + damageType]
+        + target.modsSelfCapped[damageID]["ABS" + damageType]
+        + target.modsSelfUncapped[damageID]["ABS" + damageType]
+        + target.affixSelf[damageID]["ABS" + damageType],
+        Math.min(
+            self.modsOtherUncapped[damageID]["ABS" + damageType]
+            + target.modsSelfUncapped[damageID]["ABS" + damageType]
+            + target.affixSelf[damageID]["ABS" + damageType],
+            -0.3)),
+        Math.max(
+            self.modsOtherUncapped[damageID]["ABS" + damageType]
+            + target.modsSelfUncapped[damageID]["ABS" + damageType]
+            + target.affixSelf[damageID]["ABS" + damageType],
+            0.5
+        )))
+}
+
 const findDamageCategory = (damageID) => {
     return damageCategoryMAP[currentWeaponDamageMAP[damageID].DamageType].Category
 
@@ -1822,57 +1910,61 @@ function damageFormula(damageID) {
     let arrDMG = []
     let affixSplit = 0
 
-    if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix && !isStatusEffect) {
+    if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix && damageTableMAP[damageID?.toUpperCase()]) {
         affixSplit = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
     }
 
     if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase())
         findGem = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()]
 
+
+
+
     noGEM = wepdmg
         * dmgcoeforhealtmod(damageID)
         * (1 + self.modsSelf[damageID].BaseDamage)
+        * (1 - ABS(damageID, currentWeaponDamageMAP[damageID].DamageType))
         * (1 - affixSplit)
+        
     GEM = wepdmgsplit
         * dmgcoeforhealtmod(damageID)
         * (1 + self.modsSelf[damageID].BaseDamage)
+        * (1 - ABS(damageID, findGem?.DamageType))
         * affixSplit
 
-    arrDMG[0] = (1 + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+    arrDMG[0] = (1 + DMG(damageID, currentWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
-        * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
-    arrDMG[1] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+
+    arrDMG[1] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
-        * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
-    arrDMG[2] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+
+    arrDMG[2] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
-        * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
-    arrDMG[3] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + currentWeaponDamageMAP[damageID].DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
+
+    arrDMG[3] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
-        * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
 
 
-    if (findGem && !isStatusEffect)
-        if (findGem.DamagePercentage) {
-            arrDMG[5] = (1 + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-                * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
-                * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
-            arrDMG[6] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-                * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
-                * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
-            arrDMG[7] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-                * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
-                * (1 - self.modsOther[damageID]["ABS" + findGem.DamageType])
-            arrDMG[8] = (1 * weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage + self.modsSelf[damageID]["DMG" + findGem.DamageType] + self.modsSelf[damageID].DMGVitalsCategory)
-                * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
-                * (1 - self.modsOther[damageID]["ABS" + currentWeaponDamageMAP[damageID].DamageType])
 
-        }
+    if (findGem?.DamagePercentage) {
+        arrDMG[5] = (1 + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+            * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
+
+        arrDMG[6] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+            * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
+
+        arrDMG[7] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+            * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
+
+        arrDMG[8] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+            * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
+
+    }
 
 
 
 
-    if (isStatusEffect || !GEM || !findGem)
+    if (!GEM || !findGem)
         GEM = 0
 
     return {
@@ -1895,13 +1987,15 @@ const getFinalDamage = () => {
     target = {}
     armorMitigation()
     getWeaponDamage()
-    self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility))
+
+    self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility), selfDamageIDMap)
+    target = checkCondition(activeTargetItemPerks, selfDamageIDMap)
     setBarDescription()
     let findmaxDIV
     let maxDIV = {}
-    
+    console.log()
 
-    for (let [key, damageID] of Object.entries(equippedDamageIDMap)) {
+    for (let [key, damageID] of Object.entries(selfDamageIDMap)) {
 
         if (!damageID)
             continue
@@ -2000,7 +2094,7 @@ const getFinalDamage = () => {
         maxDIV[key] = item / findmaxDIV
 
     }
-    for (let [key, attack] of Object.entries(equippedDamageIDMap)) {
+    for (let [key, attack] of Object.entries(selfDamageIDMap)) {
         if (!attack)
             continue
         qSelector(`#${key}`).style.width = Math.max(maxDIV[attack] * 100, 11) + "%"
@@ -2012,6 +2106,8 @@ const getFinalDamage = () => {
     //console.log(activeItemPerks)
     console.log(self.modsSelf)
     console.log(self.modsOther)
+    console.log(target.modsSelfCapped)
+    console.log(target.modsOther)
 
 
 }
@@ -2239,6 +2335,12 @@ new Array("input").forEach(type => {
 
     }))
 
+    qSelectorAll(".targetperks").forEach(x => x.addEventListener(type, () => {
+        getItemEqiup()
+        getFinalDamage()
+
+    }))
+
     gearscore.addEventListener(type, dHandler)
 
     qSelectorAll(".search").forEach(search => search.addEventListener(type, (e) => {
@@ -2252,6 +2354,7 @@ new Array("input").forEach(type => {
 
 qSelectorAll(".search").forEach(search => search.addEventListener("keydown", (e) => {
     let parentDiv = e.target.parentNode.parentNode
+    let whichPerk = parentDiv.querySelector(".perks") ? "perks" : "targetperks"
     if (e.keyCode == 13) {
         let value = e.target.value.toLowerCase()
         const target = e.target.parentNode.querySelector(".addedperk:not(.hide)")
@@ -2260,8 +2363,8 @@ qSelectorAll(".search").forEach(search => search.addEventListener("keydown", (e)
         if (target.textContent.toLowerCase().includes(value))
             input.setAttribute("value", target.textContent)
 
-        parentDiv.querySelector(".perks").dispatchEvent(new Event('input'))
-        parentDiv.querySelector(".perks").setAttribute('src', `../${itemPerkNameMAP[target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[target.textContent].PerkID}`)
+        parentDiv.querySelector(`.${whichPerk}`).dispatchEvent(new Event('input'))
+        parentDiv.querySelector(`.${whichPerk}`).setAttribute('src', `../${itemPerkNameMAP[target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[target.textContent].PerkID}`)
         parentDiv.querySelector(".removebttn").classList.add("show")
         parentDiv.querySelector(".icon__button").setAttribute("for", itemPerkNameMAP[target.textContent].PerkID)
         parentDiv.querySelector(".icon__button__bg").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_bg`)
@@ -2331,14 +2434,14 @@ new Array("mousedown", "touchstart").forEach(type => {
         if (isDropdownListItem) {
 
             let parentDiv = e.target.parentNode.parentNode.parentNode
-
-            parentDiv.querySelector(".perks").value = itemPerkNameMAP[e.target.textContent].PerkID
-            parentDiv.querySelector(".perks").setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
+            let whichPerk = parentDiv.querySelector(".perks") ? "perks" : "targetperks"
+            parentDiv.querySelector(`.${whichPerk}`).value = itemPerkNameMAP[e.target.textContent].PerkID
+            parentDiv.querySelector(`.${whichPerk}`).setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
             parentDiv.querySelector(".removebttn")?.classList.add("show")
             parentDiv.querySelector(".icon__button")?.setAttribute("for", itemPerkNameMAP[e.target.textContent].PerkID)
             parentDiv.querySelector(".icon__button__bg")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
             parentDiv.querySelector(".icon__button__border")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
-            parentDiv.querySelector(".perks").dispatchEvent(new Event('input'))
+            parentDiv.querySelector(`.${whichPerk}`).dispatchEvent(new Event('input'))
             parentDiv.querySelector(".list_container").classList.remove("active_list")
 
         }
