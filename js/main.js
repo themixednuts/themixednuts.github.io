@@ -391,9 +391,16 @@ const staminaCosts_Player = await loadStaminaData()
 for (const stam of Object.values(staminaCosts_Player))
     staminaMAP[stam.CostID.toUpperCase()] = stam
 
-
+let manaCostMAP = {}
 const manaCosts_Player = await loadManaData()
+for (const mana of Object.values(manaCosts_Player))
+    manaCostMAP[mana.ID] = mana
+
+let cooldownMAP = {}
 const cooldowns_Player = await loadCooldowns()
+for (const cooldown of Object.values(cooldowns_Player))
+    cooldownMAP[cooldown.ID] = cooldown
+
 
 let selectedWeapon
 let selectedWeaponText
@@ -743,7 +750,7 @@ let dmgBarTippy
 const setWeaponDamageInfo = () => {
     let equippedDamageKey = []
 
-    
+
 
     while (qSelector(".standard_damage_bars").firstChild)
         qSelector(".standard_damage_bars").removeChild(qSelector(".standard_damage_bars").lastChild)
@@ -826,8 +833,8 @@ const setWeaponDamageInfo = () => {
 }
 
 const setDescription = () => {
-    if(!abilityTippy){
-    abilityTippy = tippy(qSelectorAll('.abilitytablecheckbox'))
+    if (!abilityTippy) {
+        abilityTippy = tippy(qSelectorAll('.abilitytablecheckbox'))
     }
 
     abilityTippy.forEach(instance => {
@@ -870,7 +877,7 @@ const setBarDescription = () => {
         let threatmulti = ""
         let attkrunecharge = ""
         if (affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()]?.Affix.toUpperCase()]?.DamagePercentage && !isStatusEffect) {
-            gem = `Gem Split: ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normalGEM)}` + "\n" 
+            gem = `Gem Split: ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normalGEM)}` + "\n"
         }
         console.log()
         if (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]) {
@@ -879,19 +886,19 @@ const setBarDescription = () => {
             reaction = !damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoReaction
             tickORattackType = "AttackType"
             canCrit = `CanCrit: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.CanCrit != false}` + "\n"
-            noBackstab =  `NoBackstab: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoBackstab == true}` + "\n"
-            noHeadshot =  `NoHeadshot: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoHeadshot == true}` + "\n"
-            impacty =  `ImpactDistanceY: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ImpactDistanceY}` + "\n"
-            stunbreakout =  `StunBreakoutIncrement: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.StunBreakoutIncrement}` + "\n"
-            threatmulti =  `ThreatMultiplier: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ThreatMultiplier}` + "\n"
-            attkrunecharge =  `AttackRuneCharge: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackRuneCharge}` + "\n"
+            noBackstab = `NoBackstab: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoBackstab == true}` + "\n"
+            noHeadshot = `NoHeadshot: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoHeadshot == true}` + "\n"
+            impacty = `ImpactDistanceY: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ImpactDistanceY}` + "\n"
+            stunbreakout = `StunBreakoutIncrement: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.StunBreakoutIncrement}` + "\n"
+            threatmulti = `ThreatMultiplier: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ThreatMultiplier}` + "\n"
+            attkrunecharge = `AttackRuneCharge: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackRuneCharge}` + "\n"
         }
         else {
             isStatusEffect = true
             dmgCoef = "HealthModifierDamageBased"
             reaction = false
             tickORattackType = "TickRate"
-            attkrunecharge =  `SourceRuneChargeOnTick: ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.SourceRuneChargeOnTick}` + "\n"
+            attkrunecharge = `SourceRuneChargeOnTick: ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.SourceRuneChargeOnTick}` + "\n"
         }
         instance.setContent(
             `Normal: ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normal)}` + "\n" +
@@ -903,13 +910,13 @@ const setBarDescription = () => {
             `${canCrit}` +
             `${noBackstab}` +
             `${noHeadshot}` +
-            `${impacty}` + 
+            `${impacty}` +
             `${stunbreakout}` +
-            `${threatmulti}` + 
+            `${threatmulti}` +
             `${attkrunecharge}` +
             `BaseDamage: ${roundNumber(self.modsSelf[instance.reference.getAttribute("value")].BaseDamage * 100)}%` + "\n" +
-            `Empower: ${roundNumber((self.modsSelf[instance.reference.getAttribute("value")]["DMG"+ (wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)] + self.modsSelf[instance.reference.getAttribute("value")].DMGVitalsCategory) * 100)}%` + "\n" +
-            `Rend: ${roundNumber((self.modsOther[instance.reference.getAttribute("value")]["ABS"+ (wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)] + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%`
+            `Empower: ${roundNumber((self.modsSelf[instance.reference.getAttribute("value")]["DMG" + (wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)] + self.modsSelf[instance.reference.getAttribute("value")].DMGVitalsCategory) * 100)}%` + "\n" +
+            `Rend: ${roundNumber((self.modsOther[instance.reference.getAttribute("value")]["ABS" + (wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)] + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%`
         )
         instance.setProps({
             placement: "top-start"
@@ -1735,8 +1742,8 @@ const replaceToken = (ability) => {
         SpellDataTable_WarHammer: wepSpellDataMAP,
 
         StaminaCosts_Player: staminaMAP,
-        ManaCosts_Player: manaCosts_Player,
-        Cooldowns_Player: cooldowns_Player
+        ManaCosts_Player: manaCostMAP,
+        Cooldowns_Player: cooldownMAP
     }
 
     let token = ability.Description.match(/{\[(.*?)]}/g)
@@ -1753,8 +1760,11 @@ const replaceToken = (ability) => {
             innerToken[key] = []
             getOperand[key] = value.match(/[*\/]/g)
             insideToken = value.matchAll(/\b(\w+)\.(\w+)\.(\w+)\b/g)
-            for (const match of insideToken)
+
+            for (const match of insideToken) {
+
                 innerToken[key].push(match)
+            }
 
             for (const [innerkey, innervalue] of Object.entries(innerToken[key])) {
                 innerToken[key][innerkey] = tableMap[innervalue[1]][innervalue[2].toUpperCase()][innervalue[3]]
@@ -1886,17 +1896,16 @@ const getFinalDamage = () => {
     armorMitigation()
     getWeaponDamage()
     self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility))
-
     setBarDescription()
     let findmaxDIV
     let maxDIV = {}
-
+    
 
     for (let [key, damageID] of Object.entries(equippedDamageIDMap)) {
 
         if (!damageID)
             continue
-        
+
         qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal)
         qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal)
         if (damageFormula(damageID).normalGEM) {
@@ -2176,7 +2185,7 @@ new Array("keydown").forEach(type =>
     window.addEventListener(type, function check(e) {
         if (e.keyCode == 16) {
             shiftACTIVE = true
-           setDescription()
+            setDescription()
 
         }
         if (e.keyCode == 17) {
