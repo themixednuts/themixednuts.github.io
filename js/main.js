@@ -942,7 +942,7 @@ const setBarDescription = () => {
             placement: "top-start",
             followCursor: true,
             allowHTML: true,
-            delay: [100, 0]
+            delay: [100, 100]
         })
     })
 }
