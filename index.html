@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="weaponperk_container">
-                    <select name="" id="gemslot_select" class="perks">
+                    <select name="" id="gemslot_select" class="perks wepgem">
                     </select>
                     <select id="perk1" name="Perk1" class="perks wepperks">
                         <option value="none" class="wepperks_drop" selected>No Perk</option>
@@ -80,7 +80,7 @@
                     <input type="text" class="armor_rating input" id="ele_armorrating">
                 </div>
                 <div class="targetequip_container">
-                    
+
                 </div>
             </div>
             <div class="playercondition_container">
@@ -166,7 +166,9 @@
             <div class="playerequip_container">
                 <template id="equipmentTemplate">
                     <div class="temprow equiprow">
-                        <img src="../lyshineui/images/equipment/iconhead.png" alt="" class="tempslot imgslot">
+                        <div class="icon_div">
+                            <img src="../lyshineui/images/equipment/iconhead.png" alt="" class="tempslot imgslot">
+                        </div>
                         <div class="tempgem_button button">
                             <div class="gem_bg">
                                 <input type="image" class="tempgem gemslot gemicon bttn perks" src="" alt="">
@@ -235,9 +237,29 @@
         <div class="footer">
         </div>
     </div>
+    <template id="weapontippytemplate">
+        <div class='weaponimgsmall_container'>
+            <img class='weaponsmall' value='2HAxeT5' src='../lyshineui/images/icons/drawing/2hgreataxesmall.png'>
+            <img class='weaponsmall' value='2HhammerT5' src='../lyshineui/images/icons/drawing/2hdemohammersmall.png'>
+            <img class='weaponsmall' value='MusketT5' src='../lyshineui/images/icons/drawing/2hmusketasmall.png'>
+            <img class='weaponsmall' value='BowT5' src='../lyshineui/images/icons/drawing/bowbsmall.png'>
+            <img class='weaponsmall' value='RapierT5' src='../lyshineui/images/icons/drawing/1hrapiersmall.png'>
+            <img class='weaponsmall' value='SpearT5' src='../lyshineui/images/icons/drawing/spearasmall.png'>
+            <img class='weaponsmall' value='1hElementalGauntlet_IceT5'
+                src='../lyshineui/images/icons/drawing/icegauntletsmall.png'>
+            <img class='weaponsmall' value='FireStaffT5' src='../lyshineui/images/icons/drawing/stafffiresmall.png'>
+            <img class='weaponsmall' value='VoidGauntletT5'
+                src='../lyshineui/images/icons/drawing/voidgauntletsmall.png'>
+            <img class='weaponsmall' value='LifeStaffT5' src='../lyshineui/images/icons/drawing/stafflifesmall.png'>
+            <img class='weaponsmall' value='SwordT5' src='../lyshineui/images/icons/drawing/1hswordsmall.png'>
+            <img class='weaponsmall' value='BlunderbussT5' src='../lyshineui/images/icons/drawing/blunderbusssmall.png'>
+            <img class='weaponsmall' value='2hGreatSwordT5'
+                src='../lyshineui/images/icons/drawing/2hgreatswordsmall.png'>
+        </div>
+    </template>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
-    <script type="module" async src="./js/main.js"></script>
+    <script type="module" defer src="./js/main.js"></script>
 </body>
 
 </html>

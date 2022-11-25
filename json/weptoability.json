@@ -187,23 +187,25 @@
             "Maelstrom": "GreatAxe_Maelstrom",
             "Maelstrom Gravity": "GreatAxe_Maelstrom_RP2",
             "Storm's Reach": "GreatAxe_Maelstrom_Reach",
-            "Storm's Reach Gravity": "GreatAxe_Maelstrom_Reach_RP2",
+            "Storm's Reach Gravity": "GreatAxe_Maelstrom_Reach_RP2"
+        },
+        "ability_attack4": {
             "No Reprieve": "GreatAxe_Maelstrom_NoReprieve",
             "No Reprieve Gravity": "GreatAxe_Maelstrom_NoReprieve_RP2"
         },
-        "ability_attack4": {
+        "ability_attack5": {
             "Reap": "GreatAxe_JudgementsReach"
         },
-        "ability_attack5": {
+        "ability_attack6": {
             "Whirlwind": "GreatAxe_Whirlwind"
         },
-        "ability_attack6": {
+        "ability_attack7": {
             "Execute": "GreatAxe_Executioner"
         },
-        "ability_attack7": {
+        "ability_attack8": {
             "Gravity Well": "GreatAxe_GravityWell"
         },
-        "ability_attack8": {
+        "ability_attack9": {
             "Gravity Burst": "GreatAxe_GravityWell_Burst"
         },
         "dot1": {

@@ -235,7 +235,7 @@ const DRAWING = {
     "2HAxeT5": "2hgreataxe.png",
     "2HhammerT5": "2hdemohammer.png",
     "MusketT5": "2hmusketa.png",
-    "BowT5": "bowa.png",
+    "BowT5": "bowb.png",
     "RapierT5": "1hrapier.png",
     "HatchetT5": "1hhatchet.png",
     "SpearT5": "speara.png",
@@ -274,6 +274,7 @@ equipmentSlots.forEach(slot => {
         item.classList.replace("tempperk_button", `${slot}gem_button`)
 
     })
+    qSelector(".playerequip_container").querySelectorAll('.perks').forEach(item => item.classList.replace("perks", "armorperks"))
     qSelectorAll(".tempgem").forEach(item => item.classList.replace("tempgem", `${slot}gem`))
     qSelectorAll(".tempgem_list_div").forEach(item => item.classList.replace("tempgem_list_div", `${slot}gem_list_div`))
     qSelectorAll(".tempperk").forEach(item => {
@@ -289,12 +290,24 @@ equipmentSlots.forEach(slot => {
 
 })
 
-equipmentSlots.forEach(slot => {
+
+new Array("weapon").concat(equipmentSlots).forEach(slot => {
     qSelector(".targetequip_container").appendChild(template.cloneNode(true))
     qSelector(".targetequip_container").querySelector(".temprow").classList.replace("temprow", `${slot}row`)
     qSelector(".targetequip_container").querySelector(".tempslot").setAttribute("src", `../lyshineui/images/equipment/icon${slot.replace("hands", "hand").replace("earring", "token")}.png`)
+    if (slot == "weapon") {
+        qSelector(".targetequip_container").querySelector(".tempslot").setAttribute("src", `/lyshineui/images/icons/drawing/2hgreataxesmall.png`)
+        qSelector(".targetequip_container").querySelector(".tempslot").setAttribute("value", `2HAxeT5`)
+        qSelector(".targetequip_container").querySelector(".tempslot").style.width = "52px"
+        qSelector(".targetequip_container").querySelector(".tempslot").style.height = "38.13px"
+
+    }
     qSelector(".targetequip_container").querySelector(".tempslot").classList.replace("tempslot", `${slot}slot`)
     qSelector(".targetequip_container").querySelector(".tempgem_button").classList.replace("tempgem_button", `${slot}gem_button`)
+    if (slot == "weapon")
+        qSelector(".targetequip_container").querySelectorAll(".tempperk_button").forEach(item => {
+            item.setAttribute("id", item.getAttribute("id").replace("temp_armor", slot))
+        })
     qSelector(".targetequip_container").querySelectorAll(".tempperk_button").forEach(item => {
         item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
         item.classList.replace("tempperk_button", `${slot}gem_button`)
@@ -314,7 +327,51 @@ equipmentSlots.forEach(slot => {
 
     qSelector(".targetequip_container").querySelectorAll(".tempperk_list_div").forEach(item => item.classList.replace("tempperk_list_div", `${slot}perk_list_div`))
 
+
 })
+
+const tippyweptemp = document.getElementById("weapontippytemplate").content
+let firstTargetDmgID
+
+const targetDmgID = () => {
+    targetDamageIDMap = {}
+    activeTargetWeaponAbilities = attkToDamageID.find(item => item.WeaponID === document.querySelector(".targetequip_container").querySelector(".weaponslot").getAttribute("value"))
+    for (const key of Object.keys(activeTargetWeaponAbilities)) {
+        if (key != 'WeaponID') {
+            targetDamageIDMap[key] = Object.values(activeTargetWeaponAbilities[key])[0]
+        }
+    }
+    firstTargetDmgID = targetDamageIDMap[Object.keys(targetDamageIDMap)[0]]
+
+}
+
+
+
+tippyweptemp.querySelectorAll('.weaponsmall').forEach(item => {
+    item.addEventListener("mousedown", (e) => {
+
+        let weprow = e.target.parentNode.parentNode.parentNode.parentNode.parentNode
+        weprow.querySelector("img").setAttribute("src", `../lyshineui/images/icons/drawing/${DRAWING[e.target.getAttribute("value")].replace(".png", "small.png")}`)
+        weprow.querySelector("img").setAttribute("value", e.target.getAttribute("value"))
+        setItemPerkList()
+        targetDmgID()
+        getItemEqiup()
+        getFinalDamage()
+
+
+    })
+})
+
+let tippywep = tippy(".weaponslot", {
+    trigger: "click",
+    content: tippyweptemp,
+    interactive: true,
+    placement: "bottom",
+    allowHTML: true
+
+})
+
+console.log(tippywep[0].reference.parentNode)
 
 const iconAbility = "lyshineui/images/icons/abilities"
 const masteryIcon = "lyshineui/images/skills/mastery"
@@ -353,25 +410,53 @@ let itemEquipAbilityMAP = {}
 let itemAffixMAP = {}
 
 
+const setItemPerkList = () => {
 
-equipmentSlots.forEach(slot => {
-    for (const num of Object.values([1, 2, 3])) {
-        qSelectorAll(`#${slot}_armorperk_${num}`).forEach(button => button.appendChild(createItem("span", "", { class: "icon__button", id: `${slot}_icon__button`, width: "24", height: "24" })))
-        qSelectorAll(`#${slot}_armorperk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablebg.png", class: "icon__button__bg", width: "24", height: "24", id: `${slot}_icon__button__bg` })))
-        qSelectorAll(`#${slot}_armorperk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablering1.png", class: "icon__button__border", width: "24", height: "24", id: `${slot}_icon__button__border` })))
-
-    }
-    itemPerks.forEach(x => {
-        if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot]))) {
-            qSelectorAll(`.${slot}perk_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorperk" })))
-        }
-
-        if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot])))
-            qSelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorgem" })))
-
+    qSelector(".targetequip_container").querySelectorAll(".weaponperk_list_div").forEach(div => {
+        while (div.firstChild)
+            div.removeChild(div.lastChild)
     })
 
-})
+    new Array("weapon").concat(equipmentSlots).forEach(slot => {
+
+
+
+        let whichperkslot = slot == "weapon" ? slot : `${slot}_armor`
+        for (const num of Object.values([1, 2, 3])) {
+            qSelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("span", "", { class: "icon__button", id: `${slot}_icon__button`, width: "24", height: "24" })))
+            qSelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablebg.png", class: "icon__button__bg", width: "24", height: "24", id: `${slot}_icon__button__bg` })))
+            qSelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablering1.png", class: "icon__button__border", width: "24", height: "24", id: `${slot}_icon__button__border` })))
+        }
+
+
+        itemPerks.forEach(x => {
+
+            if (slot != "weapon") {
+                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot]))) {
+                    qSelectorAll(`.${slot}perk_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorperk" })))
+                }
+
+                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot])))
+                    qSelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorgem" })))
+            }
+            else {
+                new Array(".targetequip_container").forEach(wep => {
+                    let whichperk = wep == ".targetequip_container" ? "target_wepperk" : "wepperk"
+                    let whichgem = wep == ".targetequip_container" ? "target_wepgem" : "wepgem"
+                    let value = qSelector(wep).querySelector(".imgslot").getAttribute("value")
+                    if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[value])) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[value]))) {
+                        qSelectorAll(`.${slot}perk_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: `addedperk ${whichperk}` })))
+                    }
+
+                    if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[value])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[value])))
+                        qSelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: `addedperk ${whichgem}` })))
+                })
+            }
+
+        })
+
+    })
+}
 
 for (let perks of Object.values(itemPerks)) {
     itemPerkMAP[perks.PerkID.toUpperCase()] = perks
@@ -451,8 +536,10 @@ let attributeAbilityMAP = {}
 for (let ability of Object.values(attributeAbilityTable))
     attributeAbilityMAP[ability.AbilityID] = ability
 
-let activeWeaponAbilities = {}
+let activeSelfWeaponAbilities = {}
+let activeTargetWeaponAbilities = {}
 let selfDamageIDMap = {}
+let targetDamageIDMap = {}
 
 let damageCategoryMAP = {}
 const damageCategory = await loadDamageTypes()
@@ -470,6 +557,7 @@ let targetHP = qSelector("#targethp")
 let self = {}
 let target = {}
 let selectedSelfAffix
+
 
 
 let shiftACTIVE
@@ -593,7 +681,8 @@ async function loadWeaponData() {
 
     selectedWeapon = document.getElementById("weapon").value;
     weaponData = wepItemDefMAP[selectedWeapon.toLowerCase()]
-    activeWeaponAbilities = attkToDamageID.find(item => item.WeaponID === selectedWeapon)
+    activeSelfWeaponAbilities = attkToDamageID.find(item => item.WeaponID === selectedWeapon)
+
     selectedWeaponText = document.getElementById("weapon").options[document.getElementById("weapon").selectedIndex].text
     weaponStatusEffectTable = await loadWepStatusEffectTable(STATUSEFFECTS[selectedWeapon])
     for (let status of Object.values(weaponStatusEffectTable))
@@ -749,6 +838,8 @@ async function loadWeaponData() {
     })
 
     abilityTippy = null
+    setItemPerkList()
+    targetDmgID()
     getItemEqiup()
     equipWepAbility()
     setDescription()
@@ -771,12 +862,12 @@ const setWeaponDamageInfo = () => {
         qSelector(".dot_damage_bars").removeChild(qSelector(".dot_damage_bars").lastChild)
 
 
-    for (const key of Object.keys(activeWeaponAbilities)) {
+    for (const key of Object.keys(activeSelfWeaponAbilities)) {
 
         if (key != 'WeaponID') {
 
-            selfDamageIDMap[key] = Object.values(activeWeaponAbilities[key])[0]
-            equippedDamageKey = Object.keys(activeWeaponAbilities[key])[0]
+            selfDamageIDMap[key] = Object.values(activeSelfWeaponAbilities[key])[0]
+            equippedDamageKey = Object.keys(activeSelfWeaponAbilities[key])[0]
 
             for (const ability of Object.keys(abilitydmgMap)) {
                 checkedSelfAbility.forEach(checkedability => {
@@ -785,9 +876,9 @@ const setWeaponDamageInfo = () => {
                         return
                     if ((checkedability?.AbilityID?.toUpperCase() == ability.toUpperCase()) || false)
                         for (const attk of Object.keys(abilitydmgMap[ability])) {
-                            if (activeWeaponAbilities[key].hasOwnProperty(attk)) {
-                                selfDamageIDMap[key] = Object.values(activeWeaponAbilities[key])[Object.values(activeWeaponAbilities[key]).indexOf(abilitydmgMap[ability][attk])]
-                                equippedDamageKey = Object.keys(activeWeaponAbilities[key])[Object.keys(activeWeaponAbilities[key]).indexOf(attk)]
+                            if (activeSelfWeaponAbilities[key].hasOwnProperty(attk)) {
+                                selfDamageIDMap[key] = Object.values(activeSelfWeaponAbilities[key])[Object.values(activeSelfWeaponAbilities[key]).indexOf(abilitydmgMap[ability][attk])]
+                                equippedDamageKey = Object.keys(activeSelfWeaponAbilities[key])[Object.keys(activeSelfWeaponAbilities[key]).indexOf(attk)]
                             }
                         }
                 })
@@ -800,7 +891,7 @@ const setWeaponDamageInfo = () => {
             if (!selfDamageIDMap[key])
                 continue
 
-            currentWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()] 
+            currentWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()]
 
             let findDamageType = currentWeaponDamageMAP[selfDamageIDMap[key]].DamageType
 
@@ -1102,7 +1193,6 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                 }
             }
 
-
             if (conditionalChecks(damageID, ability)) {
 
                 if (!ability.StatusID) //check if ability that passed conditions is not a StatusEffect or Affix, push to abilitytrue array
@@ -1162,6 +1252,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                 }
 
                 if (ability.OtherApplyStatusEffect) {
+
                     if (wepStatusEffectMAP[ability.OtherApplyStatusEffect]) {
                         if (wepStatusEffectMAP[ability.OtherApplyStatusEffect].StackMax > 1) {
                             if (!qSelector(`#${ability.AbilityID}_icon__button`).textContent)
@@ -1260,6 +1351,8 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
             //console.log(abilitytruevalue)
             abilitytruevalue.forEach(x => {
 
+
+
                 let maxStack = 1
                 if (x.StatusID)
                     x.StatusID = x.StatusID.toUpperCase()
@@ -1285,10 +1378,12 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                     x[prop] = 0
 
                 if (typeof x[prop] === "number") {
+
                     if (!itemEquipAbilityMAP[x.AbilityID])
                         totalSelfProps[prop].push(x[prop] * maxStack)
                     else {
                         if (itemEquipAbilityMAP[x.AbilityID]) {
+
                             totalSelfProps[prop].push(x[prop] * itemScaling(itemEquipAbilityMAP[x.AbilityID]) * maxStack)
                         }
                     }
@@ -1663,6 +1758,8 @@ const getWeaponDamage = (damageID) => {
 
 }
 
+
+
 const getItemEqiup = () => {
     activeTargetItemPerks = []
     activeSelfItemPerks = []
@@ -1671,17 +1768,23 @@ const getItemEqiup = () => {
     let hasStacks = false
     let stackMax
 
-    new Array(".perks", ".targetperks").forEach(object => {
+    new Array(".wepperks", ".armorperks", ".wepgem", ".targetperks", ".target_wepgem", ".target_wepperk").forEach(object => {
         qSelectorAll(object).forEach(item => {
             hasStacks = false
             stackMax = null
-            let whichnonstackable = object == ".perks" ? notstackableSelf : notstackableTarget
-            let whichtargetItemPerks = object == ".perks" ? activeSelfItemPerks : activeTargetItemPerks
+            let isPlayer = (object == ".armorperks" || object == ".wepperks" || object == ".wepperks" || object == ".wepgem")
+            let whichnonstackable = isPlayer ? notstackableSelf : notstackableTarget
+            let whichtargetItemPerks = isPlayer ? activeSelfItemPerks : activeTargetItemPerks
 
-            if (itemPerkMAP[item.value.toUpperCase()]) {
+            if (itemPerkMAP[item.value?.toUpperCase()]) {
                 if (itemPerkMAP[item.value.toUpperCase()].EquipAbility) {
+
                     itemPerkMAP[item.value.toUpperCase()].EquipAbility.split(",").forEach(ability => {
+
+
+
                         if (!globalAbilityMAP[ability.toUpperCase()].IsStackableAbility) {
+
                             whichnonstackable.push(globalAbilityMAP[ability.toUpperCase()])
                         }
                         else whichtargetItemPerks.push(globalAbilityMAP[ability.toUpperCase()])
@@ -1701,6 +1804,7 @@ const getItemEqiup = () => {
 
                     })
                 }
+
                 if (itemPerkMAP[item.value.toUpperCase()].Affix) {
                     whichtargetItemPerks.push(affixDataMAP[itemPerkMAP[item.value.toUpperCase()].Affix.toUpperCase()])
                 }
@@ -1732,18 +1836,19 @@ const getItemEqiup = () => {
 
             }
 
-        })
-    })
 
+
+
+        })
+
+    })
 
 
     notstackableSelf = [...new Set(notstackableSelf)]
     activeSelfItemPerks = activeSelfItemPerks.concat(notstackableSelf)
     notstackableTarget = [...new Set(notstackableTarget)]
-    activeTargetItemPerks = activeTargetItemPerks.concat(notstackableSelf)
+    activeTargetItemPerks = activeTargetItemPerks.concat(notstackableTarget)
 
-    console.log(activeSelfItemPerks)
-    console.log(activeTargetItemPerks)
 }
 
 
@@ -1842,21 +1947,24 @@ const replaceToken = (ability) => {
 
 }
 
+
 const DMG = (damageID, damageType) => {
+
+
     return (Math.min(Math.max(
         self.modsSelfCapped[damageID]["DMG" + damageType]
         + self.modsSelfUncapped[damageID]["DMG" + damageType]
-        + target.modsOtherCapped[damageID]["DMG" + damageType]
-        + target.modsOtherUncapped[damageID]["DMG" + damageType]
+        + target.modsOtherCapped[firstTargetDmgID]["DMG" + damageType]
+        + target.modsOtherUncapped[firstTargetDmgID]["DMG" + damageType]
         + self.affixSelf[damageID]["DMG" + damageType],
         Math.min(
             self.modsSelfUncapped[damageID]["DMG" + damageType]
-            + target.modsOtherUncapped[damageID]["DMG" + damageType]
+            + target.modsOtherUncapped[firstTargetDmgID]["DMG" + damageType]
             + self.affixSelf[damageID]["DMG" + damageType],
             -0.5)),
         Math.max(
             self.modsSelfUncapped[damageID]["DMG" + damageType]
-            + target.modsOtherUncapped[damageID]["DMG" + damageType]
+            + target.modsOtherUncapped[firstTargetDmgID]["DMG" + damageType]
             + self.affixSelf[damageID]["DMG" + damageType],
             0.5
         )))
@@ -1864,21 +1972,22 @@ const DMG = (damageID, damageType) => {
 
 
 const ABS = (damageID, damageType) => {
+
     return (Math.min(Math.max(
         self.modsOtherCapped[damageID]["ABS" + damageType]
         + self.modsOtherUncapped[damageID]["ABS" + damageType]
-        + target.modsSelfCapped[damageID]["ABS" + damageType]
-        + target.modsSelfUncapped[damageID]["ABS" + damageType]
-        + target.affixSelf[damageID]["ABS" + damageType],
+        + target.modsSelfCapped[firstTargetDmgID]["ABS" + damageType]
+        + target.modsSelfUncapped[firstTargetDmgID]["ABS" + damageType]
+        + target.affixSelf[firstTargetDmgID]["ABS" + damageType],
         Math.min(
             self.modsOtherUncapped[damageID]["ABS" + damageType]
-            + target.modsSelfUncapped[damageID]["ABS" + damageType]
-            + target.affixSelf[damageID]["ABS" + damageType],
+            + target.modsSelfUncapped[firstTargetDmgID]["ABS" + damageType]
+            + target.affixSelf[firstTargetDmgID]["ABS" + damageType],
             -0.3)),
         Math.max(
             self.modsOtherUncapped[damageID]["ABS" + damageType]
-            + target.modsSelfUncapped[damageID]["ABS" + damageType]
-            + target.affixSelf[damageID]["ABS" + damageType],
+            + target.modsSelfUncapped[firstTargetDmgID]["ABS" + damageType]
+            + target.affixSelf[firstTargetDmgID]["ABS" + damageType],
             0.5
         )))
 }
@@ -1925,7 +2034,7 @@ function damageFormula(damageID) {
         * (1 + self.modsSelf[damageID].BaseDamage)
         * (1 - ABS(damageID, currentWeaponDamageMAP[damageID].DamageType))
         * (1 - affixSplit)
-        
+
     GEM = wepdmgsplit
         * dmgcoeforhealtmod(damageID)
         * (1 + self.modsSelf[damageID].BaseDamage)
@@ -1989,7 +2098,7 @@ const getFinalDamage = () => {
     getWeaponDamage()
 
     self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility), selfDamageIDMap)
-    target = checkCondition(activeTargetItemPerks, selfDamageIDMap)
+    target = checkCondition(activeTargetItemPerks, targetDamageIDMap)
     setBarDescription()
     let findmaxDIV
     let maxDIV = {}
@@ -2106,7 +2215,7 @@ const getFinalDamage = () => {
     //console.log(activeItemPerks)
     console.log(self.modsSelf)
     console.log(self.modsOther)
-    console.log(target.modsSelfCapped)
+    console.log(target.modsSelf)
     console.log(target.modsOther)
 
 
@@ -2329,17 +2438,14 @@ new Array("input").forEach(type => {
         getFinalDamage()
     })
 
-    qSelectorAll(".perks").forEach(x => x.addEventListener(type, () => {
-        getItemEqiup()
-        getFinalDamage()
+    new Array(".perks", ".targetperks").forEach(item => {
+        qSelectorAll(item).forEach(x => x.addEventListener(type, () => {
+            getItemEqiup()
+            getFinalDamage()
 
-    }))
+        }))
+    })
 
-    qSelectorAll(".targetperks").forEach(x => x.addEventListener(type, () => {
-        getItemEqiup()
-        getFinalDamage()
-
-    }))
 
     gearscore.addEventListener(type, dHandler)
 
@@ -2354,7 +2460,7 @@ new Array("input").forEach(type => {
 
 qSelectorAll(".search").forEach(search => search.addEventListener("keydown", (e) => {
     let parentDiv = e.target.parentNode.parentNode
-    let whichPerk = parentDiv.querySelector(".perks") ? "perks" : "targetperks"
+    let whichPerk = parentDiv.querySelector(".armorperks") ? "armorperks" : parentDiv.querySelector(".wepperks") ? "wepperks" : "targetperks"
     if (e.keyCode == 13) {
         let value = e.target.value.toLowerCase()
         const target = e.target.parentNode.querySelector(".addedperk:not(.hide)")
@@ -2406,7 +2512,16 @@ new Array("mousedown", "touchstart").forEach(type => {
 
     }))
 
-    document.addEventListener(type, e => {
+    document.querySelectorAll(".weaponsmall").forEach(img => img.addEventListener(type, function change(e) {
+        console.log(e.target)
+    }))
+
+
+
+
+
+    document.addEventListener(type, (e) => {
+
         let currentDropdown = e.target.parentNode.querySelector(".list_container")
         const isDropdownButton = e.target.matches(".bttn")
         const isDropdownListItem = e.target.matches(".addedperk")
@@ -2434,28 +2549,26 @@ new Array("mousedown", "touchstart").forEach(type => {
         if (isDropdownListItem) {
 
             let parentDiv = e.target.parentNode.parentNode.parentNode
-            let whichPerk = parentDiv.querySelector(".perks") ? "perks" : "targetperks"
-            parentDiv.querySelector(`.${whichPerk}`).value = itemPerkNameMAP[e.target.textContent].PerkID
-            parentDiv.querySelector(`.${whichPerk}`).setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
+            let whichPerk = parentDiv.querySelector(".perks") ? ".perks" : parentDiv.querySelector(".armorperks") ? ".armorperks" : ".targetperks"
+
+            parentDiv.querySelector(whichPerk).value = itemPerkNameMAP[e.target.textContent].PerkID
+            parentDiv.querySelector(whichPerk).setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
             parentDiv.querySelector(".removebttn")?.classList.add("show")
             parentDiv.querySelector(".icon__button")?.setAttribute("for", itemPerkNameMAP[e.target.textContent].PerkID)
             parentDiv.querySelector(".icon__button__bg")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
             parentDiv.querySelector(".icon__button__border")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
-            parentDiv.querySelector(`.${whichPerk}`).dispatchEvent(new Event('input'))
+            parentDiv.querySelector(whichPerk).dispatchEvent(new Event('input'))
             parentDiv.querySelector(".list_container").classList.remove("active_list")
 
         }
 
-
-
         if (e.target.matches(".removebttn")) {
-            console.log(e.target.parentNode.parentNode)
             e.target.parentNode.querySelector(".icon__button").classList.remove("show")
             e.target.parentNode.querySelector(".icon__button").setAttribute("for", "")
             e.target.parentNode.querySelector(".icon__button__bg").classList.remove("show")
             e.target.parentNode.querySelector(".icon__button__border").classList.remove("show")
-            qSelector(`#${e.target.getAttribute("for")}`).setAttribute("value", "")
-            qSelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_perkbackground.png")
+            e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("value", "")
+            e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_perkbackground.png")
             e.target.classList.remove("show")
             getItemEqiup()
             getFinalDamage()

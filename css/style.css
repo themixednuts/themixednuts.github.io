@@ -952,10 +952,13 @@ option {
 .imgslot {
     height: 52px;
     width: 52px;
-    background-image: url("../lyshineui/images/equipment/equipmentbg.png");
-    background-size: 56px;
-    background-position: -2px -1.5px;
-    background-repeat: no-repeat;
+}
+
+.targetequip_container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
 }
 
 .removebttn {
@@ -982,6 +985,17 @@ option {
     display: none;
     background-color: #000000;
     font-size: 1.5rem;
+}
+.icon_div{
+    width: 52px;
+    height: 52px;
+    background-image: url("../lyshineui/images/equipment/equipmentbg.png");
+    background-size: 56px;
+    background-position: -2px -1.5px;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .search {
@@ -1132,6 +1146,22 @@ option {
     top: 50%;
     background-color: darkgray;
     transform: translateY(-50%);
+}
+
+.weaponimgsmall_container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2px;
+}
+.weaponsmall{
+    width: 60px;
+    height: 44px;
+}
+.weaponsmall:hover{
+    border: 1px solid white;
+
 }
 
 .boldyellow {
