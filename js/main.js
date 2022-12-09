@@ -203,7 +203,7 @@ const STATUSEFFECTS = {
 
 const masterItemDefinition = await loadMasterItemDefinition()
 let masterItemMAP = {}
-for (let item of Object.values(masterItemDefinition))
+for (const item of Object.values(masterItemDefinition))
     masterItemMAP[item.ItemID] = item
 
 const ITEMCLASS = {
@@ -257,85 +257,70 @@ const categoryIdMap = {
     'Heal': 6
 }
 
-const qSelector = (key) => document.querySelector(key)
-const qSelectorAll = (key) => document.querySelectorAll(key)
-const equipmentSlots = ["head", "chest", "hands", "legs", "feet", "amulet", "ring", "earring"]
 
+const playerEquip = document.querySelector(".playerequip_container")
+const targetEquip = document.querySelector(".target_container")
 
-let template = qSelector("#equipmentTemplate").content
-equipmentSlots.forEach(slot => {
-    qSelector(".playerequip_container").appendChild(template.cloneNode(true))
-    qSelector(".temprow").classList.replace("temprow", `${slot}row`)
-    qSelector(".tempslot").setAttribute("src", `../lyshineui/images/equipment/icon${slot.replace("hands", "hand").replace("earring", "token")}.png`)
-    qSelector(".tempslot").classList.replace("tempslot", `${slot}slot`)
-    qSelector(".tempgem_button").classList.replace("tempgem_button", `${slot}gem_button`)
-    qSelectorAll(".tempperk_button").forEach(item => {
-        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
-        item.classList.replace("tempperk_button", `${slot}gem_button`)
+const equipContainers = [playerEquip, targetEquip]
 
-    })
-    qSelector(".playerequip_container").querySelectorAll('.perks').forEach(item => item.classList.replace("perks", "armorperks"))
-    qSelectorAll(".tempgem").forEach(item => item.classList.replace("tempgem", `${slot}gem`))
-    qSelectorAll(".tempgem_list_div").forEach(item => item.classList.replace("tempgem_list_div", `${slot}gem_list_div`))
-    qSelectorAll(".tempperk").forEach(item => {
-        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
-        item.classList.replace("tempperk", `${slot}perk`)
-    })
-    qSelectorAll(".removebttn").forEach(item => {
-        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
-        item.setAttribute("for", item.getAttribute("for").replace("temp", slot))
-    })
+const equipmentSlots = ["weapon", "head", "chest", "hands", "legs", "feet", "amulet", "ring", "earring"]
 
-    qSelectorAll(".tempperk_list_div").forEach(item => item.classList.replace("tempperk_list_div", `${slot}perk_list_div`))
+let template = document.querySelector("#equipmentTemplate").content
 
-})
+equipContainers.forEach(container => {
 
+    equipmentSlots.forEach(slot => {
+        container.appendChild(template.cloneNode(true))
+        container.querySelector(".temprow").classList.replace("temprow", `${slot}row`)
+        container.querySelector("#gearscore").setAttribute("id", `${slot}_gearscore`)
 
-new Array("weapon").concat(equipmentSlots).forEach(slot => {
-    qSelector(".targetequip_container").appendChild(template.cloneNode(true))
-    qSelector(".targetequip_container").querySelector(".temprow").classList.replace("temprow", `${slot}row`)
-    qSelector(".targetequip_container").querySelector(".tempslot").setAttribute("src", `../lyshineui/images/equipment/icon${slot.replace("hands", "hand").replace("earring", "token")}.png`)
-    if (slot == "weapon") {
-        qSelector(".targetequip_container").querySelector(".tempslot").setAttribute("src", `/lyshineui/images/icons/drawing/2hgreataxesmall.png`)
-        qSelector(".targetequip_container").querySelector(".tempslot").setAttribute("value", `2HAxeT5`)
-        qSelector(".targetequip_container").querySelector(".tempslot").style.width = "52px"
-        qSelector(".targetequip_container").querySelector(".tempslot").style.height = "38.13px"
+        if (slot == "weapon") {
+            container.querySelector(".tempslot").setAttribute("src", `/lyshineui/images/icons/drawing/2hgreataxesmall.png`)
+            container.querySelector(".tempslot").setAttribute("value", `2HAxeT5`)
+            container.querySelector(".tempslot").setAttribute("alt", `GreatAxe`)
+            container.querySelectorAll(".tempperk_button").forEach(item => {
+                item.setAttribute("id", item.getAttribute("id").replace("temp_armor", slot))
+            })
 
-    }
-    qSelector(".targetequip_container").querySelector(".tempslot").classList.replace("tempslot", `${slot}slot`)
-    qSelector(".targetequip_container").querySelector(".tempgem_button").classList.replace("tempgem_button", `${slot}gem_button`)
-    if (slot == "weapon")
-        qSelector(".targetequip_container").querySelectorAll(".tempperk_button").forEach(item => {
-            item.setAttribute("id", item.getAttribute("id").replace("temp_armor", slot))
+        }
+        else {
+            container.querySelector(".tempslot").setAttribute("src", `../lyshineui/images/equipment/icon${slot.replace("hands", "hand").replace("earring", "token")}.png`)
+        }
+
+        container.querySelector(".tempslot").classList.replace("tempslot", `${slot}slot`)
+        container.querySelector(".tempgem_button").classList.replace("tempgem_button", `${slot}gem_button`)
+
+        container.querySelectorAll(".tempperk_button").forEach(item => {
+            item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+            item.classList.replace("tempperk_button", `${slot}perk_button`)
+
         })
-    qSelector(".targetequip_container").querySelectorAll(".tempperk_button").forEach(item => {
-        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
-        item.classList.replace("tempperk_button", `${slot}gem_button`)
+
+        container.querySelectorAll(".tempgem").forEach(item => item.classList.replace("tempgem", `${slot}gem`))
+        container.querySelectorAll(".tempgem_list_div").forEach(item => item.classList.replace("tempgem_list_div", `${slot}gem_list_div`))
+        container.querySelectorAll(".tempperk").forEach(item => {
+            item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+            item.classList.replace("tempperk", `${slot}perk`)
+        })
+
+        container.querySelectorAll(".removebttn").forEach(item => {
+            item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+            item.setAttribute("for", item.getAttribute("for").replace("temp", slot))
+        })
+
+        container.querySelectorAll(".tempperk_list_div").forEach(item => item.classList.replace("tempperk_list_div", `${slot}perk_list_div`))
 
     })
-    qSelector(".targetequip_container").querySelectorAll('.perks').forEach(item => item.classList.replace("perks", "targetperks"))
-    qSelector(".targetequip_container").querySelectorAll(".tempgem").forEach(item => item.classList.replace("tempgem", `${slot}gem`))
-    qSelector(".targetequip_container").querySelectorAll(".tempgem_list_div").forEach(item => item.classList.replace("tempgem_list_div", `${slot}gem_list_div`))
-    qSelector(".targetequip_container").querySelectorAll(".tempperk").forEach(item => {
-        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
-        item.classList.replace("tempperk", `${slot}perk`)
-    })
-    qSelector(".targetequip_container").querySelectorAll(".removebttn").forEach(item => {
-        item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
-        item.setAttribute("for", item.getAttribute("for").replace("temp", slot))
-    })
-
-    qSelector(".targetequip_container").querySelectorAll(".tempperk_list_div").forEach(item => item.classList.replace("tempperk_list_div", `${slot}perk_list_div`))
 
 
 })
 
-const tippyweptemp = document.getElementById("weapontippytemplate").content
+
 let firstTargetDmgID
 
 const targetDmgID = () => {
     targetDamageIDMap = {}
-    activeTargetWeaponAbilities = attkToDamageID.find(item => item.WeaponID === document.querySelector(".targetequip_container").querySelector(".weaponslot").getAttribute("value"))
+    activeTargetWeaponAbilities = attkToDamageID.find(item => item.WeaponID === targetEquip.querySelector(".weaponslot").getAttribute("value"))
     for (const key of Object.keys(activeTargetWeaponAbilities)) {
         if (key != 'WeaponID') {
             targetDamageIDMap[key] = Object.values(activeTargetWeaponAbilities[key])[0]
@@ -345,33 +330,115 @@ const targetDmgID = () => {
 
 }
 
+const target_tippyweptemp = document.getElementById("weapontippytemplate").cloneNode(true).content
+const player_tippyweptemp = document.getElementById("weapontippytemplate").cloneNode(true).content
 
-
-tippyweptemp.querySelectorAll('.weaponsmall').forEach(item => {
+player_tippyweptemp.querySelectorAll('.weaponsmall').forEach(item => {
     item.addEventListener("mousedown", (e) => {
 
         let weprow = e.target.parentNode.parentNode.parentNode.parentNode.parentNode
-        weprow.querySelector("img").setAttribute("src", `../lyshineui/images/icons/drawing/${DRAWING[e.target.getAttribute("value")].replace(".png", "small.png")}`)
-        weprow.querySelector("img").setAttribute("value", e.target.getAttribute("value"))
-        setItemPerkList()
-        targetDmgID()
-        getItemEqiup()
-        getFinalDamage()
-
-
+        if (e.target.getAttribute("value") != weprow.querySelector("img").getAttribute("value")) {
+            weprow.querySelector("img").setAttribute("src", `../lyshineui/images/icons/drawing/${DRAWING[e.target.getAttribute("value")]}`)
+            weprow.querySelector("img").setAttribute("value", e.target.getAttribute("value"))
+            weprow.querySelector("img").setAttribute("alt", e.target.getAttribute("alt"))
+            loadWeaponData()
+            document.querySelectorAll(".wep_addedperk").forEach(x => x.remove())
+        }
     })
 })
 
-let tippywep = tippy(".weaponslot", {
+target_tippyweptemp.querySelectorAll('.weaponsmall').forEach(item => {
+    item.addEventListener("mousedown", (e) => {
+
+        let weprow = e.target.parentNode.parentNode.parentNode.parentNode.parentNode
+        if (e.target.getAttribute("value") != weprow.querySelector("img").getAttribute("value")) {
+            weprow.querySelector("img").setAttribute("src", `../lyshineui/images/icons/drawing/${DRAWING[e.target.getAttribute("value")].replace(".png", "small.png")}`)
+            weprow.querySelector("img").setAttribute("value", e.target.getAttribute("value"))
+            weprow.querySelector("img").setAttribute("alt", e.target.getAttribute("alt"))
+            setItemPerkList(targetEquip)
+            targetDmgID()
+            getItemEqiup()
+            getFinalDamage()
+        }
+    })
+})
+
+
+
+
+const target_tippywep = tippy(targetEquip.querySelector(".weaponslot"), {
     trigger: "click",
-    content: tippyweptemp,
+    content: target_tippyweptemp,
     interactive: true,
     placement: "bottom",
     allowHTML: true
 
 })
 
-console.log(tippywep[0].reference.parentNode)
+const player_tippywep = tippy(playerEquip.querySelector(".weaponslot"), {
+    trigger: "click",
+    content: player_tippyweptemp,
+    interactive: true,
+    placement: "bottom",
+    allowHTML: true
+
+})
+
+
+
+const playerEquip_dropdown = document.querySelector("#player-dropdown-button")
+
+
+const playerEqiup_tippy = tippy(playerEquip_dropdown, {
+    content: playerEquip,
+    trigger: 'click',
+    interactive: true,
+    appendTo: () => document.body,
+    theme: 'ability-tooltip',
+    maxWidth: 800,
+    placement: 'bottom'
+})
+
+const targetEquip_dropdown = document.querySelector("#target-dropdown-button")
+
+
+const targetEqiup_tippy = tippy(targetEquip_dropdown, {
+    content: targetEquip,
+    trigger: 'click',
+    interactive: true,
+    appendTo: () => document.body,
+    theme: 'ability-tooltip',
+    maxWidth: 800,
+    placement: 'bottom'
+})
+
+const playerAttr_dropdown = document.querySelector("#player-attr-dropdown-button")
+const playerAttr = document.querySelector(".playercondition_container")
+
+const playerAttr_tippy = tippy(playerAttr_dropdown, {
+    content: playerAttr,
+    trigger: 'click',
+    interactive: true,
+    appendTo: () => document.body,
+    theme: 'ability-tooltip',
+    maxWidth: 800
+})
+
+const targetCondition_dropdown = document.querySelector("#target-condition-dropdown-button")
+const targetCondition = document.querySelector(".targetconditions_container")
+
+const targetCondition_tippy = tippy(targetCondition_dropdown, {
+    content: targetCondition,
+    trigger: 'click',
+    interactive: true,
+    appendTo: () => document.body,
+    theme: 'ability-tooltip',
+    maxWidth: 400
+})
+
+
+
+
 
 const iconAbility = "lyshineui/images/icons/abilities"
 const masteryIcon = "lyshineui/images/skills/mastery"
@@ -400,7 +467,7 @@ for (const def of Object.values(weaponItemDefinition))
 
 const damageTable = await loadDamageTable()
 let damageTableMAP = {}
-for (let dmgid of Object.values(damageTable))
+for (const dmgid of Object.values(damageTable))
     damageTableMAP[dmgid.DamageID.toUpperCase()] = dmgid
 
 const itemPerks = await loadItemPerk()
@@ -410,55 +477,7 @@ let itemEquipAbilityMAP = {}
 let itemAffixMAP = {}
 
 
-const setItemPerkList = () => {
-
-    qSelector(".targetequip_container").querySelectorAll(".weaponperk_list_div").forEach(div => {
-        while (div.firstChild)
-            div.removeChild(div.lastChild)
-    })
-
-    new Array("weapon").concat(equipmentSlots).forEach(slot => {
-
-
-
-        let whichperkslot = slot == "weapon" ? slot : `${slot}_armor`
-        for (const num of Object.values([1, 2, 3])) {
-            qSelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("span", "", { class: "icon__button", id: `${slot}_icon__button`, width: "24", height: "24" })))
-            qSelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablebg.png", class: "icon__button__bg", width: "24", height: "24", id: `${slot}_icon__button__bg` })))
-            qSelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablering1.png", class: "icon__button__border", width: "24", height: "24", id: `${slot}_icon__button__border` })))
-        }
-
-
-        itemPerks.forEach(x => {
-
-            if (slot != "weapon") {
-                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot]))) {
-                    qSelectorAll(`.${slot}perk_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorperk" })))
-                }
-
-                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot])))
-                    qSelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorgem" })))
-            }
-            else {
-                new Array(".targetequip_container").forEach(wep => {
-                    let whichperk = wep == ".targetequip_container" ? "target_wepperk" : "wepperk"
-                    let whichgem = wep == ".targetequip_container" ? "target_wepgem" : "wepgem"
-                    let value = qSelector(wep).querySelector(".imgslot").getAttribute("value")
-                    if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[value])) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[value]))) {
-                        qSelectorAll(`.${slot}perk_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: `addedperk ${whichperk}` })))
-                    }
-
-                    if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[value])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[value])))
-                        qSelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: `addedperk ${whichgem}` })))
-                })
-            }
-
-        })
-
-    })
-}
-
-for (let perks of Object.values(itemPerks)) {
+for (const perks of Object.values(itemPerks)) {
     itemPerkMAP[perks.PerkID.toUpperCase()] = perks
     itemPerkNameMAP[perks.DisplayName] = perks
     if (perks.EquipAbility)
@@ -470,31 +489,32 @@ for (let perks of Object.values(itemPerks)) {
 
 const wepAbilityTable = {}
 const attkToDamageID = await loadAttkToDamageID()
-let currentWeaponDamageMAP = {}
+let currentSelfWeaponDamageMAP = {}
+let currentTargetWeaponDamageMAP = {}
 
 const globalAbilityData = await loadGlobalAbilityData()
 let globalAbilityMAP = {}
 let globalSelfStatusMAP = {}
-for (let ability of Object.values(globalAbilityData)) {
+for (const ability of Object.values(globalAbilityData)) {
     globalAbilityMAP[ability.AbilityID.toUpperCase()] = ability
     globalSelfStatusMAP[ability.SelfApplyStatusEffect] = ability
 }
 
 const affixDataTable = await loadAffixDataTable()
 let affixDataMAP = {}
-for (let affix of Object.values(affixDataTable))
+for (const affix of Object.values(affixDataTable))
     affixDataMAP[affix.StatusID.toUpperCase()] = affix
 
 let weaponStatusEffectTable
 const perkStatusEffectTable = await loadPerkStatusEffectTable()
 let perkStatusEffectMAP = {}
-for (let status of Object.values(perkStatusEffectTable))
+for (const status of Object.values(perkStatusEffectTable))
     perkStatusEffectMAP[status.StatusID.toUpperCase()] = status
 
 
 
 let damageTableRow = []
-let damageName = [qSelectorAll('.barlabel')].reduce((a, c) => a + c).forEach((value, key) => damageTableRow[key] = value.id)
+let damageName = [document.querySelectorAll('.barlabel')].reduce((a, c) => a + c).forEach((value, key) => damageTableRow[key] = value.id)
 
 let abilityData
 
@@ -519,14 +539,12 @@ let selectedWeaponText
 let weaponAbilityTable
 let weaponData
 let weaponSpellDataTable
-let gearscore = document.getElementById("gearscore")
-let gearscorevalue = document.getElementById("gear_score")
 
 let level = document.getElementById('level')
 let levelvalue = document.getElementById('lvl')
 
-const itemWepPerkList = qSelectorAll(".wepperks")
-const weaponGem = qSelector("#gemslot_select")
+const itemWepPerkList = document.querySelectorAll(".wepperks")
+const weaponGem = document.querySelector("#gemslot_select")
 
 let activeSelfItemPerks = []
 let activeTargetItemPerks = []
@@ -551,7 +569,7 @@ for (const category of Object.values(damageCategory)) {
 let activeSelfAttributeAbility = []
 let checkedSelfAbility = []
 
-let targetHP = qSelector("#targethp")
+let targetHP = targetCondition.querySelector("#targethp")
 
 
 let self = {}
@@ -580,17 +598,14 @@ for (let vital of Object.values(vitals)) {
 
 vitalsDisplayName = [...new Set(vitalsDisplayName)]
 for (let vitalname of Object.values(vitalsDisplayName))
-    qSelector("#targetvitals").appendChild(createItem("option", vitalname, { class: "vitalID" }))
-qSelector("#targetvitals").value = "Player"
+    targetCondition.querySelector("#targetvitals").appendChild(createItem("option", vitalname, { class: "vitalID" }))
+targetCondition.querySelector("#targetvitals").value = "Player"
 selectedVitals = vitalsMAP.PLAYER
-qSelectorAll(".armor_rating").forEach(select => {
+targetCondition.querySelectorAll(".armor_rating").forEach(select => {
     select.classList.add("show")
     select.value = 0
 })
 
-
-
-gearscorevalue.textContent = gearscore.value;
 
 //custom functions
 const _is = {
@@ -611,14 +626,22 @@ function roundNumber(number) {
 }
 
 
-function itemScaling(itemperk) {
+function itemScaling(itemperk, container) {
     const weptrue = () => {
-        if (itemperk.PerkID == qSelector("#perk1").value || itemperk.PerkID == qSelector("#perk2").value || itemperk.PerkID == qSelector("#perk3").value)
+        const weaponperk = container.querySelector(".weaponrow")
+        if (itemperk.PerkID == weaponperk.querySelector("#bttn_weapon_armorperk_1").value || itemperk.PerkID == document.querySelector("#bttn_weapon_armorperk_2").value || itemperk.PerkID == document.querySelector("#bttn_weapon_armorperk_3").value)
             if (itemperk.ItemClassGSBonus)
                 return itemperk.ItemClassGSBonus.split(":")[1]
         return 0
     }
-    let scaled = 1 + (itemperk.ScalingPerGearScore) * (Number(gearscore.value) + Number(weptrue()) - 100)
+
+    let getGearScore = []
+    container.querySelectorAll(".perks").forEach(perk => {
+        if (itemperk.PerkID == perk.value)
+            getGearScore.push(perk.parentNode.parentNode.querySelector(".gearscore").value)
+    })
+    getGearScore = getGearScore.reduce((acc, c) => Math.max(acc, c))
+    const scaled = 1 + (itemperk.ScalingPerGearScore) * (Number(getGearScore) + Number(weptrue()) - 100)
     return scaled
 }
 
@@ -666,6 +689,8 @@ let abilityTippyEXTRA
 let abilityTippyCTRL
 //end custom functions
 
+
+
 //load properties for selected weapon
 async function loadWeaponData() {
 
@@ -674,33 +699,34 @@ async function loadWeaponData() {
     wepAbilityMAP = {}
     wepSpellDataMAP = {}
     selfDamageIDMap = {}
-    currentWeaponDamageMAP = {}
-    const abilityTreeID_0 = qSelector(".abilitytreeid_0")
-    const abilityTreeID_1 = qSelector(".abilitytreeid_1")
+    currentSelfWeaponDamageMAP = {}
+    const abilityTreeID_0 = document.querySelector(".abilitytreeid_0")
+    const abilityTreeID_1 = document.querySelector(".abilitytreeid_1")
 
 
-    selectedWeapon = document.getElementById("weapon").value;
+    selectedWeapon = playerEquip.querySelector(".weaponslot").getAttribute("value")
+    console.log(selectedWeapon)
     weaponData = wepItemDefMAP[selectedWeapon.toLowerCase()]
     activeSelfWeaponAbilities = attkToDamageID.find(item => item.WeaponID === selectedWeapon)
 
-    selectedWeaponText = document.getElementById("weapon").options[document.getElementById("weapon").selectedIndex].text
+    selectedWeaponText = playerEquip.querySelector(".weaponslot").getAttribute("alt")
+    console.log(selectedWeaponText)
     weaponStatusEffectTable = await loadWepStatusEffectTable(STATUSEFFECTS[selectedWeapon])
     for (let status of Object.values(weaponStatusEffectTable))
         wepStatusEffectMAP[status.StatusID.toUpperCase()] = status
 
-    if (selectedWeaponText != 'Void Gauntlet')
+    if (selectedWeaponText != 'VoidGauntlet')
         selectedWeaponText = selectedWeaponText.replace(/Gauntlet|Staff/i, 'Magic')
 
 
-    selectedWeaponText = removeSpace(selectedWeaponText)
     weaponAbilityTable = await loadWeaponAbilityTable(selectedWeaponText)
     weaponSpellDataTable = await loadSpellData(selectedWeaponText)
 
-    if (!qSelector(".target_level_container").value) {
+    if (!targetCondition.querySelector(".target_level_container").value) {
         for (let vital of Object.values(vitals)) {
-            if (vital.DisplayName == qSelector("#targetvitals").value) {
-                qSelector(".target_level_container").appendChild(createItem("option", vital.Level, { class: "levelof_vital" }))
-                if (vital.Level == qSelector(".target_level_container").value)
+            if (vital.DisplayName == targetCondition.querySelector("#targetvitals").value) {
+                targetCondition.querySelector(".target_level_container").appendChild(createItem("option", vital.Level, { class: "levelof_vital" }))
+                if (vital.Level == targetCondition.querySelector(".target_level_container").value)
                     selectedVitals = vital
             }
         }
@@ -719,15 +745,12 @@ async function loadWeaponData() {
     while (abilityTreeID_1.firstChild)
         abilityTreeID_1.removeChild(abilityTreeID_1.lastChild)
 
-    while (qSelector(".player_statuseffects_select").firstChild)
-        qSelector(".player_statuseffects_select").removeChild(qSelector(".player_statuseffects_select").lastChild)
+    while (playerAttr.querySelector(".player_statuseffects_select").firstChild)
+        playerAttr.querySelector(".player_statuseffects_select").removeChild(playerAttr.querySelector(".player_statuseffects_select").lastChild)
 
 
 
-    qSelector(".player_statuseffects_select").appendChild(createItem("option", "None", { value: "" }))
-    if (qSelector(".weapon_icon"))
-        qSelector(".weapon_icon").remove()
-    qSelector(".weapon_icon_container").appendChild(createItem("img", "", { src: `../lyshineui/images/icons/drawing/${DRAWING[selectedWeapon]}`, class: "weapon_icon", id: `${selectedWeapon}_icon` }))
+    playerAttr.querySelector(".player_statuseffects_select").appendChild(createItem("option", "None", { value: "" }))
 
     for (let ability of Object.values(weaponAbilityTable)) {
 
@@ -740,7 +763,7 @@ async function loadWeaponData() {
                 abilityTreeID_1.appendChild(createItem("div", "", { class: "appended_ability_div", for: `${ability.AbilityID.toUpperCase()}_div`, id: `${ability.AbilityID.toUpperCase()}_appended` }))
 
 
-            qSelectorAll(`#${ability.AbilityID.toUpperCase()}_appended`).forEach(div => {
+            document.querySelectorAll(`#${ability.AbilityID.toUpperCase()}_appended`).forEach(div => {
 
                 div.appendChild(createItem("span", "", { class: "icon__button", id: `${ability.AbilityID.toUpperCase()}_icon__button`, width: "24", height: "24" }))
                 div.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablebg.png", class: "icon__button__bg", width: "24", height: "24", id: `${ability.AbilityID.toUpperCase()}_icon__button__bg` }))
@@ -802,7 +825,7 @@ async function loadWeaponData() {
 
     }
 
-    qSelectorAll(".abilitytablecheckbox").forEach(checkbox => {
+    document.querySelectorAll(".abilitytablecheckbox").forEach(checkbox => {
         checkbox.style.scale = checkbox.parentNode.querySelector('.icon').offsetWidth / 11
         checkbox.addEventListener("change", (e) => {
             equipWepAbility()
@@ -813,7 +836,7 @@ async function loadWeaponData() {
 
     let a = 1
 
-    qSelectorAll(`.icon__button`).forEach(button => button.addEventListener("click", (e) => {
+    document.querySelectorAll(`.icon__button`).forEach(button => button.addEventListener("click", (e) => {
         a++
         if (a > e.target.getAttribute("value"))
             a = 1
@@ -821,29 +844,66 @@ async function loadWeaponData() {
         getFinalDamage()
     }))
 
+
     for (let [key, value] of Object.entries(ITEMCLASS)) {
         if (key === selectedWeapon)
             activeWepItemClass = value
     }
 
-    itemPerks.forEach(x => {
-        if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(activeWepItemClass)) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(activeWepItemClass)))
-            itemWepPerkList.forEach(perk => {
-                perk.appendChild(createItem("option", x.DisplayName, { value: x.PerkID, class: "addedperk wep_addedperk" }))
-            })
-
-        if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(activeWepItemClass)) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(activeWepItemClass)))
-            weaponGem.appendChild(createItem("option", x.DisplayName, { value: x.PerkID, class: "addedperk wep_addedperk" }))
-
-    })
 
     abilityTippy = null
-    setItemPerkList()
+    setItemPerkList(playerEquip)
     targetDmgID()
     getItemEqiup()
     equipWepAbility()
     setDescription()
     getFinalDamage()
+
+}
+
+
+const setItemPerkList = (container) => {
+
+    container.querySelectorAll(".list_div").forEach(div => {
+        while (div.firstChild)
+            div.removeChild(div.lastChild)
+    })
+
+    equipmentSlots.forEach(slot => {
+
+        let whichperkslot = slot == "weapon" ? slot : `${slot}_armor`
+        for (const num of Object.values([1, 2, 3])) {
+
+            container.querySelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("span", "", { class: "icon__button", id: `${slot}_icon__button`, width: "24", height: "24" })))
+            container.querySelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablebg.png", class: "icon__button__bg", width: "24", height: "24", id: `${slot}_icon__button__bg` })))
+            container.querySelectorAll(`#${whichperkslot}perk_${num}`).forEach(button => button.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablering1.png", class: "icon__button__border", width: "24", height: "24", id: `${slot}_icon__button__border` })))
+
+        }
+
+        itemPerks.forEach(x => {
+
+            if (slot != "weapon") {
+                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot]))) {
+                    container.querySelectorAll(`.${slot}perk_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorperk" })))
+                }
+
+                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot])))
+                    container.querySelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorgem" })))
+            }
+            else {
+                let value = container.querySelector(".imgslot").getAttribute("value")
+                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[value])) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[value]))) {
+                    container.querySelectorAll(`.${slot}perk_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: `addedperk wepperk` })))
+                }
+
+                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[value])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[value])))
+                    container.querySelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: `addedperk wepgem` })))
+
+            }
+
+        })
+
+    })
 }
 
 let dmgBarTippy
@@ -852,14 +912,14 @@ const setWeaponDamageInfo = () => {
 
 
 
-    while (qSelector(".standard_damage_bars").firstChild)
-        qSelector(".standard_damage_bars").removeChild(qSelector(".standard_damage_bars").lastChild)
+    while (document.querySelector(".standard_damage_bars").firstChild)
+        document.querySelector(".standard_damage_bars").removeChild(document.querySelector(".standard_damage_bars").lastChild)
 
-    while (qSelector(".ability_damage_bars").firstChild)
-        qSelector(".ability_damage_bars").removeChild(qSelector(".ability_damage_bars").lastChild)
+    while (document.querySelector(".ability_damage_bars").firstChild)
+        document.querySelector(".ability_damage_bars").removeChild(document.querySelector(".ability_damage_bars").lastChild)
 
-    while (qSelector(".dot_damage_bars").firstChild)
-        qSelector(".dot_damage_bars").removeChild(qSelector(".dot_damage_bars").lastChild)
+    while (document.querySelector(".dot_damage_bars").firstChild)
+        document.querySelector(".dot_damage_bars").removeChild(document.querySelector(".dot_damage_bars").lastChild)
 
 
     for (const key of Object.keys(activeSelfWeaponAbilities)) {
@@ -891,9 +951,9 @@ const setWeaponDamageInfo = () => {
             if (!selfDamageIDMap[key])
                 continue
 
-            currentWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()]
+            currentSelfWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()]
 
-            let findDamageType = currentWeaponDamageMAP[selfDamageIDMap[key]].DamageType
+            let findDamageType = currentSelfWeaponDamageMAP[selfDamageIDMap[key]].DamageType
 
             let appendBars = [
                 createItem("div", "", { id: `${key}_normal`, class: "normal bar" }),
@@ -913,20 +973,20 @@ const setWeaponDamageInfo = () => {
             ]
 
             if (key == "light_attack" || key == "heavy_attack" || key == "charged_heavy" || key == "special_attack") {
-                qSelector(".standard_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
+                document.querySelector(".standard_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
 
             if (new RegExp("ability").test(key)) {
-                qSelector(".ability_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
+                document.querySelector(".ability_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
 
             if (new RegExp("dot").test(key)) {
-                qSelector(".dot_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
+                document.querySelector(".dot_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
-            appendBars.forEach(x => qSelector(`#${key}`).appendChild(x))
-            qSelector(`#${key}_normal`).appendChild(createItem("div", equippedDamageKey, { class: `${key}_label label` }))
-            qSelector(`#${key}`).appendChild(createItem("div", equippedDamageKey, { class: `${key}_label_after label after` }))
-            qSelector(`#${key}_normal`).appendChild(createItem("div", "", { id: `${key}_normal_gem`, class: "normal gem_bar" }),)
+            appendBars.forEach(x => document.querySelector(`#${key}`).appendChild(x))
+            document.querySelector(`#${key}_normal`).appendChild(createItem("div", equippedDamageKey, { class: `${key}_label label` }))
+            document.querySelector(`#${key}`).appendChild(createItem("div", equippedDamageKey, { class: `${key}_label_after label after` }))
+            document.querySelector(`#${key}_normal`).appendChild(createItem("div", "", { id: `${key}_normal_gem`, class: "normal gem_bar" }),)
 
         }
     }
@@ -937,7 +997,7 @@ const setWeaponDamageInfo = () => {
 
 const setDescription = () => {
     if (!abilityTippy) {
-        abilityTippy = tippy(qSelectorAll('.abilitytablecheckbox'))
+        abilityTippy = tippy(document.querySelectorAll('.abilitytablecheckbox'))
     }
 
     abilityTippy.forEach(instance => {
@@ -967,7 +1027,7 @@ let colorYellow = "#ffd34e"
 
 const changeTextColor = (text, color) => {
 
-    return `\u003cfont style=\"font-family: 'tooltipyellow-bold';\" face=\"/lyshineui/fonts/Nimbus_SemiBold.font\" color=\"${color}\"\u003e ${text}\u003c/font\u003e`
+    return `\u003cfont style=\"font-family: 'tooltipyellow-bold';\" face=\"/lyshineui/fonts/nimbussannov-sembol.otf\" color=\"${color}\"\u003e ${text}\u003c/font\u003e`
 
 }
 
@@ -975,7 +1035,7 @@ const changeTextColor = (text, color) => {
 const setBarDescription = () => {
 
     dmgBarTippy?.forEach(instance => instance.destroy())
-    dmgBarTippy = tippy(qSelectorAll('.bar_container'))
+    dmgBarTippy = tippy(document.querySelectorAll('.bar_container'))
     dmgBarTippy.forEach(instance => {
         let reaction
         let dmgCoef
@@ -988,7 +1048,7 @@ const setBarDescription = () => {
         let stunbreakout = ""
         let threatmulti = ""
         let attkrunecharge = ""
-        if (affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()]?.Affix.toUpperCase()]?.DamagePercentage && damageTableMAP[instance.reference.getAttribute("value")?.toUpperCase()]) {
+        if (affixDataMAP[itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix.toUpperCase()]?.DamagePercentage && damageTableMAP[instance.reference.getAttribute("value")?.toUpperCase()]) {
             gem = `${changeTextColor("Gem Split:", colorYellow)} ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normalGEM)}` + "\n"
         }
 
@@ -1031,28 +1091,29 @@ const setBarDescription = () => {
         )
         instance.setProps({
             placement: "top-start",
-            followCursor: true,
             allowHTML: true,
-            delay: [100, 100]
+            delay: [200, 200]
         })
     })
 }
 
 
-const conditionalChecks = (damageID, ability) => {
+const conditionalChecks = (damageID, ability, reference) => {
 
-    if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(currentWeaponDamageMAP[damageID].IsRanged))
-        && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(currentWeaponDamageMAP[damageID].IsRanged))
-        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].DamageID))
-        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].DamageID))
-        && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].AttackType))
-        && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(currentWeaponDamageMAP[damageID].DamageType))
-        && (!ability.TargetStatusEffectCategory || new RegExp(ability.TargetStatusEffectCategory.replace(/,/g, "|"), "gi").test(qSelector("#debuff_target").value))
+    let whichDamageMap = reference == "self" ? currentSelfWeaponDamageMAP[damageID] : damageTableMAP[damageID.toUpperCase()]
+
+    if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(whichDamageMap.IsRanged))
+        && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(whichDamageMap.IsRanged))
+        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageID))
+        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageID))
+        && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(whichDamageMap.AttackType))
+        && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageType))
+        && (!ability.TargetStatusEffectCategory || new RegExp(ability.TargetStatusEffectCategory.replace(/,/g, "|"), "gi").test(targetEquip.querySelector("#debuff_target").value))
         && (!ability.TargetHealthPercent || _is[ability.TargetComparisonType](targetHP.value, ability.TargetHealthPercent))
         && (!ability.DamageCategory || ability.DamageCategory == findDamageCategory(damageID))
         && (!ability.DMGVitalsCategory || new RegExp(ability.DMGVitalsCategory.split("=")[0]).test(selectedVitals.VitalsCategories))
-        && (!ability.StatusEffect || ability.StatusEffect == qSelector(".player_statuseffects_select").value)
-        && (!ability.RequireReaction || ability.RequireReaction != currentWeaponDamageMAP[damageID].NoReaction))
+        && (!ability.StatusEffect || ability.StatusEffect == document.querySelector(".player_statuseffects_select").value)
+        && (!ability.RequireReaction || ability.RequireReaction != whichDamageMap.NoReaction))
         return true
     else
         return false
@@ -1067,30 +1128,30 @@ const equipWepAbility = () => {
 
         if (ability.TreeId != null && ability.DisplayName && !ability.UnlockDefault) {
 
-            checked = qSelector(`#${ability.AbilityID.toUpperCase()}_checkbox`).checked
+            checked = document.querySelector(`#${ability.AbilityID.toUpperCase()}_checkbox`).checked
 
             if (checked) {
                 checkedSelfAbility.push(ability)
 
-                qSelector(`#${ability.AbilityID.toUpperCase()}_icon`).classList.add("show", "purchased", "hover_purchased")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_bg`).classList.add("show", "purchased", "hover_purchased")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_border`).classList.add("show", "purchased", "border_purchased", "hover_purchased")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_rune`).classList.add("show", "purchased", "hover_purchased")
-                if (qSelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).getAttribute("value") >= 1) {
-                    qSelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).classList.add("show", "maxStack")
-                    qSelector(`#${ability.AbilityID.toUpperCase()}_icon__button__bg`).classList.add("show")
-                    qSelector(`#${ability.AbilityID.toUpperCase()}_icon__button__border`).classList.add("show")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon`).classList.add("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_bg`).classList.add("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_border`).classList.add("show", "purchased", "border_purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_rune`).classList.add("show", "purchased", "hover_purchased")
+                if (document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).getAttribute("value") >= 1) {
+                    document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).classList.add("show", "maxStack")
+                    document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button__bg`).classList.add("show")
+                    document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button__border`).classList.add("show")
                 }
             }
             else {
-                qSelector(`#${ability.AbilityID.toUpperCase()}_icon`).classList.remove("show", "purchased", "hover_purchased")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_bg`).classList.remove("show", "purchased", "hover_purchased")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_border`).classList.remove("show", "purchased", "border_purchased", "hover_purchased")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_rune`).classList.remove("show", "purchased", "hover_purchased")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).classList.remove("show", "maxStack")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_icon__button__bg`).classList.remove("show")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_icon__button__border`).classList.remove("show")
-                qSelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).textContent = 1
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon`).classList.remove("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_bg`).classList.remove("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_border`).classList.remove("show", "purchased", "border_purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_rune`).classList.remove("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).classList.remove("show", "maxStack")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button__bg`).classList.remove("show")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button__border`).classList.remove("show")
+                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).textContent = 1
             }
 
             checkedSelfAbility.forEach(item => {
@@ -1108,13 +1169,13 @@ const equipWepAbility = () => {
 
     let uniqueOptions = [...new Set(options)]
     uniqueOptions.forEach(status => {
-        if (!qSelector(`#${status.StatusID.toUpperCase()}_option`))
-            qSelector(".player_statuseffects_select").appendChild(createItem("option", `${status.StatusID}`, { class: "added_statuseffect", id: `${status.StatusID.toUpperCase()}_option`, value: `${status.StatusID.toUpperCase()}` }))
+        if (!playerAttr.querySelector(`#${status.StatusID.toUpperCase()}_option`))
+            playerAttr.querySelector(".player_statuseffects_select").appendChild(createItem("option", `${status.StatusID}`, { class: "added_statuseffect", id: `${status.StatusID.toUpperCase()}_option`, value: `${status.StatusID.toUpperCase()}` }))
 
     })
 
-    if (qSelector(".player_statuseffects_select").value != "") {
-        checkedSelfAbility.push(wepStatusEffectMAP[qSelector(".player_statuseffects_select").value.toUpperCase()])
+    if (playerAttr.querySelector(".player_statuseffects_select").value != "") {
+        checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value.toUpperCase()])
     }
     setWeaponDamageInfo()
     return checkedSelfAbility
@@ -1167,6 +1228,9 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
     let abilitySelfApplyMAP = {}
     let abilityOtherApplyMAP = {}
+
+    let whichDamageMap = damageIDREFERENCE == selfDamageIDMap ? "self" : "target"
+    const isPlayer = damageIDREFERENCE == selfDamageIDMap ? playerEquip : targetEquip
     for (let [damagekey, damageID] of Object.entries(damageIDREFERENCE)) {
         if (!damageID)
             continue
@@ -1193,7 +1257,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                 }
             }
 
-            if (conditionalChecks(damageID, ability)) {
+            if (conditionalChecks(damageID, ability, whichDamageMap)) {
 
                 if (!ability.StatusID) //check if ability that passed conditions is not a StatusEffect or Affix, push to abilitytrue array
                     abilitytrue[damageID].push(ability)
@@ -1208,22 +1272,22 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                 }
 
-                if (qSelector(`#${ability.AbilityID}_icon__button`)) {
+                if (document.querySelector(`#${ability.AbilityID}_icon__button`)) {
                     if (ability.PerStatusEffectOnTarget || ability.PerStatusEffectOnSelf) {
-                        if (!qSelector(`#${ability.AbilityID}_icon__button`).textContent)
-                            qSelector(`#${ability.AbilityID}_icon__button`).textContent = 1
+                        if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
                         if (ability.PerStatusEffectOnTarget)
-                            qSelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnTargetMax}`)
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnTargetMax}`)
                         if (ability.PerStatusEffectOnSelf)
-                            qSelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnSelfMax}`)
-                        qSelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
-                        qSelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
-                        qSelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnSelfMax}`)
+                        document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                        document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                        document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
                     }
                     else {
-                        qSelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
-                        qSelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
-                        qSelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                        document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
+                        document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
+                        document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
                     }
                 }
 
@@ -1231,17 +1295,17 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                 if (ability.SelfApplyStatusEffect) {
                     if (wepStatusEffectMAP[ability.SelfApplyStatusEffect]) {
                         if (wepStatusEffectMAP[ability.SelfApplyStatusEffect].StackMax > 1) {
-                            if (!qSelector(`#${ability.AbilityID}_icon__button`).textContent)
-                                qSelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                            qSelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.SelfApplyStatusEffect].StackMax}`)
-                            qSelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
-                            qSelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
-                            qSelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+                            if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
+                                document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.SelfApplyStatusEffect].StackMax}`)
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
                         }
                         else {
-                            qSelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
-                            qSelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
-                            qSelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
                         }
                         selectedWeaponSelfApplyStatusEffect.push(wepStatusEffectMAP[ability.SelfApplyStatusEffect])
                     }
@@ -1255,17 +1319,17 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                     if (wepStatusEffectMAP[ability.OtherApplyStatusEffect]) {
                         if (wepStatusEffectMAP[ability.OtherApplyStatusEffect].StackMax > 1) {
-                            if (!qSelector(`#${ability.AbilityID}_icon__button`).textContent)
-                                qSelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                            qSelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.OtherApplyStatusEffect].StackMax}`)
-                            qSelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
-                            qSelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
-                            qSelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+                            if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
+                                document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[ability.OtherApplyStatusEffect].StackMax}`)
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
                         }
                         else {
-                            qSelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
-                            qSelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
-                            qSelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
                         }
                         selectedWeaponOtherApplyStatusEffect.push(wepStatusEffectMAP[ability.OtherApplyStatusEffect])
                     }
@@ -1362,15 +1426,15 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                 if (x.PerStatusEffectOnTarget) {
 
-                    if (qSelector(`#${x.AbilityID}_icon__button`)) {
-                        maxStack = qSelector(`#${x.AbilityID}_icon__button`).textContent
+                    if (document.querySelector(`#${x.AbilityID}_icon__button`)) {
+                        maxStack = document.querySelector(`#${x.AbilityID}_icon__button`).textContent
                     }
                 }
 
                 if (x.PerStatusEffectOnSelf) {
 
-                    if (qSelector(`#${x.AbilityID}_icon__button`)) {
-                        maxStack = qSelector(`#${x.AbilityID}_icon__button`).textContent
+                    if (document.querySelector(`#${x.AbilityID}_icon__button`)) {
+                        maxStack = document.querySelector(`#${x.AbilityID}_icon__button`).textContent
                     }
                 }
 
@@ -1384,7 +1448,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                     else {
                         if (itemEquipAbilityMAP[x.AbilityID]) {
 
-                            totalSelfProps[prop].push(x[prop] * itemScaling(itemEquipAbilityMAP[x.AbilityID]) * maxStack)
+                            totalSelfProps[prop].push(x[prop] * itemScaling(itemEquipAbilityMAP[x.AbilityID], isPlayer) * maxStack)
                         }
                     }
                 }
@@ -1394,7 +1458,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                         totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g))
                     else {
                         if (itemEquipAbilityMAP[x.AbilityID])
-                            totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemEquipAbilityMAP[x.AbilityID]))
+                            totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemEquipAbilityMAP[x.AbilityID], isPlayer))
                     }
                 }
 
@@ -1425,14 +1489,14 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                                 item.SelfApplyStatusEffect = item.SelfApplyStatusEffect.toUpperCase()
 
                             if (item.SelfApplyStatusEffect == status.StatusID) {
-                                if (qSelector(`#${item.AbilityID}_icon__button`)) {
-                                    maxStack = qSelector(`#${item.AbilityID}_icon__button`).textContent
+                                if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                    maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
                                 }
                                 if (itemEquipAbilityMAP[item.AbilityID]) {
 
-                                    if (qSelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
+                                    if (document.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
 
-                                        for (const nodes of Object.values(qSelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
+                                        for (const nodes of Object.values(document.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
                                             maxStack = Math.max(nodes.textContent, maxStack)
 
                                     }
@@ -1450,7 +1514,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                                 ifcapped()[prop].push(status[prop] * maxStack)
                             }
                             else {
-                                ifcapped()[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID]) * maxStack)
+                                ifcapped()[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID], isPlayer) * maxStack)
                             }
                         }
                         else {
@@ -1482,8 +1546,8 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                                 item.SelfApplyStatusEffect = item.SelfApplyStatusEffect.toUpperCase()
 
                             if (item.OtherApplyStatusEffect == status.StatusID || item.SelfApplyStatusEffect == status.StatusID) {
-                                if (qSelector(`#${item.AbilityID}_icon__button`)) {
-                                    maxStack = qSelector(`#${item.AbilityID}_icon__button`).textContent
+                                if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                    maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
                                 }
                             }
                         }
@@ -1497,7 +1561,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                             if (!itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID].ScalingPerGearScore)
                                 uncappedSelfStatusProps[prop].push(status[prop] * maxStack)
                             else
-                                uncappedSelfStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID]) * maxStack)
+                                uncappedSelfStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID], isPlayer) * maxStack)
                         }
                         else {
                             uncappedSelfStatusProps[prop].push((status[prop] * maxStack) || 0)
@@ -1531,8 +1595,8 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                                 item.OtherApplyStatusEffect = item.OtherApplyStatusEffect.toUpperCase()
                             if (item.OtherApplyStatusEffect == status.StatusID) {
 
-                                if (qSelector(`#${item.AbilityID}_icon__button`)) {
-                                    maxStack = qSelector(`#${item.AbilityID}_icon__button`).textContent
+                                if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                    maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
 
                                 }
                             }
@@ -1549,7 +1613,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                                 ifcapped()[prop].push(status[prop] * maxStack)
                             }
                             else {
-                                ifcapped()[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID]) * maxStack)
+                                ifcapped()[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID], isPlayer) * maxStack)
                             }
 
                         else {
@@ -1581,8 +1645,8 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
 
                             if (item.OtherApplyStatusEffect == status.StatusID) {
-                                if (qSelector(`#${item.AbilityID}_icon__button`)) {
-                                    maxStack = qSelector(`#${item.AbilityID}_icon__button`).textContent
+                                if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                    maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
                                 }
                             }
                         }
@@ -1596,7 +1660,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                             if (!itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID].ScalingPerGearScore)
                                 uncappedOtherStatusProps[prop].push(status[prop] * maxStack)
                             else
-                                uncappedOtherStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID]) * maxStack)
+                                uncappedOtherStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID], isPlayer) * maxStack)
                         }
                         else {
                             uncappedOtherStatusProps[prop].push((status[prop] * maxStack) || 0)
@@ -1612,14 +1676,22 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                 if (!perkapply[prop])
                     affixSelfProps[prop].push(0)
                 else {
-                    if (typeof perkapply[prop] === "number") {
-                        affixSelfProps[prop].push(perkapply[prop] * itemScaling(itemAffixMAP[perkapply.StatusID.toUpperCase()]))
-
-                    }
+                    if (itemAffixMAP[perkapply.StatusID.toUpperCase()]?.ScalingPerGearScore)
+                        if (typeof perkapply[prop] === "number") {
+                            affixSelfProps[prop].push(perkapply[prop] * itemScaling(itemAffixMAP[perkapply.StatusID.toUpperCase()], isPlayer))
+                        }
+                        else {
+                            affixSelfProps[prop].push(perkapply[prop].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemAffixMAP[perkapply.StatusID.toUpperCase()], isPlayer))
+                        }
                     else {
-                        affixSelfProps[prop].push(perkapply[prop].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemAffixMAP[perkapply.StatusID.toUpperCase()]))
-                    }
+                        if (typeof perkapply[prop] === "number") {
+                            affixSelfProps[prop].push(perkapply[prop])
+                        }
+                        else {
+                            affixSelfProps[prop].push(perkapply[prop].match(/(\d\.\d+)|(\d+)/g))
+                        }
 
+                    }
                 }
             })
 
@@ -1697,14 +1769,14 @@ const armorMitigation = () => {
     if (selectedVitals.VitalsID != "Player") {
         physRating = Math.pow(selectedVitals.GearScoreOverride, 1.2) * selectedVitals.PhysicalMitigation / (1 - selectedVitals.PhysicalMitigation)
         eleRating = Math.pow(selectedVitals.GearScoreOverride, 1.2) * selectedVitals.ElementalMitigation / (1 - selectedVitals.ElementalMitigation)
-        armorMit.Physical = Math.min(1 - 1 / (1 + Math.floor(physRating) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
-        armorMit.Elemental = Math.min(1 - 1 / (1 + Math.floor(eleRating) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+        armorMit.Physical = Math.min(1 - 1 / (1 + Math.floor(physRating) / Math.pow(playerEquip.querySelector("#weapon_gearscore").value, 1.2)), 0.6)
+        armorMit.Elemental = Math.min(1 - 1 / (1 + Math.floor(eleRating) / Math.pow(playerEquip.querySelector("#weapon_gearscore").value, 1.2)), 0.6)
 
     }
 
     if (selectedVitals.VitalsID == "Player") {
-        armorMit.Physical = Math.min(1 - 1 / (1 + Math.floor(qSelector("#phys_armorrating").value) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
-        armorMit.Elemental = Math.min(1 - 1 / (1 + Math.floor(qSelector("#ele_armorrating").value) / Math.pow(gearscorevalue.value, 1.2)), 0.6)
+        armorMit.Physical = Math.min(1 - 1 / (1 + Math.floor(targetCondition.querySelector("#phys_armorrating").value) / Math.pow(playerEquip.querySelector("#weapon_gearscore").value, 1.2)), 0.6)
+        armorMit.Elemental = Math.min(1 - 1 / (1 + Math.floor(targetCondition.querySelector("#ele_armorrating").value) / Math.pow(playerEquip.querySelector("#weapon_gearscore").value, 1.2)), 0.6)
     }
 
     return
@@ -1712,9 +1784,9 @@ const armorMitigation = () => {
 
 
 
-const getGSBasedDamage = () => weaponData.BaseDamage * (1.0112) ** (Math.floor((Math.min(500, Math.max(gearscore.value, 100)) - 100) / 5)) * (1 + 0.0112 * 0.6667) ** (Math.floor((Math.max(gearscore.value, 500) - 500) / 5));
+const getGSBasedDamage = () => weaponData.BaseDamage * (1.0112) ** (Math.floor((Math.min(500, Math.max(playerEquip.querySelector("#weapon_gearscore").value, 100)) - 100) / 5)) * (1 + 0.0112 * 0.6667) ** (Math.floor((Math.max(playerEquip.querySelector("#weapon_gearscore").value, 500) - 500) / 5));
 
-const getLevelScaling = () => 1 + .025 * (levelvalue.value - 1);
+const getLevelScaling = () => 1 + .025 * (playerAttr.querySelector("#lvl").value - 1);
 
 const getStatScaling = () => {
     activeSelfAttributeAbility = []
@@ -1734,8 +1806,8 @@ const getStatScaling = () => {
             statSum += tmpAttributeScaling * attributeDefinitions[attributeKey][STATS[attributeKey] - 5].ModifierValueSum;
         }
 
-        if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix) {
-            const affixScaling = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()][`Scaling${ATTRIBUTES[attributeKey]}`]
+        if (itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix) {
+            const affixScaling = affixDataMAP[itemPerkMAP[document.querySelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()][`Scaling${ATTRIBUTES[attributeKey]}`]
             if (affixScaling > 0) {
                 affixStatSum += affixScaling * attributeDefinitions[attributeKey][STATS[attributeKey] - 5].ModifierValueSum;
             }
@@ -1768,20 +1840,18 @@ const getItemEqiup = () => {
     let hasStacks = false
     let stackMax
 
-    new Array(".wepperks", ".armorperks", ".wepgem", ".targetperks", ".target_wepgem", ".target_wepperk").forEach(object => {
-        qSelectorAll(object).forEach(item => {
+    equipContainers.forEach(container => {
+        container.querySelectorAll(".perks").forEach(item => {
             hasStacks = false
             stackMax = null
-            let isPlayer = (object == ".armorperks" || object == ".wepperks" || object == ".wepperks" || object == ".wepgem")
-            let whichnonstackable = isPlayer ? notstackableSelf : notstackableTarget
-            let whichtargetItemPerks = isPlayer ? activeSelfItemPerks : activeTargetItemPerks
+            const isPlayer = container === playerEquip
+            const whichnonstackable = isPlayer ? notstackableSelf : notstackableTarget
+            const whichtargetItemPerks = isPlayer ? activeSelfItemPerks : activeTargetItemPerks
 
             if (itemPerkMAP[item.value?.toUpperCase()]) {
                 if (itemPerkMAP[item.value.toUpperCase()].EquipAbility) {
 
                     itemPerkMAP[item.value.toUpperCase()].EquipAbility.split(",").forEach(ability => {
-
-
 
                         if (!globalAbilityMAP[ability.toUpperCase()].IsStackableAbility) {
 
@@ -1810,7 +1880,7 @@ const getItemEqiup = () => {
                 }
 
                 if (itemPerkMAP[item.value.toUpperCase()]) {
-                    let perkIcon = qSelectorAll(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`)
+                    let perkIcon = document.querySelectorAll(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`)
                     if (perkIcon[0]) {
                         if (hasStacks) {
                             for (const btn of Object.values(perkIcon)) {
@@ -1824,10 +1894,10 @@ const getItemEqiup = () => {
 
                         }
                         else {
-                            qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`).classList.remove("show", "maxStack")
-                            qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`).textContent = 1
-                            qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}_bg]`).classList.remove("show")
-                            qSelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}_border]`).classList.remove("show")
+                            document.querySelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`).classList.remove("show", "maxStack")
+                            document.querySelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`).textContent = 1
+                            document.querySelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}_bg]`).classList.remove("show")
+                            document.querySelector(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}_border]`).classList.remove("show")
                         }
 
                     }
@@ -1835,11 +1905,8 @@ const getItemEqiup = () => {
 
 
             }
-
-
-
-
         })
+
 
     })
 
@@ -1936,9 +2003,9 @@ const replaceToken = (ability) => {
 
     }
 
-    extradescription = `${ability.DisplayName} <br><br> ${extradescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'")}`
-    description = `${ability.DisplayName} <br><br> ${description.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'")}`
-    ctrldescription = `${ability.DisplayName} <br><br> ${ctrldescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'")}`
+    extradescription = `${ability.DisplayName} <br><br> ${extradescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'").replace(/font face=\"lyshineui\/fonts\/pica_regular\.font\"/gi, "p class='pica'")}`
+    description = `${ability.DisplayName} <br><br> ${description.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'").replace(/font face=\"lyshineui\/fonts\/pica_regular\.font\"/gi, "p class='pica'")}`
+    ctrldescription = `${ability.DisplayName} <br><br> ${ctrldescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'").replace(/font face=\"lyshineui\/fonts\/pica_regular\.font\"/gi, "p class='pica'")}`
     return {
         normal: description,
         extra: extradescription,
@@ -1993,7 +2060,7 @@ const ABS = (damageID, damageType) => {
 }
 
 const findDamageCategory = (damageID) => {
-    return damageCategoryMAP[currentWeaponDamageMAP[damageID].DamageType].Category
+    return damageCategoryMAP[currentSelfWeaponDamageMAP[damageID].DamageType].Category
 
 }
 
@@ -2002,13 +2069,13 @@ let isStatusEffect = false
 
 
 const dmgcoeforhealtmod = (damageID) => {
-    if (currentWeaponDamageMAP[damageID].HealthModifierDamageBased) {
+    if (currentSelfWeaponDamageMAP[damageID].HealthModifierDamageBased) {
         isStatusEffect = true
-        return Math.abs(currentWeaponDamageMAP[damageID].HealthModifierDamageBased)
+        return Math.abs(currentSelfWeaponDamageMAP[damageID].HealthModifierDamageBased)
     }
     else {
         isStatusEffect = false
-        return currentWeaponDamageMAP[damageID].DmgCoef
+        return currentSelfWeaponDamageMAP[damageID].DmgCoef
     }
 }
 
@@ -2019,12 +2086,12 @@ function damageFormula(damageID) {
     let arrDMG = []
     let affixSplit = 0
 
-    if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix && damageTableMAP[damageID?.toUpperCase()]) {
-        affixSplit = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
+    if (itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix && damageTableMAP[damageID?.toUpperCase()]) {
+        affixSplit = affixDataMAP[itemPerkMAP[document.querySelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
     }
 
-    if (itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase())
-        findGem = affixDataMAP[itemPerkMAP[qSelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()]
+    if (itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix)
+        findGem = affixDataMAP[itemPerkMAP[document.querySelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()]
 
 
 
@@ -2032,7 +2099,7 @@ function damageFormula(damageID) {
     noGEM = wepdmg
         * dmgcoeforhealtmod(damageID)
         * (1 + self.modsSelf[damageID].BaseDamage)
-        * (1 - ABS(damageID, currentWeaponDamageMAP[damageID].DamageType))
+        * (1 - ABS(damageID, currentSelfWeaponDamageMAP[damageID].DamageType))
         * (1 - affixSplit)
 
     GEM = wepdmgsplit
@@ -2041,16 +2108,16 @@ function damageFormula(damageID) {
         * (1 - ABS(damageID, findGem?.DamageType))
         * affixSplit
 
-    arrDMG[0] = (1 + DMG(damageID, currentWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+    arrDMG[0] = (1 + DMG(damageID, currentSelfWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
 
-    arrDMG[1] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+    arrDMG[1] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentSelfWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
 
-    arrDMG[2] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+    arrDMG[2] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentSelfWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
 
-    arrDMG[3] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+    arrDMG[3] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, currentSelfWeaponDamageMAP[damageID].DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
         * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
 
 
@@ -2088,7 +2155,7 @@ function damageFormula(damageID) {
     }
 
 }
-
+setItemPerkList(targetEquip)
 
 //Final Damage
 const getFinalDamage = () => {
@@ -2096,7 +2163,7 @@ const getFinalDamage = () => {
     target = {}
     armorMitigation()
     getWeaponDamage()
-
+    console.log(selfDamageIDMap)
     self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility), selfDamageIDMap)
     target = checkCondition(activeTargetItemPerks, targetDamageIDMap)
     setBarDescription()
@@ -2109,63 +2176,63 @@ const getFinalDamage = () => {
         if (!damageID)
             continue
 
-        qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal)
-        qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal)
+        document.querySelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal)
+        document.querySelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal)
         if (damageFormula(damageID).normalGEM) {
-            qSelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal + damageFormula(damageID).normalGEM)
-            qSelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal + damageFormula(damageID).normalGEM)
+            document.querySelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal + damageFormula(damageID).normalGEM)
+            document.querySelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal + damageFormula(damageID).normalGEM)
             /* qSelector(`#${key}_normalGEM_span`).textContent = damageFormula(attack).normalGEM */
         }
 
-        if (currentWeaponDamageMAP[damageID].CanCrit != false) {
-            qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(damageID).crit)
-            qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(damageID).crit)
-            qSelector(`#${key}_crit`).classList.add("show")
-            qSelector(`#${key}_crit`).classList.remove("hide")
-            qSelector(`#${key}_crit_span_after`).classList.remove("hide")
+        if (currentSelfWeaponDamageMAP[damageID].CanCrit != false) {
+            document.querySelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(damageID).crit)
+            document.querySelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(damageID).crit)
+            document.querySelector(`#${key}_crit`).classList.add("show")
+            document.querySelector(`#${key}_crit`).classList.remove("hide")
+            document.querySelector(`#${key}_crit_span_after`).classList.remove("hide")
             if (damageFormula(damageID).critGEM) {
-                qSelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(damageID).crit + damageFormula(damageID).critGEM)
-                qSelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(damageID).crit + damageFormula(damageID).critGEM)
+                document.querySelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(damageID).crit + damageFormula(damageID).critGEM)
+                document.querySelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(damageID).crit + damageFormula(damageID).critGEM)
             }
         }
         else {
-            qSelector(`#${key}_crit`).classList.remove("show")
-            qSelector(`#${key}_crit`).classList.add("hide")
-            qSelector(`#${key}_crit_span_after`).classList.add("hide")
+            document.querySelector(`#${key}_crit`).classList.remove("show")
+            document.querySelector(`#${key}_crit`).classList.add("hide")
+            document.querySelector(`#${key}_crit_span_after`).classList.add("hide")
         }
 
-        if (currentWeaponDamageMAP[damageID].NoBackstab != true) {
-            qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(damageID).backstab)
-            qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(damageID).backstab)
-            qSelector(`#${key}_backstab`).classList.add("show")
-            qSelector(`#${key}_backstab`).classList.remove("hide")
-            qSelector(`#${key}_backstab_span_after`).classList.remove("hide")
+        if (currentSelfWeaponDamageMAP[damageID].NoBackstab != true) {
+            document.querySelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(damageID).backstab)
+            document.querySelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(damageID).backstab)
+            document.querySelector(`#${key}_backstab`).classList.add("show")
+            document.querySelector(`#${key}_backstab`).classList.remove("hide")
+            document.querySelector(`#${key}_backstab_span_after`).classList.remove("hide")
             if (damageFormula(damageID).backstabGEM) {
-                qSelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(damageID).backstab + damageFormula(damageID).backstabGEM)
-                qSelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(damageID).backstab + damageFormula(damageID).backstabGEM)
+                document.querySelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(damageID).backstab + damageFormula(damageID).backstabGEM)
+                document.querySelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(damageID).backstab + damageFormula(damageID).backstabGEM)
             }
         }
         else {
-            qSelector(`#${key}_backstab`).classList.remove("show")
-            qSelector(`#${key}_backstab`).classList.add("hide")
-            qSelector(`#${key}_backstab_span_after`).classList.add("hide")
+            document.querySelector(`#${key}_backstab`).classList.remove("show")
+            document.querySelector(`#${key}_backstab`).classList.add("hide")
+            document.querySelector(`#${key}_backstab_span_after`).classList.add("hide")
         }
 
-        if (currentWeaponDamageMAP[damageID].NoHeadshot != true) {
-            qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(damageID).headshot)
-            qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(damageID).headshot)
-            qSelector(`#${key}_headshot`).classList.add("show")
-            qSelector(`#${key}_headshot`).classList.remove("hide")
-            qSelector(`#${key}_headshot_span_after`).classList.remove("hide")
+        if (currentSelfWeaponDamageMAP[damageID].NoHeadshot != true) {
+            document.querySelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(damageID).headshot)
+            document.querySelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(damageID).headshot)
+            document.querySelector(`#${key}_headshot`).classList.add("show")
+            document.querySelector(`#${key}_headshot`).classList.remove("hide")
+            document.querySelector(`#${key}_headshot_span_after`).classList.remove("hide")
             if (damageFormula(damageID).headshotGEM) {
-                qSelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(damageID).headshot + damageFormula(damageID).headshotGEM)
-                qSelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(damageID).headshot + damageFormula(damageID).headshotGEM)
+                document.querySelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(damageID).headshot + damageFormula(damageID).headshotGEM)
+                document.querySelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(damageID).headshot + damageFormula(damageID).headshotGEM)
             }
         }
         else {
-            qSelector(`#${key}_headshot`).classList.remove("show")
-            qSelector(`#${key}_headshot`).classList.add("hide")
-            qSelector(`#${key}_headshot_span_after`).classList.add("hide")
+            document.querySelector(`#${key}_headshot`).classList.remove("show")
+            document.querySelector(`#${key}_headshot`).classList.add("hide")
+            document.querySelector(`#${key}_headshot_span_after`).classList.add("hide")
         }
 
 
@@ -2182,17 +2249,17 @@ const getFinalDamage = () => {
             return 0
         }
 
-        qSelector(`#${key}_normal`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
-        qSelector(`#${key}_crit`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_backstab`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_headshot`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_normal_span`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
-        qSelector(`#${key}_crit_span`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_backstab_span`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_headshot_span`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
-        qSelector(`#${key}_normal_gem`).style.width = 0 + "%"
+        document.querySelector(`#${key}_normal`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+        document.querySelector(`#${key}_crit`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_backstab`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_headshot`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_normal_span`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+        document.querySelector(`#${key}_crit_span`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_backstab_span`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_headshot_span`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        document.querySelector(`#${key}_normal_gem`).style.width = 0 + "%"
         if (isGEM("normalGEM"))
-            qSelector(`#${key}_normal_gem`).style.width = damageFormula(damageID).normalGEM / (damageFormula(damageID).normal + damageFormula(damageID).normalGEM) * 100 + "% "
+            document.querySelector(`#${key}_normal_gem`).style.width = damageFormula(damageID).normalGEM / (damageFormula(damageID).normal + damageFormula(damageID).normalGEM) * 100 + "% "
 
 
     }
@@ -2206,7 +2273,7 @@ const getFinalDamage = () => {
     for (let [key, attack] of Object.entries(selfDamageIDMap)) {
         if (!attack)
             continue
-        qSelector(`#${key}`).style.width = Math.max(maxDIV[attack] * 100, 11) + "%"
+        document.querySelector(`#${key}`).style.width = Math.max(maxDIV[attack] * 100, 11) + "%"
 
     }
 
@@ -2251,32 +2318,19 @@ function debounced(delay, fn) {
 
 // Event Listeners Start
 
-const eventHandler = (event) => {
-    let x = ((gearscore.value - gearscore.min) * 100) / (gearscore.max - gearscore.min)
-    let color = `linear-gradient(90deg, rgb(117,252,117) ${(x)}%, rgb(214,214,214) ${(x)}%)`;
-    gearscore.style.background = color;
-    gearscorevalue.value = gearscore.value
-    gearscorevalue.setAttribute("value", gearscore.value)
-    gearscore.setAttribute("value", x)
-    gearscore.setAttribute("data-content", gearscore.value)
-    getFinalDamage()
-}
-
-const dHandler = debounced(.1, eventHandler)
-
 let interval
 let safetyStop = false
 let timeoutInterval
 
 function down(e, v) {
     safetyStop = false
-    qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
-    qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
+    document.querySelector(`#${e.target.getAttribute("for")}`).value = Number(document.querySelector(`#${e.target.getAttribute("for")}`).value) + v
+    document.querySelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
     if (!safetyStop)
         timeoutInterval = setTimeout(function () {
             interval = setInterval(function () {
-                qSelector(`#${e.target.getAttribute("for")}`).value = Number(qSelector(`#${e.target.getAttribute("for")}`).value) + v
-                qSelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
+                document.querySelector(`#${e.target.getAttribute("for")}`).value = Number(document.querySelector(`#${e.target.getAttribute("for")}`).value) + v
+                document.querySelector(`#${e.target.getAttribute("for")}`).dispatchEvent(new Event('change'))
             }, 200)
         }, 300)
 }
@@ -2290,23 +2344,25 @@ function up() {
 
 new Array("change").forEach(type => {
 
-    gearscorevalue.addEventListener(type, (e) => {
-        if (e.target.value > 625) {
-            e.target.value = 625
-        }
-        if (e.target.value < 100) {
-            e.target.value = 100
-        }
-        let x = ((gearscorevalue.value - gearscore.min) * 100) / (gearscore.max - gearscore.min)
-        let color = `linear-gradient(90deg, rgb(117,252,117) ${(x)}%, rgb(214,214,214) ${(x)}%)`;
-        gearscore.style.background = color;
-        gearscore.value = gearscorevalue.value
-        gearscore.setAttribute("value", x)
-        gearscore.setAttribute("data-content", gearscore.value)
-        getFinalDamage()
+
+    equipContainers.forEach(container => {
+        container.querySelectorAll(".gearscore").forEach(gearscore => {
+            gearscore.addEventListener(type, (e) => {
+                if (e.target.value > 625) {
+                    e.target.value = 625
+                    e.target.setAttribute("value", 625)
+                }
+                if (e.target.value < 100) {
+                    e.target.value = 100
+                    e.target.setAttribute("value", 100)
+                }
+                getFinalDamage()
+            })
+        })
     })
 
-    levelvalue.addEventListener(type, (e) => {
+
+    playerAttr.querySelector('#lvl').addEventListener(type, (e) => {
         if (e.target.value > 60) {
             e.target.value = 60
         }
@@ -2326,59 +2382,61 @@ new Array("change").forEach(type => {
     })
 
     for (const attributeKey of Object.keys(ATTRIBUTES)) {
-        const attr = document.getElementById(attributeKey.toLowerCase());
+        const attr = playerAttr.querySelector(`#${attributeKey.toLowerCase()}`);
         attr.addEventListener(type, (e) => {
             const target = e.target;
             if (target.value > 500) {
                 target.value = 500
                 STATS[target.id.toUpperCase()] = 500
             }
-            if (target.value < 5) {
+            else if (target.value < 5) {
                 target.value = 5
                 STATS[target.id.toUpperCase()] = 5
             }
-            STATS[target.id.toUpperCase()] = Math.max(Math.min(parseInt(target.value), 500), 5)
-            getFinalDamage();
+            else {
+                STATS[target.id.toUpperCase()] = Math.max(Math.min(parseInt(target.value), 500), 5)
+                getFinalDamage();
+            }
         })
     }
 
-    qSelectorAll(".armor_rating").forEach(item =>
+    targetCondition.querySelectorAll(".armor_rating").forEach(item =>
         item.addEventListener(type, (e) => {
             getFinalDamage()
         })
     )
 
-    qSelector(".target_level_container").addEventListener(type, (e) => {
+    targetCondition.querySelector(".target_level_container").addEventListener(type, (e) => {
 
         for (let vital of Object.values(vitals)) {
-            if (vital.DisplayName == qSelector("#targetvitals").value && vital.Level == qSelector(".target_level_container").value)
+            if (vital.DisplayName == document.querySelector("#targetvitals").value && vital.Level == document.querySelector(".target_level_container").value)
                 selectedVitals = vital
         }
         getFinalDamage()
 
     })
 
-    qSelector("#targetvitals").addEventListener(type, (e) => {
+    targetCondition.querySelector("#targetvitals").addEventListener(type, (e) => {
 
-        while (qSelector(".target_level_container").firstChild)
-            qSelector(".target_level_container").removeChild(qSelector(".target_level_container").lastChild)
+        while (document.querySelector(".target_level_container").firstChild)
+            document.querySelector(".target_level_container").removeChild(document.querySelector(".target_level_container").lastChild)
         for (let vital of Object.values(vitals)) {
             if (vital.DisplayName == e.target.value)
-                qSelector(".target_level_container").appendChild(createItem("option", vital.Level, { class: "levelof_vital" }))
-            if ((vital.DisplayName == e.target.value && vital.Level == qSelector(".target_level_container").value))
+                document.querySelector(".target_level_container").appendChild(createItem("option", vital.Level, { class: "levelof_vital" }))
+            if ((vital.DisplayName == e.target.value && vital.Level == document.querySelector(".target_level_container").value))
                 selectedVitals = vital
             if (e.target.value == "Player")
                 selectedVitals = vitalsNameMAP["Player"]
         }
         if (selectedVitals.VitalsID == "Player") {
 
-            qSelectorAll(".armor_rating").forEach(select => {
+            targetCondition.querySelectorAll(".armor_rating").forEach(select => {
                 select.classList.add("show")
                 select.value = 0
             })
         }
         else
-            qSelectorAll(".armor_rating").forEach(select => select.classList.remove("show"))
+            targetCondition.querySelectorAll(".armor_rating").forEach(select => select.classList.remove("show"))
         getFinalDamage()
     })
 
@@ -2386,7 +2444,7 @@ new Array("change").forEach(type => {
 })
 
 
-new Array("keydown").forEach(type =>
+new Array("keydown").forEach(type => {
     window.addEventListener(type, function check(e) {
         if (e.keyCode == 16) {
             shiftACTIVE = true
@@ -2400,12 +2458,36 @@ new Array("keydown").forEach(type =>
         }
 
         if (e.keyCode == 27) {
-            if (qSelector(".active_list"))
-                qSelector(".active_list").classList.remove("active_list")
+            if (document.querySelector(".active_list"))
+                document.querySelector(".active_list").classList.remove("active_list")
         }
 
     })
-)
+
+    equipContainers.forEach(container => {
+        container.querySelectorAll(".search").forEach(search => search.addEventListener(type, (e) => {
+            let parentDiv = e.target.parentNode.parentNode
+            if (e.keyCode == 13) {
+                let value = e.target.value.toLowerCase()
+                const target = e.target.parentNode.querySelector(".addedperk:not(.hide)")
+                const input = e.target.parentNode.parentNode.querySelector(".bttn")
+
+                if (target.textContent.toLowerCase().includes(value))
+                    input.setAttribute("value", target.textContent)
+
+                parentDiv.querySelector(`.perks`).dispatchEvent(new Event('input'))
+                parentDiv.querySelector(`.perks`).setAttribute('src', `../${itemPerkNameMAP[target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[target.textContent].PerkID}`)
+                parentDiv.querySelector(".removebttn").classList.add("show")
+                parentDiv.querySelector(".icon__button").setAttribute("for", itemPerkNameMAP[target.textContent].PerkID)
+                parentDiv.querySelector(".icon__button__bg").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_bg`)
+                parentDiv.querySelector(".icon__button__border").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_border`)
+                parentDiv.querySelector(".list_container").classList.remove("active_list")
+                e.target.value = ""
+                e.target.parentNode.querySelectorAll(".addedperk").forEach(perk => perk.classList.remove("hide"))
+            }
+        }))
+    })
+})
 
 new Array("keyup").forEach(type =>
 
@@ -2426,121 +2508,120 @@ new Array("keyup").forEach(type =>
 
 new Array("input").forEach(type => {
 
-    document.getElementById("weapon").addEventListener(type, () => {
-        loadWeaponData()
-        qSelectorAll(".wep_addedperk").forEach(x => x.remove())
-    });
 
-    qSelector("#debuff_target").addEventListener(type, getFinalDamage)
 
-    qSelector(".player_statuseffects_select").addEventListener(type, () => {
+    targetCondition.querySelector("#debuff_target").addEventListener(type, getFinalDamage)
+
+    playerAttr.querySelector(".player_statuseffects_select").addEventListener(type, () => {
         equipWepAbility()
         getFinalDamage()
     })
 
-    new Array(".perks", ".targetperks").forEach(item => {
-        qSelectorAll(item).forEach(x => x.addEventListener(type, () => {
-            getItemEqiup()
-            getFinalDamage()
+    document.querySelectorAll(".perks").forEach(x => x.addEventListener(type, () => {
+        getItemEqiup()
+        getFinalDamage()
 
-        }))
+    }))
+
+    equipContainers.forEach(container => {
+
+        container.querySelectorAll(".perks").forEach(perk => {
+            perk.addEventListener(type, () => {
+                getItemEqiup()
+                getFinalDamage()
+            })
+        })
+
     })
 
 
-    gearscore.addEventListener(type, dHandler)
 
-    qSelectorAll(".search").forEach(search => search.addEventListener(type, (e) => {
-        const value = e.target.value.toLowerCase()
-        e.target.parentNode.querySelectorAll(".addedperk").forEach(perk => {
-            const isVisible = perk.textContent.toLowerCase().includes(value)
-            perk.classList.toggle("hide", !isVisible)
-        })
-    }))
+
+
+
+    equipContainers.forEach(container => {
+        container.querySelectorAll(".search").forEach(search => search.addEventListener(type, (e) => {
+            const value = e.target.value.toLowerCase()
+            e.target.parentNode.querySelectorAll(".addedperk").forEach(perk => {
+                if (perk) {
+                    //const lookup = perk.textContent.toLowerCase().includes(value) ? globalAbilityMAP[itemPerkMAP[perk.getAttribute("value").toUpperCase()].EquipAbility.toUpperCase()] : false
+                    //const ability = globalAbilityMAP[itemPerkMAP[perk?.getAttribute("value").toUpperCase()]?.EquipAbility?.toUpperCase()] ? globalAbilityMAP[itemPerkMAP[perk?.getAttribute("value").toUpperCase()]?.EquipAbility?.toUpperCase()] : false
+                    //const status = perkStatusEffectMAP[globalAbilityMAP[itemPerkMAP[perk?.getAttribute("value").toUpperCase()]?.EquipAbility?.toUpperCase()]?.SelfApplyStatusEffect.toUpperCase()]?
+                    //   perkStatusEffectMAP[globalAbilityMAP[itemPerkMAP[perk?.getAttribute("value").toUpperCase()]?.EquipAbility?.toUpperCase()].SelfApplyStatusEffect.toUpperCase()] : false
+                    //console.log(status)
+                    //ability[e.target.value] > "" || ability[e.target.value] < "" || status[e.target.value] > "" || status[e.target.value] < "" || status.EffectCategories?.includes(e.target.value)
+                    const isVisible = perk.textContent.toLowerCase().includes(value)
+                    perk.classList.toggle("hide", !isVisible)
+                }
+            })
+        }))
+    })
+
 })
 
-qSelectorAll(".search").forEach(search => search.addEventListener("keydown", (e) => {
-    let parentDiv = e.target.parentNode.parentNode
-    let whichPerk = parentDiv.querySelector(".armorperks") ? "armorperks" : parentDiv.querySelector(".wepperks") ? "wepperks" : "targetperks"
-    if (e.keyCode == 13) {
-        let value = e.target.value.toLowerCase()
-        const target = e.target.parentNode.querySelector(".addedperk:not(.hide)")
-        const input = e.target.parentNode.parentNode.querySelector(".bttn")
 
-        if (target.textContent.toLowerCase().includes(value))
-            input.setAttribute("value", target.textContent)
-
-        parentDiv.querySelector(`.${whichPerk}`).dispatchEvent(new Event('input'))
-        parentDiv.querySelector(`.${whichPerk}`).setAttribute('src', `../${itemPerkNameMAP[target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[target.textContent].PerkID}`)
-        parentDiv.querySelector(".removebttn").classList.add("show")
-        parentDiv.querySelector(".icon__button").setAttribute("for", itemPerkNameMAP[target.textContent].PerkID)
-        parentDiv.querySelector(".icon__button__bg").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_bg`)
-        parentDiv.querySelector(".icon__button__border").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_border`)
-        parentDiv.querySelector(".list_container").classList.remove("active_list")
-        e.target.value = ""
-        e.target.parentNode.querySelectorAll(".addedperk").forEach(perk => perk.classList.remove("hide"))
-    }
-}))
 
 
 
 new Array("mousedown", "touchstart").forEach(type => {
 
-    qSelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, function change(e) {
+    playerAttr.querySelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
-        if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
+        if (playerAttr.querySelector(`#${e.target.getAttribute("for")}`).value != 5)
             down(e, -10)
     }))
 
-    qSelectorAll(".reduce1").forEach(bttn => bttn.addEventListener(type, function change(e) {
+    playerAttr.querySelectorAll(".reduce1").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
-        if (qSelector(`#${e.target.getAttribute("for")}`).value != 5)
+        if (playerAttr.querySelector(`#${e.target.getAttribute("for")}`).value != 5)
             down(e, -1)
     }))
 
-    qSelectorAll(".increase10").forEach(bttn => bttn.addEventListener(type, function change(e) {
+    playerAttr.querySelectorAll(".increase10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
-        if (qSelector(`#${e.target.getAttribute("for")}`).value != 500) {
+        if (playerAttr.querySelector(`#${e.target.getAttribute("for")}`).value != 500) {
             down(e, +10)
         }
     }))
 
-    qSelectorAll(".increase1").forEach(bttn => bttn.addEventListener(type, function change(e) {
+    playerAttr.querySelectorAll(".increase1").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
-        if (qSelector(`#${e.target.getAttribute("for")}`).value != 500) {
+        if (playerAttr.querySelector(`#${e.target.getAttribute("for")}`).value != 500) {
             down(e, +1)
         }
 
     }))
 
-    document.querySelectorAll(".weaponsmall").forEach(img => img.addEventListener(type, function change(e) {
-        console.log(e.target)
-    }))
-
-
-
 
 
     document.addEventListener(type, (e) => {
-
+        console.log(e.target)
         let currentDropdown = e.target.parentNode.querySelector(".list_container")
         const isDropdownButton = e.target.matches(".bttn")
         const isDropdownListItem = e.target.matches(".addedperk")
 
-        if (!isDropdownButton && !isDropdownListItem && !e.target.matches(".list_container") && !e.target.matches(".search"))
-            qSelectorAll(".active_list").forEach(dropdown => {
-                dropdown.classList.remove("active_list")
-            })
+        if (!isDropdownButton && !isDropdownListItem && !e.target.matches(".list_container") && !e.target.matches(".search")) {
+            if (!e.target.matches(".list_div")) {
+                document.querySelectorAll(".active_list").forEach(dropdown => {
+                    dropdown.classList.remove("active_list")
+                })
+            }
+        }
 
         if (isDropdownButton) {
             currentDropdown?.classList.toggle('active_list')
+
             if (!currentDropdown)
                 e.target.parentNode.parentNode.querySelector(".list_container").classList.toggle('active_list')
 
-            qSelectorAll(".active_list").forEach(dropdown => {
-                if (currentDropdown)
-                    if (dropdown === currentDropdown) return
+            document.querySelectorAll(".active_list").forEach(dropdown => {
+                if (currentDropdown) {
+                    if (dropdown === currentDropdown)
+                        return
+                }
                 if (!currentDropdown && e.target.parentNode.parentNode.querySelector(".list_container"))
-                    if (dropdown === e.target.parentNode.parentNode.querySelector(".list_container")) return
+                    if (dropdown === e.target.parentNode.parentNode.querySelector(".list_container"))
+                        return
                 dropdown.classList.remove("active_list")
             })
         }

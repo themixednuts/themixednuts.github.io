@@ -61,13 +61,16 @@ body {
 
 
 .header {
-    position: relative;
-    background-color: #f3f3f3;
+    position: sticky;
+    background-color: gray;
     display: block;
     align-items: baseline;
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row: 1 / 2;
+    height: 70px;
+    width: 100%;
+    margin-top: 10px;
 }
 
 .topcontainer {
@@ -75,13 +78,11 @@ body {
     width: 100%;
     flex-grow: 1;
     flex-shrink: 0;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     flex-wrap: wrap;
     justify-content: space-between;
-    flex-direction: row-reverse;
-    height: fit-content;
 }
 
 .maincontent {
@@ -126,13 +127,19 @@ body {
     grid-row: 1/-1;
     flex-wrap: nowrap;
     align-content: flex-start;
-    gap: 2rem;
+    gap: 1rem;
     flex: 1 1 auto;
+
 }
 
 .equiprow {
     position: relative;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
     flex: 1;
+
 }
 
 .forms {
@@ -203,12 +210,10 @@ body {
 .target_container {
     position: relative;
     min-width: 100px;
-    display: grid;
-    grid-column: 4/5;
+    display: flex;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
     flex-direction: column;
-    flex: 1 0 auto;
     gap: 1rem;
     align-content: center;
     /* justify-content: center; */
@@ -216,21 +221,23 @@ body {
 
 .vitals_container {
     position: relative;
-    display: subgrid;
+    display: grid;
+    grid-template-columns: .75fr .25fr;
     grid-column: 1/-1;
     grid-row: 1/2;
     gap: 1rem;
-    justify-content: space-around;
 
 }
 
 .targetcondition_container {
     position: relative;
-    display: flex;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     grid-column: 1/-1;
     white-space: pre-line;
-    gap: 3rem;
-    justify-content: space-around;
+    gap: 1rem;
+    flex: 1;
 
 }
 
@@ -245,19 +252,22 @@ body {
     display: flex;
     white-space: pre-line;
     gap: 3rem;
+    flex: 1;
 }
 
 .weaponcontainer {
     position: relative;
-    grid-column: 1/ 2;
+    grid-column: 1/2;
     grid-row: 1 / -1;
-    flex: 2;
+    flex: 1;
     white-space: pre-line;
     display: inline-flex;
     flex-direction: column;
     align-items: space-between;
-    justify-content: space-around;
     gap: 2rem;
+    height: fit-content;
+    max-width: 600px;
+    min-width: 600px;
 }
 
 .weaponperk_container {
@@ -286,14 +296,15 @@ body {
 
 
 .input {
-    position: relative;
     all: unset;
+    position: relative;
     font-size: 4rem;
     font-weight: 600;
     background-color: #1F1F1F;
     text-align: center;
-    width: 110px;
+    width: 120px;
     flex-grow: 0;
+    height: 72px;
 }
 
 /* input:hover{
@@ -328,12 +339,12 @@ body {
 .damagecontainer {
     position: relative;
     container-type: inline-size;
-    grid-column: 1 / 2;
-    grid-row: 3 / 4;
+    grid-column: 2/ -1;
+    grid-row: 1/-1;
     min-width: 600px;
     max-width: 2400px;
     text-align: right;
-    flex-grow: 50;
+    flex-grow: 1;
 
 }
 
@@ -454,12 +465,11 @@ body {
 
 .gem_bg {
     position: relative;
-    display: block;
-    width: 42px;
-    height: 42px;
-    top: 50%;
-    left: 50%;
-    transform: translateY(-50%) translateX(-50%);
+    display: flex;
+    width: 52px;
+    height: 52px;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
     border-radius: 50%;
     border: 1px solid white;
@@ -601,7 +611,6 @@ body {
 
 .weapon_select_container {
     position: relative;
-    display: flex;
     height: auto;
 }
 
@@ -610,9 +619,18 @@ body {
     flex: 1 0 auto;
 }
 
+
+
 .weapon_icon {
     width: 280px;
     height: auto;
+}
+
+#player_weaponslot {
+    position: relative;
+    width: 100%;
+    height: auto;
+    flex-basis: auto;
 }
 
 .select {
@@ -880,6 +898,12 @@ option {
 
 }
 
+#targethp {
+    position: relative;
+    grid-column: 1/2;
+    width: 100%;
+}
+
 #targethp::after {
     position: relative;
     display: inline-block;
@@ -889,11 +913,17 @@ option {
     color: white;
 }
 
+#debuff_target {
+    position: relative;
+    grid-column: 2/3;
+}
+
 .armorrating_container {
     position: relative;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     grid-column: 1/-1;
-    gap: 2rem;
+    gap: 1rem;
     align-items: center;
     justify-content: space-around;
 }
@@ -905,12 +935,14 @@ option {
 
 #phys_armorrating {
     position: relative;
-    flex: 0 0 auto;
+    grid-column: 1/2;
+    width: 100%;
 }
 
 #ele_armorrating {
     position: relative;
-    flex: 0 0 auto;
+    grid-column: 2/-1;
+    width: 100%;
 }
 
 
@@ -954,11 +986,11 @@ option {
     width: 52px;
 }
 
-.targetequip_container{
+.targetequip_container {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: .25rem;
+    gap: 1rem;
 }
 
 .removebttn {
@@ -980,18 +1012,17 @@ option {
     height: 15rem;
     padding: 10px;
     width: 22rem;
-    overflow-y: auto;
-    overflow-x: hidden;
     display: none;
     background-color: #000000;
     font-size: 1.5rem;
 }
-.icon_div{
-    width: 52px;
-    height: 52px;
+
+.icon_div {
+    width: 72px;
+    height: 72px;
     background-image: url("../lyshineui/images/equipment/equipmentbg.png");
-    background-size: 56px;
-    background-position: -2px -1.5px;
+    background-size: 72px;
+    background-position: center;
     background-repeat: no-repeat;
     display: flex;
     justify-content: center;
@@ -999,12 +1030,16 @@ option {
 }
 
 .search {
-    position: relative;
+    position: sticky;
+    top: -5%;
+    z-index: 1;
 }
 
 .list_div {
     position: relative;
     cursor: pointer;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .active_list {
@@ -1016,29 +1051,38 @@ option {
 
 .button {
     position: relative;
-    height: 52px;
+    display: flex;
 }
 
-.bttn,
+.perkslot,
 .gemslot {
     position: relative;
-
     overflow: hidden;
-    top: 50%;
-    left: 50%;
-    transform: translateY(-50%) translateX(-50%);
 }
 
-.bttn {
+.perkslot {
     width: 52px;
     height: 52px;
 }
 
 .gemslot {
+    -webkit-appearance: none;
+    appearance: none;
     width: 42px;
     height: 42px;
 }
 
+.flex {
+    display: flex;
+    gap: 1rem;
+}
+
+
+#player_weapon_icon {
+    position: relative;
+    width: 150px;
+
+}
 
 .span {
     container-type: inline-size;
@@ -1148,18 +1192,23 @@ option {
     transform: translateY(-50%);
 }
 
-.weaponimgsmall_container{
+.weaponimgsmall_container {
     position: relative;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
     margin: 2px;
 }
-.weaponsmall{
+
+.weaponsmall,
+.weaponslot {
     width: 60px;
     height: 44px;
 }
-.weaponsmall:hover{
+
+
+
+.weaponsmall:hover {
     border: 1px solid white;
 
 }
@@ -1286,57 +1335,23 @@ option {
     }
 }
 
-@media (max-width: 1450px) {
+
+@media (max-width: 900px) {
     .topcontainer {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-    }
-
-    .weaponcontainer {
-        grid-column: 1/2;
-        grid-row: 2/3;
-    }
-
-    .target_container {
-        grid-column: 2/3;
-        grid-row: 1/2;
-    }
-
-    .playercondition_container {
-        grid-column: 2/3;
-        grid-row: 2/3;
-    }
-
-    .playerequip_container {
-        grid-column: 1/2;
-        grid-row: 1/2;
-    }
-}
-
-@media (max-width: 775px) {
-    .topcontainer {
-        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr max-content;
     }
 
     .weaponcontainer {
         grid-column: 1/-1;
-        grid-row: 3/4;
-    }
-
-    .target_container {
-        grid-column: 2/3;
-        grid-row: 1/2;
+        grid-row: 2/-1;
     }
 
     .playercondition_container {
         grid-column: 1/-1;
-        grid-row: 2/3;
-    }
-
-    .playerequip_container {
-        grid-column: 1/2;
         grid-row: 1/2;
     }
+
 }
 
 @font-face {
@@ -1364,7 +1379,7 @@ option {
 
 @font-face {
     font-family: 'pica';
-    src: url('../lyshineui/fonts/pica_regular.font');
+    src: url('../lyshineui/fonts/imfepirm28p.ttf');
 }
 
 /* @keyframes purshaseScale {
