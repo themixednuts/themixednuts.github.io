@@ -237,6 +237,10 @@ body {
 
 }
 
+.targetconditions_container {
+    width: 600px;
+}
+
 .target_level_container {
     position: relative;
     grid-column: 2/3;
