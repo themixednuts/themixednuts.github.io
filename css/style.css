@@ -476,6 +476,7 @@ body {
 .tippy-box[data-theme~='ability-tooltip'] {
     background-color: black;
     overflow-wrap: break-word;
+    min-width: max-content;
 }
 
 
@@ -1171,12 +1172,20 @@ option {
 
 }
 
+.scale75 {
+    scale: 75%;
+}
+
 .scale50 {
     scale: 50%;
 }
 
 .translate25 {
     transform: translateX(25%) translateY(-25%);
+}
+
+.translate50 {
+   transform: translateX(9%) translateY(-9%); 
 }
 
 

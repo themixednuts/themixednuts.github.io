@@ -1964,9 +1964,9 @@ const getItemEqiup = () => {
                                 btn.setAttribute("id", `${itemPerkMAP[item.value.toUpperCase()].EquipAbility}_icon__button`)
                             if (itemPerkMAP[item.value.toUpperCase()].Affix)
                                 btn.setAttribute("id", `${itemPerkMAP[item.value.toUpperCase()].Affix}_icon__button`)
-                            btn.classList.add("show", "maxStack", "scale50")
-                            btn.parentNode.querySelector(".icon__button__bg").classList.add("show", "scale50", "translate25")
-                            btn.parentNode.querySelector(".icon__button__border").classList.add("show", "scale50", "translate25")
+                            btn.classList.add("show", "maxStack", "scale75")
+                            btn.parentNode.querySelector(".icon__button__bg").classList.add("show", "scale75", "translate50")
+                            btn.parentNode.querySelector(".icon__button__border").classList.add("show", "scale75", "translate50")
                         }
 
                     }
