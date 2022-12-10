@@ -395,7 +395,7 @@ const playerEqiup_tippy = tippy(playerEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'ability-tooltip',
-    maxWidth: 800,
+    maxWidth: "max-content",
     placement: 'bottom'
 })
 
@@ -408,7 +408,7 @@ const targetEqiup_tippy = tippy(targetEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'ability-tooltip',
-    maxWidth: 800,
+    maxWidth: "max-content",
     placement: 'bottom'
 })
 
@@ -1248,7 +1248,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
     const isPlayer = damageIDREFERENCE == selfDamageIDMap ? playerEquip : targetEquip
 
     let _container
-    
+
     for (let [damagekey, damageID] of Object.entries(damageIDREFERENCE)) {
         if (!damageID)
             continue
