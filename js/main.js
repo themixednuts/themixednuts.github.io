@@ -1246,7 +1246,9 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
     let whichDamageMap = damageIDREFERENCE == selfDamageIDMap ? "self" : "target"
 
     const isPlayer = damageIDREFERENCE == selfDamageIDMap ? playerEquip : targetEquip
+
     let _container
+    
     for (let [damagekey, damageID] of Object.entries(damageIDREFERENCE)) {
         if (!damageID)
             continue
@@ -1254,10 +1256,8 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
         selectedAffix[damageID] = []
         abilitytrue[damageID] = []
 
-
-
-
         abilityID.forEach(ability => {
+
             if (ability) {
                 if (ability.StatusID)
                     ability.StatusID = ability.StatusID.toUpperCase()
