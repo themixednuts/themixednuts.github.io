@@ -843,12 +843,6 @@ option {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
 }
 
-.perks {
-    width: 250px;
-    flex-grow: 0;
-}
-
-
 
 .purchased {
     top: 50%;
@@ -983,8 +977,8 @@ option {
 }
 
 .imgslot {
-    height: 52px;
-    width: 52px;
+    max-height: 52px;
+    max-width: 52px;
 }
 
 .targetequip_container {
@@ -1062,15 +1056,18 @@ option {
 }
 
 .perkslot {
-    width: 52px;
-    height: 52px;
+    max-width: 52px;
+    max-height: 52px;
 }
 
 .gemslot {
     -webkit-appearance: none;
     appearance: none;
-    width: 42px;
-    height: 42px;
+    max-width: 42px;
+    max-height: 42px;
+    min-width: 12px;
+    min-height: 12px;
+    border: 0px;
 }
 
 .flex {
@@ -1211,8 +1208,8 @@ option {
 
 .weaponsmall,
 .weaponslot {
-    width: 60px;
-    height: 44px;
+    max-width: 60px;
+    max-height: 44px;
 }
 
 
