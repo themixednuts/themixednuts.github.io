@@ -313,8 +313,8 @@
     },
     {
         "AbilityID": "Int_Bonus_100_1",
-        "DisplayName": "• +10% damage to light and heavy magic attacks \\n• 5% chance for 1 azoth when harvesting",
-        "Description": "• +10% damage to light and heavy magic attacks \\n• 5% chance for 1 azoth when harvesting",
+        "DisplayName": "• +10% damage to light and heavy magic attacks\\n• 5% chance for 1 azoth when harvesting",
+        "Description": "• +10% damage to light and heavy magic attacks\\n• 5% chance for 1 azoth when harvesting",
         "UICategory": "",
         "Icon": "bowAbility5_mod2",
         "StatusEffectIcon": "",

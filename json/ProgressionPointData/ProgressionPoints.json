@@ -390,7 +390,7 @@
         "MaxLevel": 1,
         "RequiredCharacterLevel": "",
         "RequiredCategoricalProgressionId": "",
-        "RequiredCategoricalProgressionLevel": 10,
+        "RequiredCategoricalProgressionLevel": 1,
         "RequiredProgressionPointId": "",
         "RequiredProgressionPointLevel": null,
         "UpgradeCardDescription": "You can own a house in {territory}.",

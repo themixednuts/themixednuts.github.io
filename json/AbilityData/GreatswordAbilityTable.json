@@ -175,7 +175,7 @@
     {
         "AbilityID": "Upgrade_Greatsword_Dash_1",
         "DisplayName": "Relentless Power",
-        "Description": "Gain \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_DashAttack_Empower.DMGStandard * 100]}% \u003c/font\u003e  \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eempower\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_DashAttack_Empower.BaseDuration]}s\u003c/font\u003e.",
+        "Description": "Gain \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_DashAttack_Empower.DMGStandard * 100]}% \u003c/font\u003e  \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eempower\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_DashAttack_Empower.BaseDuration]}s\u003c/font\u003e after hitting a target with Relentless Rush.",
         "UICategory": "Melee Damage",
         "UISpellForManaCheck": "",
         "Icon": "lyshineui/images/icons/abilities/greatsword_Ability01_Mod01.png",
@@ -694,7 +694,7 @@
     {
         "AbilityID": "Upgrade_Greatsword_Dash_3",
         "DisplayName": "Relentless Refresh",
-        "Description": "Reduces ability \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003ecooldown\u003c/font\u003e by \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[GreatswordAbilityTable.Upgrade_Greatsword_Dash_3.CooldownTimer * -100]}%\u003c/font\u003e when you a kill a foe. \u003cfont face=\"lyshineui/fonts/Nimbus_Regular_Italic.font\" color=\"#828282\"\u003e(This effect has a {[GreatswordAbilityTable.Upgrade_Greatsword_Dash_3.ActivationCooldown]}s cooldown.)\u003c/font\u003e",
+        "Description": "Reduces ability \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003ecooldown\u003c/font\u003e by \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[GreatswordAbilityTable.Upgrade_Greatsword_Dash_3.CooldownTimer * -100]}%\u003c/font\u003e when you kill a foe. \u003cfont face=\"lyshineui/fonts/Nimbus_Regular_Italic.font\" color=\"#828282\"\u003e(This effect has a {[GreatswordAbilityTable.Upgrade_Greatsword_Dash_3.ActivationCooldown]}s cooldown.)\u003c/font\u003e",
         "UICategory": "Melee Damage",
         "UISpellForManaCheck": "",
         "Icon": "lyshineui/images/icons/abilities/greatsword_Ability01_Mod03.png",
@@ -1314,7 +1314,7 @@
         "InAction": "",
         "InActionTime": null,
         "AfterAction": "",
-        "BaseDamage": 1,
+        "BaseDamage": 0.5,
         "BaseDamageReduction": null,
         "CritDamageReduction": "",
         "BlockDamage": null,
@@ -1487,7 +1487,7 @@
         "InAction": "",
         "InActionTime": null,
         "AfterAction": "",
-        "BaseDamage": 1,
+        "BaseDamage": 0.5,
         "BaseDamageReduction": null,
         "CritDamageReduction": "",
         "BlockDamage": null,
@@ -6576,7 +6576,7 @@
     {
         "AbilityID": "Upgrade_Greatsword_Burst_3",
         "DisplayName": "Intimidating Roar",
-        "Description": "The shockwave applies a \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Burst_Weaken.DMGStandard * -100]}% \u003c/font\u003e \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eweaken\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Burst_Weaken.BaseDuration]}s\u003c/font\u003e on hit. Additionally, after as successful hit become \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003euninterruptible\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Burst_NoInterrupt.BaseDuration]}s\u003c/font\u003e.",
+        "Description": "The shockwave applies a \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Burst_Weaken.DMGStandard * -100]}% \u003c/font\u003e \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eweaken\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Burst_Weaken.BaseDuration]}s\u003c/font\u003e on hit. Additionally, after a successful hit become \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003euninterruptible\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Burst_NoInterrupt.BaseDuration]}s\u003c/font\u003e.",
         "UICategory": "Magic Damage",
         "UISpellForManaCheck": "",
         "Icon": "lyshineui/images/icons/abilities/greatsword_Ability06_Mod03.png",
@@ -7960,7 +7960,7 @@
     {
         "AbilityID": "Passive_Greatsword_Def_8",
         "DisplayName": "Faultless Defender",
-        "Description": "Reduce \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003estamina damage\u003c/font\u003e by \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[GreatswordAbilityTable.Helper_Passive_Greatsword_Def_8_BlockReduce.BlockDamageReduction * 100]}%\u003c/font\u003e when blocking attacks just after raising your guard or with \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eguard point\u003c/font\u003e. Inflicts a \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Stacking_Rend.ABSStandard * -100]}% \u003c/font\u003e \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003erend\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Stacking_Rend.BaseDuration]}s\u003c/font\u003e against melee attackers. \u003cfont face=\"lyshineui/fonts/Nimbus_Regular_Italic.font\" color=\"#828282\"\u003e(Max {[Type_StatusEffectData.Greatsword_Stacking_Rend.StackMax]} stacks.)\u003c/font\u003e",
+        "Description": "Reduce the attackers \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003estamina damage\u003c/font\u003e dealt by \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[GreatswordAbilityTable.Helper_Passive_Greatsword_Def_8_BlockReduce.BlockDamageReduction * 100]}%\u003c/font\u003e when blocking attacks just after raising your guard or with \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eguard point\u003c/font\u003e. \\n\\nBlocking attacks within this window inflicts a \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Stacking_Rend.ABSStandard * -100]}% \u003c/font\u003e \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003erend\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Stacking_Rend.BaseDuration]}s\u003c/font\u003e against melee attackers. \u003cfont face=\"lyshineui/fonts/Nimbus_Regular_Italic.font\" color=\"#828282\"\u003e(Max {[Type_StatusEffectData.Greatsword_Stacking_Rend.StackMax]} stacks.)\u003c/font\u003e",
         "UICategory": "Magic Damage",
         "UISpellForManaCheck": "",
         "Icon": "lyshineui/images/icons/abilities/greatsword_Passive16.png",
@@ -8306,7 +8306,7 @@
     {
         "AbilityID": "Ultimate_Greatsword_Defense",
         "DisplayName": "Undying Defiance",
-        "Description": "\u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eHeal\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[GreatswordAbilityTable.Ultimate_Greatsword_Defense.DmgPctToHealth * 100]}%\u003c/font\u003e of the damage from attacks.\\n\\nAttacking within \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Passive_RecentBlock.BaseDuration]}s\u003c/font\u003e of blocking \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eheals\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[GreatswordAbilityTable.Helper_Ultimate_Greatsword_Defense.DmgPctToHealth * 100]}%\u003c/font\u003e of the damage dealt instead.",
+        "Description": "\u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eHeal\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[GreatswordAbilityTable.Ultimate_Greatsword_Defense.DmgPctToHealth * 100]}%\u003c/font\u003e of the damage from attacks.\\n\\nAttacking within \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[Type_StatusEffectData.Greatsword_Passive_RecentBlock.BaseDuration]}s\u003c/font\u003e of blocking an attack \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003eheals\u003c/font\u003e for \u003cfont face=\"lyshineui/fonts/Nimbus_SemiBold.font\" color=\"#ffd45f\"\u003e{[GreatswordAbilityTable.Helper_Ultimate_Greatsword_Defense.DmgPctToHealth * 100]}%\u003c/font\u003e of the damage dealt instead.",
         "UICategory": "Magic Damage",
         "UISpellForManaCheck": "",
         "Icon": "lyshineui/images/icons/abilities/greatsword_Ult02.png",

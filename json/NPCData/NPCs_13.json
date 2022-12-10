@@ -105,7 +105,7 @@
     },
     {
         "NPCId": "1307_Commander",
-        "Title": "",
+        "Title": "Maruader Commander",
         "GenericName": "Commander Bergeron",
         "InteractOptionDisplayNameOverride": "",
         "ConversationStateId1": "1307_00_Commander",
@@ -131,7 +131,7 @@
     },
     {
         "NPCId": "1308_Alchemist",
-        "Title": "",
+        "Title": "Syndicate Alchemist",
         "GenericName": "Alchemist Rubis",
         "InteractOptionDisplayNameOverride": "",
         "ConversationStateId1": "1308_00_Alchemist",
@@ -157,7 +157,7 @@
     },
     {
         "NPCId": "1309_Adjudicator",
-        "Title": "",
+        "Title": "Covenant Adjudicator",
         "GenericName": "Adjudicator Sheng",
         "InteractOptionDisplayNameOverride": "",
         "ConversationStateId1": "1309_00_Adjudicator",
