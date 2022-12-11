@@ -395,7 +395,7 @@ const playerEqiup_tippy = tippy(playerEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'ability-tooltip',
-    maxWidth: "max-content",
+    maxWidth: "1vw",
     placement: 'bottom'
 })
 
@@ -408,7 +408,7 @@ const targetEqiup_tippy = tippy(targetEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'ability-tooltip',
-    maxWidth: "max-content",
+    maxWidth: "1vw",
     placement: 'bottom'
 })
 

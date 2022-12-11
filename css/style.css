@@ -124,7 +124,6 @@ body {
     align-content: flex-start;
     gap: 1rem;
     flex: 1 1 auto;
-
 }
 
 .equiprow {
@@ -500,6 +499,8 @@ body {
 
 .tippy-content {
     white-space: pre-line;
+    scale: 1vw;
+
 }
 
 .appended_ability_div_tooltip_ctrl {
@@ -977,7 +978,7 @@ option {
 }
 
 .imgslot {
-    max-height: 52px;
+    height: auto;
     max-width: 52px;
 }
 
@@ -1057,14 +1058,14 @@ option {
 
 .perkslot {
     max-width: 52px;
-    max-height: 52px;
+    height: auto;
 }
 
 .gemslot {
     -webkit-appearance: none;
     appearance: none;
     max-width: 42px;
-    max-height: 42px;
+    height: auto;
     min-width: 12px;
     min-height: 12px;
     border: 0px;
@@ -1209,7 +1210,7 @@ option {
 .weaponsmall,
 .weaponslot {
     max-width: 60px;
-    max-height: 44px;
+    height: auto;
 }
 
 
