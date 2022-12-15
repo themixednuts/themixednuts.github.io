@@ -28,6 +28,7 @@ const loadStaminaData = async () => (await fetch(`json/unknown/StaminaCosts_Play
 const loadManaData = async () => (await fetch(`json/unknown/ManaCosts_Player.json`)).json()
 const loadCooldowns = async () => (await fetch(`json/unknown/Cooldowns_Player.json`)).json()
 const loadVitals = async () => (await fetch(`json/VitalsData/Vitals.json`)).json()
+const playeradb = async () => (await fetch('player/player.adb'))
 //load json files end
 
 
@@ -259,7 +260,7 @@ const categoryIdMap = {
 
 
 const playerEquip = document.querySelector(".playerequip_container")
-const targetEquip = document.querySelector(".target_container")
+const targetEquip = document.querySelector(".targetequip_container")
 
 const equipContainers = [playerEquip, targetEquip]
 
@@ -395,7 +396,7 @@ const playerEqiup_tippy = tippy(playerEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'ability-tooltip',
-    maxWidth: "1vw",
+    maxWidth: 400,
     placement: 'bottom'
 })
 
@@ -408,7 +409,7 @@ const targetEqiup_tippy = tippy(targetEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'ability-tooltip',
-    maxWidth: "1vw",
+    maxWidth: 400,
     placement: 'bottom'
 })
 
@@ -1517,22 +1518,22 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                             if (item.SelfApplyStatusEffect)
                                 item.SelfApplyStatusEffect = item.SelfApplyStatusEffect.toUpperCase()
 
-                                item.SelfApplyStatusEffect.split(",").forEach(split => {
-                                    if (split == status.StatusID) {
-                                        if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                                            maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-                                        }
-                                        if (itemEquipAbilityMAP[item.AbilityID]) {
-        
-                                            if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
-        
-                                                for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
-                                                    maxStack = Math.max(nodes.textContent, maxStack)
-        
-                                            }
+                            item.SelfApplyStatusEffect.split(",").forEach(split => {
+                                if (split == status.StatusID) {
+                                    if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                        maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                                    }
+                                    if (itemEquipAbilityMAP[item.AbilityID]) {
+
+                                        if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
+
+                                            for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
+                                                maxStack = Math.max(nodes.textContent, maxStack)
+
                                         }
                                     }
-                                })
+                                }
+                            })
 
                         }
                     })
@@ -1576,22 +1577,22 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                             if (item.SelfApplyStatusEffect)
                                 item.SelfApplyStatusEffect = item.SelfApplyStatusEffect.toUpperCase()
 
-                                item.SelfApplyStatusEffect.split(",").forEach(split => {
-                                    if (split == status.StatusID) {
-                                        if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                                            maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-                                        }
-                                        if (itemEquipAbilityMAP[item.AbilityID]) {
-        
-                                            if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
-        
-                                                for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
-                                                    maxStack = Math.max(nodes.textContent, maxStack)
-        
-                                            }
+                            item.SelfApplyStatusEffect.split(",").forEach(split => {
+                                if (split == status.StatusID) {
+                                    if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                        maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                                    }
+                                    if (itemEquipAbilityMAP[item.AbilityID]) {
+
+                                        if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
+
+                                            for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
+                                                maxStack = Math.max(nodes.textContent, maxStack)
+
                                         }
                                     }
-                                })
+                                }
+                            })
                         }
                     })
 
@@ -1636,24 +1637,24 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                             if (item.OtherApplyStatusEffect)
                                 item.OtherApplyStatusEffect = item.OtherApplyStatusEffect.toUpperCase()
 
-                                item.OtherApplyStatusEffect.split(",").forEach(split => {
-                                    if (split == status.StatusID) {
+                            item.OtherApplyStatusEffect.split(",").forEach(split => {
+                                if (split == status.StatusID) {
 
-                                        if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                                            maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-        
-                                        }
-                                        if (itemEquipAbilityMAP[item.AbilityID]) {
-        
-                                            if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
-        
-                                                for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
-                                                    maxStack = Math.max(nodes.textContent, maxStack)
-        
-                                            }
+                                    if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                        maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+
+                                    }
+                                    if (itemEquipAbilityMAP[item.AbilityID]) {
+
+                                        if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
+
+                                            for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
+                                                maxStack = Math.max(nodes.textContent, maxStack)
+
                                         }
                                     }
-                                })
+                                }
+                            })
 
                         }
                     })
@@ -1698,22 +1699,22 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                             if (item.OtherApplyStatusEffect)
                                 item.OtherApplyStatusEffect = item.OtherApplyStatusEffect.toUpperCase()
 
-                                item.OtherApplyStatusEffect.split(",").forEach(split => {
-                                    if (split == status.StatusID) {
-                                        if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                                            maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-                                        }
-                                        if (itemEquipAbilityMAP[item.AbilityID]) {
-        
-                                            if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
-        
-                                                for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
-                                                    maxStack = Math.max(nodes.textContent, maxStack)
-        
-                                            }
+                            item.OtherApplyStatusEffect.split(",").forEach(split => {
+                                if (split == status.StatusID) {
+                                    if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                        maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                                    }
+                                    if (itemEquipAbilityMAP[item.AbilityID]) {
+
+                                        if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
+
+                                            for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
+                                                maxStack = Math.max(nodes.textContent, maxStack)
+
                                         }
                                     }
-                                })
+                                }
+                            })
 
                         }
                     })
@@ -1873,7 +1874,7 @@ const getStatScaling = () => {
         }
 
         if (itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix) {
-            const affixScaling = affixDataMAP[itemPerkMAP[document.querySelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()][`Scaling${ATTRIBUTES[attributeKey]}`]
+            const affixScaling = affixDataMAP[itemPerkMAP[playerEquip.querySelector(".gemslot").value.toUpperCase()].Affix.toUpperCase()][`Scaling${ATTRIBUTES[attributeKey]}`]
             if (affixScaling > 0) {
                 affixStatSum += affixScaling * attributeDefinitions[attributeKey][STATS[attributeKey] - 5].ModifierValueSum;
             }
@@ -1995,6 +1996,178 @@ const getItemEqiup = () => {
 
 }
 
+
+
+/* fetch('playerdata/cage/playeractions_ability_greatsword.actionlist')
+    .then(response => response.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+    .then(data => {
+        const xmlObject = {};
+
+        // Get the root element of the XML document
+        const root = data.children[0];
+
+        // Recursively get all child elements and their attributes
+        function getChildren(node, object) {
+            for (let i = 0; i < node.children.length; i++) {
+                const child = node.children[i];
+                object[child.nodeName] = {};
+
+                // Add all attributes as properties of the object
+                for (let j = 0; j < child.attributes.length; j++) {
+                    object[child.nodeName][child.attributes[j].nodeName] = child.attributes[j].nodeValue;
+                }
+
+                // Recursively get all children of this child
+                getChildren(child, object[child.nodeName]);
+            }
+        }
+
+        getChildren(root, xmlObject);
+        // Assuming xmlObject is the object you created in the previous example
+        const jsonString = JSON.stringify(xmlObject);
+
+        // Save the JSON string to a file
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'file.json';
+        link.click();
+        // Now xmlObject contains the entire XML document as an object
+    }); */
+
+
+
+fetch('player/player_greatsword.adb')
+    .then(response => response.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+    .then(data => {
+        const xmlObject = {};
+
+        // Recursively get all child elements and their attributes
+        function getChildren(node, object) {
+            for (let i = 0; i < node.children.length; i++) {
+                const child = node.children[i];
+
+                // Check if this node has already been added to the object
+                if (!object[child.nodeName]) {
+                    object[child.nodeName] = [];
+                }
+
+                // Add the child node to the array
+                object[child.nodeName].push({});
+
+                // Add all attributes as properties of the object
+                for (let j = 0; j < child.attributes.length; j++) {
+                    object[child.nodeName][object[child.nodeName].length - 1][child.attributes[j].nodeName] = child.attributes[j].nodeValue;
+                }
+
+                // Recursively get all children of this child
+                getChildren(child, object[child.nodeName][object[child.nodeName].length - 1]);
+            }
+        }
+
+        // Get all children of the root element of the XML document
+        getChildren(data, xmlObject);
+
+
+        // Assuming xmlObject is the object you created in the previous example
+/*         const jsonString = JSON.stringify(xmlObject);
+
+        // Save the JSON string to a file
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'file.json';
+        link.click(); */
+        // Now xmlObject contains the entire XML document as an object
+    });
+
+
+fetch('playerdata/cage/playeractions_ability_icemagic.actionlist')
+    .then(response => response.text())
+    .then(xml => {
+        // parse the XML string into a DOM document
+        const doc = new DOMParser().parseFromString(xml, 'text/xml');
+
+        // create the object to store the parsed data
+        const obj = {};
+
+        // find all the "Action" elements in the document
+        const actions = doc.getElementsByTagName('Action');
+        for (const action of actions) {
+            // get the "Name" attribute value of the current "Action" element
+            const name = action.getAttribute('Name');
+
+            // find all the "IfActiveAbilityMoveName" elements in the current "Action" element
+            const abilities = action.getElementsByTagName('IfActiveAbilityMoveName');
+            for (const ability of abilities) {
+                // get the "AbilityName" attribute value of the current "IfActiveAbilityMoveName" element
+                const abilityName = ability.getAttribute('AbilityName');
+                // set the corresponding key and value in the object
+                obj[name] = abilityName;
+            }
+        }
+        // the object is now populated with the parsed data
+        console.log(obj);
+    });
+
+
+/* const parseXML = xml => {
+    // Create a new parser object
+    const parser = new DOMParser();
+
+    // Parse the XML string
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+
+    // Create an empty object to store the parsed data
+    const data = {};
+
+    // Recursively parse the XML document
+    const parseNode = node => {
+        // If the node is an element, add it to the object
+        if (node.nodeType === 1) {
+            // Create an empty object to store the element's data
+            data[node.nodeName] = {};
+
+            // Add all of the element's attributes to the data object
+            for (let i = 0; i < node.attributes.length; i++) {
+                const attr = node.attributes[i];
+                data[node.nodeName][attr.nodeName] = attr.nodeValue;
+            }
+
+            // If the element has any child nodes, parse them as well
+            for (let i = 0; i < node.childNodes.length; i++) {
+                parseNode(node.childNodes[i]);
+            }
+        }
+    };
+
+    // Start parsing the XML document at the root element
+    parseNode(xmlDoc.documentElement);
+
+    // Return the parsed data
+    return data;
+};
+
+// Use the fetch API to fetch the XML file
+fetch('playerdata/cage/playeractions_ability_greatsword.actionlist')
+    .then(response => response.text())
+    .then(xml => parseXML(xml))
+    .then(data => {
+        // Do something with the parsed data
+        console.log(data);
+        // Assuming xmlObject is the object you created in the previous example
+        const jsonString = JSON.stringify(data);
+
+        // Save the JSON string to a file
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'file.json';
+        link.click();
+        // Now xmlObject contains the entire XML document as an object
+    }); */
 
 
 
@@ -2164,11 +2337,11 @@ function damageFormula(damageID) {
     let affixSplit = 0
 
     if (itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix && damageTableMAP[damageID?.toUpperCase()]) {
-        affixSplit = affixDataMAP[itemPerkMAP[document.querySelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
+        affixSplit = affixDataMAP[itemPerkMAP[playerEquip.querySelector(".gemslot").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
     }
 
     if (itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix)
-        findGem = affixDataMAP[itemPerkMAP[document.querySelector("#gemslot_select").value.toUpperCase()].Affix.toUpperCase()]
+        findGem = affixDataMAP[itemPerkMAP[playerEquip.querySelector(".gemslot").value.toUpperCase()].Affix.toUpperCase()]
 
 
 
@@ -2640,7 +2813,7 @@ new Array("input").forEach(type => {
 
 
 
-new Array("mousedown", "touchstart").forEach(type => {
+new Array("mousedown").forEach(type => {
 
     playerAttr.querySelectorAll(".reduce10").forEach(bttn => bttn.addEventListener(type, function change(e) {
         e.preventDefault()
@@ -2738,6 +2911,7 @@ new Array("mousedown", "touchstart").forEach(type => {
 
 
 new Array("mouseup", "touchend", "contextmenu").forEach(type => window.addEventListener(type, up))
+
 
 
 

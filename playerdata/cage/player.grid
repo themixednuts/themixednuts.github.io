@@ -1,0 +1,2333 @@
+<Grid>
+	<Aliases>
+		<Alias Name="Idle"/>
+		<Alias Name="Nav"/>
+		<Alias Name="Fall"/>
+		<Alias Name="Gather"/>
+		<Alias Name="Sprint"/>
+		<Alias Name="Build"/>
+		<Alias Name="Attack"/>
+		<Alias Name="Land"/>
+		<Alias Name="Craft"/>
+		<Alias Name="IdlePoseTrans"/>
+		<Alias Name="SprintPoseTrans"/>
+		<Alias Name="Dodge"/>
+		<Alias Name="Reaction"/>
+		<Alias Name="Sheathe"/>
+		<Alias Name="TurnInPlace"/>
+		<Alias Name="Death"/>
+		<Alias Name="UpperBodyReaction"/>
+		<Alias Name="AimPose"/>
+		<Alias Name="Aim"/>
+		<Alias Name="Emote"/>
+		<Alias Name="Reload"/>
+		<Alias Name="Cheat"/>
+		<Alias Name="Inventory"/>
+		<Alias Name="Use"/>
+		<Alias Name="Respawn"/>
+		<Alias Name="Offline"/>
+		<Alias Name="Shoot"/>
+		<Alias Name="Interact"/>
+		<Alias Name="DeathsDoor"/>
+		<Alias Name="DDrRcvr"/>
+		<Alias Name="Traversal"/>
+		<Alias Name="Jump"/>
+		<Alias Name="Block"/>
+		<Alias Name="Slide"/>
+		<Alias Name="VFX"/>
+		<Alias Name="FallingAttack"/>
+		<Alias Name="Offhand"/>
+		<Alias Name="IslandStart"/>
+		<Alias Name="Cutscene"/>
+		<Alias Name="FreeCam"/>
+		<Alias Name="Stun"/>
+		<Alias Name="Fishing"/>
+		<Alias Name="UpperBodyAttack"/>
+		<Alias Name="InventoryUpperBody"/>
+		<Alias Name="Wade"/>
+	</Aliases>
+	<TransitionRules>
+		<Rule From="*" To="*" Transition="Never"/>
+		<Rule From="Idle" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Idle" To="Idle,SprintPoseTrans,FallingAttack" Transition="Never"/>
+		<Rule From="Idle" To="TurnInPlace" ScopeBehavior="Moderate">
+			<Condition>
+				<Not>
+					<IfMannequinMarker MarkerName="PreventTurnInPlace"/>
+				</Not>
+			</Condition>
+		</Rule>
+		<Rule From="Wade" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Nav" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Nav" To="Idle,SprintPoseTrans,TurnInPlace,FallingAttack" Transition="Never"/>
+		<Rule From="Fall" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Fall" To="Idle,Nav,Fall,Gather,Sprint,Build,Craft,IdlePoseTrans,SprintPoseTrans,Aim,Shoot,Emote,Stun,UpperBodyAttack,Wade" Transition="Never"/>
+		<Rule From="Fall" To="Dodge,Sheathe,TurnInPlace,Reload,Inventory,Use,Fishing,Block,Slide,Offhand" Transition="Never"/>
+		<Rule From="Fall" To="Traversal,Jump" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfTraversal MinHeight="0" MaxHeight="5" CheckHeight="false" CheckLength="false" TraversalType="mantle"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Fall" To="Attack" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfHomingOverrideTargetSet/>
+					<And>
+						<IfInput InputName="rune_ability" BackTicks="30"/>
+						<IfAbilityActive AbilityName="Ability_Rune_HereticsFall" External="true"/>
+					</And>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Gather" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Gather" To="Idle,Build,Attack,Land,Craft,IdlePoseTrans,SprintPoseTrans,Sheathe,UpperBodyAttack,Wade" Transition="Never"/>
+		<Rule From="Gather" To="TurnInPlace,Aim,Emote,Reload,Shoot,Interact,Block,FallingAttack,Offhand" Transition="Never"/>
+		<Rule From="Gather" To="Nav,Sprint" ScopeBehavior="Aggressive">
+			<Condition>
+				<Not>
+					<IfMannequinMarker MarkerName="PreventNav"/>
+				</Not>
+			</Condition>
+		</Rule>
+		<Rule From="Gather" To="Gather" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="Gather_Loop"/>
+			</Condition>
+		</Rule>
+		<Rule From="Gather" To="Inventory" ScopeBehavior="Moderate">
+			<Condition>
+				<IfInput InputName="Stop_Gathering"/>
+			</Condition>
+		</Rule>
+		<Rule From="Gather" To="Use" ScopeBehavior="Aggressive"/>
+		<Rule From="Sprint" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Sprint" To="Idle,IdlePoseTrans,TurnInPlace,FallingAttack" Transition="Never"/>
+		<Rule From="Sprint" To="Fall,Dodge,Reload,Shoot,Emote" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Sprint" To="Nav" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<Not>
+						<IfCanSprint/>
+					</Not>
+					<IfMannequinTag TagName="Aim"/>
+					<IfMannequinTag TagName="Shoot"/>
+					<IfMannequinTag TagName="Throw"/>
+					<IfMannequinTag TagName="Blocking"/>
+					<And Comment="Loss of input">
+						<Not>
+							<IfAnalogInput AnalogInput="LeftAnalog" MinInputMagnitude="0.10" MaxInputMagnitude="1.00"/>
+						</Not>
+						<Not>
+							<IfAnalogInput AnalogInput="None" DigitalForwardInput="ForwardNav" DigitalBackInput="moveback" DigitalRightInput="moveleft" DigitalLeftInput="moveright" MinInputMagnitude="0.10" MaxInputMagnitude="1.00"/>
+						</Not>
+					</And>
+					<And Comment="Backward input during strafe sprint">
+						<IfPlayerSetting PlayerSettingName="SprintStrafeMovement"/>
+						<And>
+							<Or Comment="LockedStrafeMovement or cameralock or combat mode">
+								<IfPlayerSetting PlayerSettingName="LockedStrafeMovement"/>
+								<IfCameraLockActive/>
+								<And>
+									<Not>
+										<IfMannequinTag TagName="Tool"/>
+									</Not>
+									<Or>
+										<IfMannequinTag TagName="1H_Melee"/>
+										<IfMannequinTag TagName="2H_Melee"/>
+										<IfMannequinTag TagName="1H_Ranged"/>
+										<IfMannequinTag TagName="2H_Ranged"/>
+										<IfMannequinTag TagName="Bow"/>
+									</Or>
+								</And>
+							</Or>
+							<Not Comment="Analog forward input">
+								<IfAnalogInput AnalogInput="LeftAnalog" MinInputMagnitude="0.10" MaxInputMagnitude="1.00" RequireTargetAngleMatch="true" TargetAngle="0.00" TargetAngleTolerance="95.00"/>
+							</Not>
+							<Not Comment="Keyboard forward input">
+								<IfAnalogInput AnalogInput="None" DigitalForwardInput="ForwardNav" DigitalBackInput="moveback" DigitalRightInput="moveleft" DigitalLeftInput="moveright" MinInputMagnitude="0.10" MaxInputMagnitude="1.00" RequireTargetAngleMatch="True" TargetAngle="0.00" TargetAngleTolerance="95.00"/>
+							</Not>
+						</And>
+						<Not>
+							<CameraCharacterAngle AngleThreshold="45.00"/>
+						</Not>
+					</And>
+					<And Comment="Throw input">
+						<IfMannequinTag TagName="Throwable"/>
+						<Or>
+							<IfActiveAbilityMoveName AbilityName="AimedThrow"/>
+							<IfActiveAbilityMoveName AbilityName="Ability_Spear_Javelin"/>
+						</Or>
+					</And>
+					<And Comment="Sprint toggle input check">
+						<Not>
+							<IfPlayerSetting PlayerSettingName="Sprint_InputMode_PressAndHold"/>
+						</Not>
+						<IfInput InputName="sprint_hold"/>
+						<Not>
+							<IfMannequinTag TagName="AutoRun"/>
+						</Not>
+					</And>
+					<And Comment="Sprint Press-And-Hold input check">
+						<IfPlayerSetting PlayerSettingName="Sprint_InputMode_PressAndHold"/>
+						<Not>
+							<IfInput InputName="sprint_hold"/>
+						</Not>
+						<Not>
+							<IfMannequinTag TagName="AutoRun"/>
+						</Not>
+					</And>
+					<IfMannequinMarker MarkerName="ForceWalk"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Sprint" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfInput InputName="block"/>
+			</Condition>
+		</Rule>
+		<Rule From="Sprint" To="Aim" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfInput InputName="aim_draw"/>
+					<IfInput InputName="aim_draw_press"/>
+					<IfInput InputName="Ability3_Virtual" BackTicks="20"/>
+					<IfInput InputName="Ability1_Virtual" BackTicks="20"/>
+					<IfInput InputName="Ability2_Virtual" BackTicks="20"/>
+					<IfInput InputName="attack_primary_virtual"/>
+					<IfHasStatusEffect StatusEffect="Blunderbuss_MortarShotActiveTimer"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Build" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Build" To="Gather,Land,Craft,IdlePoseTrans,SprintPoseTrans,Interact,FallingAttack,Traversal,Jump,Wade" Transition="Never"/>
+		<Rule From="Build" To="Slide" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Build" To="Attack,Sprint,Reload,Use,Fishing,Shoot,Block,Offhand,Dodge,Aim,Emote,Sheathe,TurnInPlace,UpperBodyAttack" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Build" To="Build,Idle" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanBuild"/>
+			</Condition>
+		</Rule>
+		<Rule From="Attack" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Attack" To="Idle,Gather,Build,Land,Craft,SprintPoseTrans,TurnInPlace,Interact,FallingAttack,Wade" Transition="Never"/>
+		<Rule From="Attack" To="Attack,UpperBodyAttack" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Attack" To="Nav,Sprint" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Attack" To="IdlePoseTrans,Emote,Fishing,Fall,Inventory,InventoryUpperBody" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Attack" To="Traversal,Jump" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="AllowMantle"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Attack" To="Dodge" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Attack" To="Sheathe" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="CanCancel"/>
+					<IfMannequinMarker MarkerName="CanThrow"/>
+					<IfMannequinMarker MarkerName="CanUnsheathe"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<IfMannequinMarker MarkerName="CanUnsheathe_Buffer"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Attack" To="Use" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="CanCancel"/>
+					<IfMannequinMarker MarkerName="CanThrow"/>
+					<IfMannequinMarker MarkerName="CanUnsheathe"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<IfMannequinMarker MarkerName="CanUnsheathe_Buffer"/>
+					<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+					<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Attack" To="Aim" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<And>
+						<IfMannequinMarker MarkerName="CanThrowCancel"/>
+						<IfItemSheathed SlotToCheckAlias="ACTIVE_OFF_HAND_WEAPON"/>
+					</And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinTag TagName="Fire"/>
+					<IfMannequinTag TagName="Heal"/>
+					<IfMannequinTag TagName="Ice"/>
+					<IfMannequinTag TagName="VoidGauntlet"/>
+					<IfMannequinMarker MarkerName="CanAimCancel"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<And>
+					<Not>
+						<IfMannequinTag TagName="Prone_Desired"/>
+					</Not>
+					<Not>
+						<IfMannequinTag TagName="Crouch_Desired"/>
+					</Not>
+					<IfMannequinMarker MarkerName="CanThrowBuffer"/>
+				</And>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Attack" To="Reload" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="ForceReload"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Attack" To="Shoot" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfFragmentPlaying UseHostActionFragment="false" FragmentName="Attack_Start_Charge"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Attack" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="CanBlockCancel"/>
+					<And>
+						<IfInput InputName="block"/>
+						<Not>
+							<IfMannequinMarker MarkerName="BlockDisabled"/>
+						</Not>
+						<IfMannequinMarker MarkerName="CanBlockCancelStartup"/>
+					</And>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Attack" To="Offhand" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Land" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Land" To="Idle,Gather,Build,Land,Craft,IdlePoseTrans,SprintPoseTrans,Reaction,TurnInPlace,UpperbodyReaction,AimPose,Emote,Interact,FallingAttack" Transition="Never"/>
+		<Rule From="Land" To="Nav,Fall,Sheathe,Reload,Use,Fishing,Inventory" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Land" To="Sprint" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Or>
+						<Not>
+							<IfMannequinMarker MarkerName="Land_To_Sprint"/>
+						</Not>
+						<IfMannequinTag TagName="OneTimeScriptDone"/>
+					</Or>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Land" To="Traversal,Jump" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="Land_To_Jump"/>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Land" To="Attack,Offhand,Shoot" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanAttackCancel"/>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanAttackBuffer"/>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Land" To="Dodge" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanCancel"/>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Land" To="Aim,UpperBodyAttack,Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Craft" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Craft" To="Idle,Gather,Build,Attack,Land,Craft,SprintPoseTrans,Dodge,Sheathe,TurnInPlace,Aim,Emote,Reload,Inventory,InventoryUpperBody,Use,Fishing,Block,FallingAttack,Offhand,UpperBodyAttack,Wade" Transition="Never"/>
+		<Rule From="Craft" To="Slide" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="IdlePoseTrans" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="IdlePoseTrans" To="Idle,Land,SprintPoseTrans,TurnInPlace,Emote,Use,Fishing,FallingAttack" Transition="Never"/>
+		<Rule From="IdlePoseTrans" To="Nav,Gather,Sprint,Build,Attack,UpperBodyAttack,Craft,IdlePoseTrans,Dodge,Traversal,Jump,Offhand,InventoryUpperBody" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="IdlePoseTrans" To="Sheathe,Reload" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<Or>
+						<Not>
+							<IfMannequinTag TagName="Prone"/>
+						</Not>
+						<IfMannequinTag TagName="Rifle"/>
+					</Or>
+					<Or>
+						<IfMannequinMarker MarkerName="CanTransition"/>
+						<IfMannequinMarker MarkerName="CanTransition_Sheathe"/>
+					</Or>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="IdlePoseTrans" To="Aim" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<Or>
+						<And Comment="Not throwable weapon">
+							<IfMannequinMarker MarkerName="CanTransition"/>
+							<Not>
+								<IfMannequinTag TagName="Throwable"/>
+							</Not>
+						</And>
+						<And Comment="Throwable weapon">
+							<IfMannequinMarker MarkerName="CanThrow"/>
+							<IfMannequinTag TagName="Throwable"/>
+						</And>
+					</Or>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="IdlePoseTrans" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="SprintPoseTrans" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="SprintPoseTrans" To="Idle,Land,IdlePoseTrans,SprintPoseTrans,TurnInPlace,Aim,Emote,Reload,Use,Fishing,Shoot,Interact,FallingAttack" Transition="Never"/>
+		<Rule From="SprintPoseTrans" To="Nav,Gather,Build,Craft,Traversal,Jump,InventoryUpperBody" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="SprintPoseTrans" To="Sheathe" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanUnsheathe"/>
+			</Condition>
+		</Rule>
+		<Rule From="SprintPoseTrans" To="Sprint" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="ResumeSprint"/>
+			</Condition>
+		</Rule>
+		<Rule From="SprintPoseTrans" To="Attack,Dodge,Block,Offhand,UpperBodyAttack" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Dodge" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Dodge" To="Idle,Gather,Build,Land,Craft,SprintPoseTrans,TurnInPlace,Emote,Interact,Wade" Transition="Never"/>
+		<Rule From="Dodge" To="Nav,Sprint,IdlePoseTrans,Fishing,Block,Inventory,InventoryUpperBody,Sheathe" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Dodge" To="Fall" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanAttackCancel"/>
+					<IfFragmentPlaying FragmentName="Jump" UseHostActionFragment="false"/>
+					<IfFragmentPlaying FragmentName="Jump_Diagonal" UseHostActionFragment="false"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Dodge" To="Attack,Shoot,Offhand" ScopeBehavior="Aggressive">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanAttackCancel"/>
+					<Not>
+						<Or>
+							<And>
+								<Not>
+									<IfItemInSlot SlotToCheckAlias="MAIN_HAND_OPTION_1" RequireSlotValid="true" RequireSlotActive="true"/>
+								</Not>
+								<IfInput InputName="Use_MainHandSlot_1" BackTicks="20"/>
+							</And>
+							<And>
+								<Not>
+									<IfItemInSlot SlotToCheckAlias="MAIN_HAND_OPTION_2" RequireSlotValid="true" RequireSlotActive="true"/>
+								</Not>
+								<IfInput InputName="Use_MainHandSlot_2" BackTicks="20"/>
+							</And>
+							<IfInput InputName="quickslot-weaponSwap" BackTicks="20"/>
+							<IfActionStatus ActionName="Unsheathe_MainHand_1_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Unsheathe_MainHand_2_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Switch_MainHand_1_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Switch_MainHand_2_UB" Status="Pending"/>
+						</Or>
+					</Not>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBufferAttack"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Dodge" To="Dodge" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanCancel"/>
+					<IfMannequinMarker MarkerName="CanQuickStepCancel"/>
+					<IfMannequinMarker MarkerName="CanDodgeAttackCancel"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Dodge" To="Use" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanAttackCancel"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBufferAttack"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Dodge" To="Aim,UpperBodyAttack" ScopeBehavior="Aggressive">
+			<Condition>
+				<And>
+					<Not>
+						<IfMannequinTag TagName="Shield_OH"/>
+					</Not>
+					<Not>
+						<Or>
+							<And>
+								<Not>
+									<IfItemInSlot SlotToCheckAlias="MAIN_HAND_OPTION_1" RequireSlotValid="true" RequireSlotActive="true"/>
+								</Not>
+								<IfInput InputName="Use_MainHandSlot_1" BackTicks="20"/>
+							</And>
+							<And>
+								<Not>
+									<IfItemInSlot SlotToCheckAlias="MAIN_HAND_OPTION_2" RequireSlotValid="true" RequireSlotActive="true"/>
+								</Not>
+								<IfInput InputName="Use_MainHandSlot_2" BackTicks="20"/>
+							</And>
+							<IfInput InputName="quickslot-weaponSwap" BackTicks="20"/>
+							<IfActionStatus ActionName="Unsheathe_MainHand_1_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Unsheathe_MainHand_2_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Switch_MainHand_1_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Switch_MainHand_2_UB" Status="Pending"/>
+						</Or>
+					</Not>
+					<IfMannequinMarker MarkerName="CanAttackCancel"/>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<And>
+					<Not>
+						<IfMannequinTag TagName="Shield_OH"/>
+					</Not>
+					<IfMannequinMarker MarkerName="CanBufferAttack"/>
+				</And>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Dodge" To="Reload" ScopeBehavior="Aggressive">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Not>
+						<Or>
+							<And>
+								<Not>
+									<IfItemInSlot SlotToCheckAlias="MAIN_HAND_OPTION_1" RequireSlotValid="true" RequireSlotActive="true"/>
+								</Not>
+								<IfInput InputName="Use_MainHandSlot_1" BackTicks="20"/>
+							</And>
+							<And>
+								<Not>
+									<IfItemInSlot SlotToCheckAlias="MAIN_HAND_OPTION_2" RequireSlotValid="true" RequireSlotActive="true"/>
+								</Not>
+								<IfInput InputName="Use_MainHandSlot_2" BackTicks="20"/>
+							</And>
+							<IfInput InputName="quickslot-weaponSwap" BackTicks="20"/>
+							<IfActionStatus ActionName="Unsheathe_MainHand_1_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Unsheathe_MainHand_2_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Switch_MainHand_1_UB" Status="Pending"/>
+							<IfActionStatus ActionName="Switch_MainHand_2_UB" Status="Pending"/>
+						</Or>
+					</Not>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Dodge" To="Traversal,Jump" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="IsJumping"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Dodge" To="Slide,FallingAttack" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="IsJumping"/>
+			</Condition>
+		</Rule>
+		<Rule From="Reaction" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Reaction" To="Idle,Gather,Build,Land,Craft,SprintPoseTrans,Fishing,Offline,Interact,FallingAttack,Inventory,Traversal,Jump,Wade" Transition="Never"/>
+		<Rule From="Reaction" To="Nav,Sprint,IdlePoseTrans,TurnInPlace,Aim,Emote,InventoryUpperBody" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Reaction" To="Attack,Offhand,Shoot,Reload,UpperBodyAttack" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<And>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Reaction" To="Sheathe" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Reaction" To="Dodge,Use" ScopeBehavior="Aggressive">
+			<Condition>
+				<And>
+					<Or>
+						<IfCanBreakReaction StunToBreakout="2"/>
+						<IfMannequinMarker MarkerName="CanTransition"/>
+					</Or>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<And>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Reaction" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<And>
+						<Or>
+							<IfMannequinMarker MarkerName="CanTransition_Block"/>
+							<IfMannequinMarker MarkerName="CanTransition"/>
+						</Or>
+						<Not>
+							<IsStunned/>
+						</Not>
+					</And>
+					<And>
+						<IfCanBreakReaction StunToBreakout="2"/>
+						<IfMannequinMarker MarkerName="CanHitStunBreakout"/>
+					</And>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Sheathe" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Sheathe" To="FallingAttack,SprintPoseTrans,Wade" Transition="Never"/>
+		<Rule From="Sheathe" To="Inventory,Respawn,Reaction,Build,Gather,Interact,Attack,Shoot,InventoryUpperBody,Emote" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Sheathe" To="Use" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<And>
+						<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+						<Not>
+							<IfFragmentPlaying FragmentName="Unsheathe_UpperBody" UseHostActionFragment="false"/>
+						</Not>
+					</And>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanShoot"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+					<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<IfMannequinMarker MarkerName="CanBuffer_Shoot"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Sheathe" To="Sheathe,Fishing,Offhand,Reload" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanShoot"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+					<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<IfMannequinMarker MarkerName="CanBuffer_Shoot"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Sheathe" To="Dodge,Attack" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Sheathe" To="UpperBodyAttack,Aim,Block" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Sheathe" To="IdlePoseTrans" ScopeBehavior="Moderate">
+			<Condition>
+				<Not>
+					<Or>
+						<IfMannequinTag TagName="Prone"/>
+						<And>
+							<IfMannequinTag TagName="Prone_Desired"/>
+							<Not>
+								<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+							</Not>
+						</And>
+					</Or>
+				</Not>
+			</Condition>
+		</Rule>
+		<Rule From="Sheathe" To="Traversal,Jump" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+			</Condition>
+		</Rule>
+		<Rule From="TurnInPlace" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="TurnInPlace" To="Idle,Land,SprintPoseTrans,TurnInPlace,Interact,FallingAttack" Transition="Never"/>
+		<Rule From="TurnInPlace" To="Emote" Transition="Always" ScopeBehavior="Passive"/>
+		<Rule From="Death" To="UpperbodyReaction,AimPose,Cheat,DeathsDoor,DDrRcvr,VFX" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Death" To="Death" ScopeBehavior="Moderate">
+			<Condition>
+				<IfFragmentPlaying FragmentName="Sacrifice" UseHostActionFragment="false"/>
+			</Condition>
+		</Rule>
+		<Rule From="UpperbodyReaction" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="UpperbodyReaction" To="Use,Fishing,FallingAttack,Traversal,Jump,Wade" Transition="Never"/>
+		<Rule From="UpperbodyReaction" To="Dodge" ScopeBehavior="Aggressive"/>
+		<Rule From="UpperbodyReaction" To="Emote" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+			</Condition>
+		</Rule>
+		<Rule From="AimPose" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="AimPose" To="AimPose,FallingAttack,Wade" Transition="Never"/>
+		<Rule From="AimPose" To="Traversal,Jump" ScopeBehavior="Aggressive"/>
+		<Rule From="Aim" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Aim" To="Fishing,Interact,FallingAttack,Emote,Traversal,Wade" Transition="Never"/>
+		<Rule From="Aim" To="Build,Land,Craft,Reaction,Death,DeathsDoor,DDrRcvr,Reload,Respawn,Slide,Offline,Fall,Attack,Shoot" ScopeBehavior="Aggressive"/>
+		<Rule From="Aim" To="Sprint" ScopeBehavior="Aggressive">
+			<Condition>
+				<And>
+					<Or>
+						<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+						<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					</Or>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Aim" To="Offhand,Gather" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanAttackCancel"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Aim" To="Dodge" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+					<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Aim" To="Inventory,InventoryUpperBody,Jump" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Aim" To="Sheathe,Use" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Aim" To="Aim" ScopeBehavior="Moderate">
+			<Condition>
+				<Not>
+					<IfMannequinTag TagName="Shoot"/>
+				</Not>
+			</Condition>
+		</Rule>
+		<Rule From="Aim" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanBlockCancel"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Emote" To="*" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Emote" To="Interact">
+			<Condition>
+				<Not>
+					<IfMusicalPerformanceState StateToCheck="Unknown"/>
+				</Not>
+			</Condition>
+		</Rule>
+		<Rule From="Emote" To="Emote,Idle,Use,Fishing,FallingAttack,SprintPoseTrans,Sheathe,Wade" Transition="Never"/>
+		<Rule From="Emote" To="TurnInPlace,Cheat,FreeCam,Offline,Shoot,DDrRcvr,VFX" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Emote" To="AimPose" Transition="Always" ScopeBehavior="Passive"/>
+		<Rule From="Emote" To="IdlePoseTrans" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="Exit_Emote"/>
+			</Condition>
+		</Rule>
+		<Rule From="Emote" To="Nav,Sprint" ScopeBehavior="Aggressive">
+			<Condition>
+				<And>
+					<Not>
+						<IfMannequinMarker MarkerName="AllowMovement"/>
+					</Not>
+					<Or>
+						<IfInput InputName="moveforward_onpress"/>
+						<IfInput InputName="moveback_onpress"/>
+						<IfInput InputName="moveleft_onpress"/>
+						<IfInput InputName="moveright_onpress"/>
+						<IfAnalogInput AnalogInput="LeftAnalog" MinInputMagnitude="0.10" MaxInputMagnitude="1.00" RequireTargetAngleMatch="false"/>
+					</Or>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Reload" To="*" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Reload" To="Emote,Reload,Fishing,Interact,Wade" Transition="Never"/>
+		<Rule From="Reload" To="IdlePoseTrans,SprintPoseTrans,UpperbodyReaction,AimPose,Block,VFX,Use" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Reload" To="Idle" Transition="Always" ScopeBehavior="Passive"/>
+		<Rule From="Reload" To="Nav,TurnInPlace" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<Not>
+						<IfMannequinTag TagName="Prone"/>
+					</Not>
+					<And>
+						<IfMannequinTag TagName="Prone"/>
+						<Or>
+							<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+							<IfInput InputName="Placing_Building"/>
+						</Or>
+					</And>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Reload" To="Sprint,Offhand,Shoot,Inventory,InventoryUpperBody" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Reload" To="Dodge" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Reload" To="Gather" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Reload" To="Sheathe" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanUnsheathe"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<IfMannequinMarker MarkerName="CanUnsheathe_Buffer"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Reload" To="Aim" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinTag TagName="Bow"/>
+					<IfMannequinTag TagName="MagicGauntlet"/>
+					<IfActiveAbilityMoveName AbilityName="Ability_Musket_Traps"/>
+					<IfActiveAbilityMoveName AbilityName="Ability_Musket_StickyBomb"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Cheat" To="*" Transition="Never"/>
+		<Rule From="Cheat" To="Respawn,Offline,DeathsDoor,DDrRcvr" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Inventory" To="*" Transition="Never"/>
+		<Rule From="Inventory" To="Craft,Death,UpperbodyReaction,Respawn,Offline,DeathsDoor,DDrRcvr" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Inventory" To="Slide,Reaction,Inventory,Stun" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Inventory" To="Nav,Sprint,Attack,IdlePoseTrans,Dodge,Sheathe,TurnInPlace,Reload,Shoot,Traversal,Jump,Block,Offhand" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Inventory" To="Use" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfIsRequestingLoreItem/>
+			</Condition>
+		</Rule>
+		<Rule From="Use" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Use" To="Gather,Craft,IdlePoseTrans,SprintPoseTrans,Sheathe,Aim,Reload,Shoot,Traversal,Jump,Block,FallingAttack,Wade" Transition="Never"/>
+		<Rule From="Use" To="Reaction,Slide,Fall,Death,DeathsDoor,DDrRcvr" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Use" To="Attack,Dodge,Offhand,Inventory,UpperBodyAttack,InventoryUpperBody" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Use" To="Land" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Use" To="TurnInPlace" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Use" To="Use" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Use" To="Emote,Interact" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinTag TagName="FishingPole"/>
+			</Condition>
+		</Rule>
+		<Rule From="Respawn" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Respawn" To="Idle,Land,SprintPoseTrans,TurnInPlace,Aim,Reload,Respawn,Interact,Slide,FallingAttack" Transition="Never"/>
+		<Rule From="Respawn" To="Reaction,Slide" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Respawn" To="Nav,Gather,Sprint,Build,Attack,Craft,IdlePoseTrans,Dodge,Sheathe,Emote,Inventory,Use,Fishing,Traversal,Jump,Offhand,UpperBodyAttack,InventoryUpperBody" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Respawn" To="Fall" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransitionToFall"/>
+			</Condition>
+		</Rule>
+		<Rule From="Offline" To="*" Transition="Never"/>
+		<Rule From="Offline" To="Death,UpperbodyReaction,AimPose,Respawn,Shoot,DeathsDoor,DDrRcvr,Block,VFX" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Shoot" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Shoot" To="Gather,Build,Craft,IdlePoseTrans,SprintPoseTrans,Interact,Traversal,Jump,FallingAttack,Wade" Transition="Never"/>
+		<Rule From="Shoot" To="Reaction,Death" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Shoot" To="Nav,TurnInPlace,Emote,Use,Fishing,Block" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Shoot" To="Sprint,Inventory,InventoryUpperBody" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Shoot" To="Idle" ScopeBehavior="Aggressive">
+			<Condition>
+				<And>
+					<Or>
+						<IfFragmentPlaying UseHostActionFragment="false" FragmentName="Ability_Musket_StickyBomb_Throw"/>
+						<IfFragmentPlaying UseHostActionFragment="false" FragmentName="Ability_Musket_StickyBomb_Lower"/>
+					</Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Shoot" To="Offhand" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Shoot" To="Attack,Aim" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinTag TagName="Rifle"/>
+					<IfMannequinTag TagName="Blunderbuss"/>
+					<IfMannequinTag TagName="Bow"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Shoot" To="Dodge" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="CanCancel"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Shoot" To="Sheathe" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="ForceReload"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Shoot" To="Reload" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="ForceReload"/>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="CanCancel"/>
+					<IfMannequinMarker MarkerName="ShootersStanceReload"/>
+					<IfMannequinMarker MarkerName="StickyBombReload"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Shoot" To="Shoot" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Not>
+						<IfMannequinTag TagName="Reload"/>
+					</Not>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Interact" To="*" Transition="Never"/>
+		<Rule From="Interact" To="Craft,DeathsDoor,DDrRcvr,Slide,Reaction,UpperbodyReaction" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Interact" To="Fall">
+			<Condition>
+				<Not>
+					<IfMusicalPerformanceState StateToCheck="Unknown"/>
+				</Not>
+			</Condition>
+		</Rule>
+		<Rule From="Interact" To="Interact">
+			<Condition>
+				<And>
+					<Not>
+						<IfMusicalPerformanceState StateToCheck="Unknown"/>
+					</Not>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Interact" To="Nav,Sprint,Attack,Sheathe,Shoot,Block,Dodge,Traversal,Jump" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="DeathsDoor" To="*" Transition="Never"/>
+		<Rule From="DeathsDoor" To="Death,UpperbodyReaction,AimPose,Cheat,FreeCam,Respawn,DDrRcvr,VFX" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="DDrRcvr" To="*" Transition="Never"/>
+		<Rule From="DDrRcvr" To="Death,UpperbodyReaction,AimPose,Cheat,FreeCam,Respawn,DeathsDoor,Block,Slide,VFX" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="DDrRcvr" To="Nav,Sprint,Dodge,Attack,Shoot,Block,Traversal,Jump,UpperBodyAttack,Aim,AimPose" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Traversal" To="*" Transition="Never"/>
+		<Rule From="Traversal" To="Reaction,Death,UpperbodyReaction,Cheat,FreeCam,DeathsDoor,VFX" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Traversal" To="Nav,Attack,Sheathe,Shoot,Block,Slide,Offhand" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Traversal" To="Idle" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Or>
+						<Not>
+							<IfMannequinMarker MarkerName="JumpStanding"/>
+						</Not>
+						<IfMannequinTag TagName="Crouch"/>
+						<IfMannequinTag TagName="Prone"/>
+					</Or>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Traversal" To="Sprint" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="TraversalToSprint"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Traversal" To="IdlePoseTrans" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="JumpPostureChange"/>
+					<Or>
+						<IfMannequinTag TagName="Crouch"/>
+						<IfMannequinTag TagName="Prone"/>
+					</Or>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Traversal" To="Fall,Traversal" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="GotoFallFromJump"/>
+					<IfFragmentPlaying FragmentName="Jump" UseHostActionFragment="false"/>
+					<IfFragmentPlaying FragmentName="Jump_Diagonal" UseHostActionFragment="false"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Traversal" To="Land" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfFragmentPlaying FragmentName="Jump" UseHostActionFragment="false"/>
+					<IfFragmentPlaying FragmentName="Jump_Diagonal" UseHostActionFragment="false"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Jump" To="*" Transition="Never"/>
+		<Rule From="Jump" To="Reaction,Death,UpperbodyReaction,Cheat,FreeCam,DeathsDoor,VFX" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Jump" To="Nav,Sheathe,Shoot,Block,Slide,Offhand" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Jump" To="Attack" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<And>
+						<IfInput InputName="rune_ability" BackTicks="30"/>
+						<IfAbilityActive AbilityName="Ability_Rune_HereticsFall" External="true"/>
+					</And>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Jump" To="Idle" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Or>
+						<Not>
+							<IfMannequinMarker MarkerName="JumpStanding"/>
+						</Not>
+						<IfMannequinTag TagName="Crouch"/>
+						<IfMannequinTag TagName="Prone"/>
+					</Or>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Jump" To="Sprint" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="TraversalToSprint"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Jump" To="IdlePoseTrans" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="JumpPostureChange"/>
+					<Or>
+						<IfMannequinTag TagName="Crouch"/>
+						<IfMannequinTag TagName="Prone"/>
+					</Or>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Jump" To="Fall,Traversal" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="GotoFallFromJump"/>
+					<IfFragmentPlaying FragmentName="Jump" UseHostActionFragment="false"/>
+					<IfFragmentPlaying FragmentName="Jump_Diagonal" UseHostActionFragment="false"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Jump" To="Land" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfFragmentPlaying FragmentName="Jump" UseHostActionFragment="false"/>
+					<IfFragmentPlaying FragmentName="Jump_Diagonal" UseHostActionFragment="false"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="Block" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Block" To="IdlePoseTrans,Use,Fishing,FallingAttack,Wade" Transition="Never"/>
+		<Rule From="Block" To="Gather,Dodge,Death,DeathsDoor,Slide,Fall,Offline,Reaction,Traversal,Jump" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Block" To="Block" Transition="Always" ScopeBehavior="Passive"/>
+		<Rule From="Block" To="Sprint" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfInput InputName="sprint"/>
+			</Condition>
+		</Rule>
+		<Rule From="Block" To="Attack,Offhand,UpperBodyAttack" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanAttackCancel"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Block" To="Emote" ScopeBehavior="Moderate">
+			<Condition>
+				<Not>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+				</Not>
+			</Condition>
+		</Rule>
+		<Rule From="Slide" To="*" Transition="Never"/>
+		<Rule From="Slide" To="Fall,Reaction,Death,UpperbodyReaction,Cheat,FreeCam,Respawn,Offline,VFX" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Slide" To="Nav,Sprint,Attack,Offhand" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Slide" To="Dodge" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanJump"/>
+			</Condition>
+		</Rule>
+		<Rule From="Slide" To="Slide" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="End_Slide"/>
+			</Condition>
+		</Rule>
+		<Rule From="VFX" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="VFX" To="VFX" Transition="Always" ScopeBehavior="Passive"/>
+		<Rule From="VFX" To="FallingAttack" Transition="Never"/>
+		<Rule From="FallingAttack" To="*" Transition="Never"/>
+		<Rule From="FallingAttack" To="Reaction,Death,UpperbodyReaction,Respawn,Offline,DeathsDoor,DDrRcvr,FallingAttack" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="FallingAttack" To="Dodge" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="FallingAttack" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanBlockCancel"/>
+			</Condition>
+		</Rule>
+		<Rule From="FallingAttack" To="Attack,Offhand,Nav,Sprint" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Offhand" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Offhand" To="Idle,Gather,Build,Land,Craft,SprintPoseTrans,Interact,FallingAttack,Wade" Transition="Never"/>
+		<Rule From="Offhand" To="Nav,Sprint,IdlePoseTrans,TurnInPlace,Emote,Reload,Inventory,Traversal,Jump,InventoryUpperBody" ScopeBehavior="Moderate">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Offhand" To="Sheathe,Use" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="Offhand" To="Attack,Shoot,Offhand" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanAttackCancel"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanAttackBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Offhand" To="Dodge" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Offhand" To="Aim" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanAttackCancel"/>
+			</Condition>
+		</Rule>
+		<Rule From="Offhand" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanBlockCancel"/>
+			</Condition>
+		</Rule>
+		<Rule From="IslandStart" To="*" Transition="Never"/>
+		<Rule From="Cutscene" To="*" Transition="Never"/>
+		<Rule From="FreeCam" To="*" Transition="Never"/>
+		<Rule From="Stun" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Stun" To="Idle,Gather,Build,Land,Craft,SprintPoseTrans,Use,Fishing,Offline,Interact,FallingAttack,Inventory,Wade" Transition="Never"/>
+		<Rule From="Stun" To="Nav,Sprint,IdlePoseTrans,TurnInPlace,Aim,Emote,Traversal,Jump,Inventory,InventoryUpperBody" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Stun" To="Attack,Offhand,Shoot,Sheathe,Reload,UpperBodyAttack" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<And>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Stun" To="Dodge" ScopeBehavior="Moderate">
+			<Condition>
+				<And>
+					<Or>
+						<And>
+							<IfCanBreakReaction StunToBreakout="2"/>
+							<IfMannequinMarker MarkerName="CanBuffer"/>
+						</And>
+						<IfMannequinMarker MarkerName="CanTransition"/>
+					</Or>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+			<BufferCondition>
+				<And>
+					<IfMannequinMarker MarkerName="CanBuffer"/>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</BufferCondition>
+		</Rule>
+		<Rule From="Stun" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<And>
+					<Or>
+						<IfMannequinMarker MarkerName="CanTransition_Block"/>
+						<IfMannequinMarker MarkerName="CanTransition"/>
+					</Or>
+					<Not>
+						<IsStunned/>
+					</Not>
+				</And>
+			</Condition>
+		</Rule>
+		<Rule From="Fishing" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="Fishing" To="Attack,Offhand,Build,Craft,IdlePoseTrans,SprintPoseTrans,Sheathe,Aim,Reload,Shoot,Block,FallingAttack,UpperBodyAttack,Wade" Transition="Never"/>
+		<Rule From="Fishing" To="Reaction,Slide,Fall,Death,DeathsDoor,DDrRcvr,Emote,Interact,Dodge,Inventory,Offline,InventoryUpperBody" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="Fishing" To="Traversal,Jump" ScopeBehavior="Moderate">
+			<Condition>
+				<IfFragmentPlaying FragmentName="Fishing_Ready_Idle" UseHostActionFragment="false"/>
+			</Condition>
+		</Rule>
+		<Rule From="Fishing" To="Gather" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfHasStatusEffect StatusEffect="Sandworm_CannonBall"/>
+			</Condition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="*" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="UpperBodyAttack" To="IdlePoseTrans,SprintPoseTrans,TurnInPlace,Wade" Transition="Never"/>
+		<Rule From="UpperBodyAttack" To="Attack,Reaction,Death,DeathsDoor,DDrRcvr,Respawn,Slide,Offline" ScopeBehavior="Aggressive"/>
+		<Rule From="UpperBodyAttack" To="Gather,Inventory,Traversal,Jump,Interact,FallingAttack,Emote,Fall,Land,Craft,InventoryUpperBody" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="Use,Fishing,Build" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="Sheathe" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanUnsheathe"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+				<IfMannequinMarker MarkerName="CanUnsheathe_Buffer"/>
+			</BufferCondition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="Sprint" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="Offhand,Shoot" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanAttackCancel"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="Dodge" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanDodgeCancel"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+				</Or>
+			</Condition>
+			<BufferCondition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanDodgeBuffer"/>
+					<IfMannequinMarker MarkerName="CanBuffer_UpperBody"/>
+				</Or>
+			</BufferCondition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="Aim" ScopeBehavior="Moderate">
+			<Condition>
+				<Not>
+					<IfMannequinTag TagName="Shoot"/>
+				</Not>
+			</Condition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="Block" ScopeBehavior="Aggressive">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanBlockCancel"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<And>
+						<IfInput InputName="block"/>
+						<Not>
+							<IfMannequinMarker MarkerName="BlockDisabled"/>
+						</Not>
+						<IfMannequinMarker MarkerName="CanBlockCancelStartup"/>
+					</And>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="UpperBodyAttack" To="Reload" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="ForceReload"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="InventoryUpperBody" To="*" Transition="Never"/>
+		<Rule From="InventoryUpperBody" To="Idle,Nav,Sprint,Fall,Traversal,Jump,Craft,Land" Transition="Always" ScopeBehavior="Moderate"/>
+		<Rule From="InventoryUpperBody" To="Slide,Reaction,UpperbodyReaction,Death,Respawn,Offline,DeathsDoor,DDrRcvr,Stun" Transition="Always" ScopeBehavior="Aggressive"/>
+		<Rule From="InventoryUpperBody" To="Attack,IdlePoseTrans,Sheathe,TurnInPlace,Reload,Offhand,UpperBodyAttack,Use" ScopeBehavior="Moderate">
+			<Condition>
+				<Or>
+					<IfMannequinMarker MarkerName="CanTransition"/>
+					<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
+					<IfMannequinMarker MarkerName="CanCancel_UpperBody"/>
+				</Or>
+			</Condition>
+		</Rule>
+		<Rule From="InventoryUpperBody" To="Attack,Dodge,Shoot,Block,Gather" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfMannequinMarker MarkerName="CanTransition"/>
+			</Condition>
+		</Rule>
+		<Rule From="InventoryUpperBody" To="Use" ScopeBehavior="Aggressive">
+			<Condition>
+				<IfIsRequestingLoreItem/>
+			</Condition>
+		</Rule>
+	</TransitionRules>
+	<ActionLists>
+		<ActionList WeaponRequirements="Ranged+Magic+Spear+Hatchet" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Aim.actionlist">
+			<AliasMap>
+				<Action ActionName="AimPose" Alias="AimPose" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Bow" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Archery.actionlist">
+			<AliasMap>
+				<Action ActionName="Bow_AimChargeShoot_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Empty" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Empty_HipFire" Alias="Shoot" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Lower_FromShoot_Charged" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_ReadyWeapon" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Reload" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Reload_Charged" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Shoot" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Shoot_Charged" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Shoot_HipFire" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Gunbutt" Alias="Attack" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Attack.actionlist">
+			<AliasMap>
+				<Action ActionName="Attack_Exhausted" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Heavy" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Heavy_C2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Heavy_C3" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Heavy_Charged" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Heavy_Charged_C2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Heavy_Charged_C3" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Primary_C1" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Primary_C2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Primary_C3" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Primary_C4" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Primary_C5" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Primary_C6" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Special" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Special_Rifle" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Special_C2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Special_Charge" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Special_Charge_Exit" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Special2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Special3" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Sprint" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Sprint_Land" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Start_Charge" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Start_Charge_C2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Start_Charge_C3" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Start_Charge_C4" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Start_Charge_C5" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Start_Charge_C6" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Start_Charge_Upperbody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Start_Charge_Upperbody_C2" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Tool_Primary" InputRequirements="attack_primary_virtual" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Offhand" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Offhand2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Primary_Upperbody_C1" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Primary_Upperbody_C2" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Heavy_Upperbody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Attack_Heavy_Upperbody_C2" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Hatchet" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_Hatchet.actionlist">
+			<AliasMap>
+				<Action ActionName="Hatchet_AimThrow_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_AimThrow_FullBody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_AimThrow_Reload" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_InfectedThrow" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_RendingThrow" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_DistancingThrow" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_DistancingThrowUpperbody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_Berserk" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_Sprint_Attack" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_Attack_Sprint_Land" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_RapidStrikes" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Hatchet_Berserk_Cooldown" IsIgnoredByGrid="true"/>
+				<Action ActionName="Hatchet_Remove_Berserk" IsIgnoredByGrid="true"/>
+				<Action ActionName="Hatchet_Berserk_Cancel" IsIgnoredByGrid="true"/>
+				<Action ActionName="Hatchet_Remove_SpeedUp_Immortal" IsIgnoredByGrid="true"/>
+				<Action ActionName="Hatchet_DMGPerNearbyEnemy_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Hatchet_Passive_DoTPurge" IsIgnoredByGrid="true"/>
+				<Action ActionName="Hatchet_DefyDeathTimer" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Sword" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_Sword.actionlist">
+			<AliasMap>
+				<Action ActionName="Sword_SwipeStabAttack" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sword_SpinAttack" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sword_ShieldRush" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sword_ShieldBash" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sword_LastStand" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sword_HealBuff" IsIgnoredByGrid="true"/>
+				<Action ActionName="Sword_LastStand_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ultimate_Sword_Defender_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="GlobalPerk_Sword_WhirlingBlade_DmgWhenFoesNear_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_HasteWhileBlock_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="Sword_Charge" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sword_LeapingStrike_Jump" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sword_LeapingStrike_Land" Alias="Attack" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="2HAxe" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_GreatAxe.actionlist">
+			<AliasMap>
+				<Action ActionName="GreatAxe_Whirlwind" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="GreatAxe_Engage" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="GreatAxe_Executioner" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="GreatAxe_JudgementsReach" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="GreatAxe_Maelstrom" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="GreatAxe_GravityWell" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="GreatAxe_Passive_StamWhenLowHP_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Upgrade_Greataxe_Whirlwind_DmgWhenFoesNear_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Greataxe_Mauler_DmgWhenFoesNear_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Greataxe_Mauler_ArmorWhenFoesNear_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ultimate_Greataxe_Reaper_Detect" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Bow" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_Bow.actionlist">
+			<AliasMap>
+				<Action ActionName="Bow_RapidShot" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_JumpBackShot" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Penetrating_Ready" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Penetrating_Aim_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Penetrating_Shoot" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Penetrating_Shoot_A1" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Penetrating_Shoot_A2" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Penetrating_Toggle" IsIgnoredByGrid="true"/>
+				<Action ActionName="Bow_SpreadShot" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Smoke_ReadyWeapon" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Smoke_Aim_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Smoke_Shoot" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_Smoke_Toggle" IsIgnoredByGrid="true"/>
+				<Action ActionName="Bow_RainOfArrows_Ready" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_RainOfArrows_AimSubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_RainOfArrows_Shoot" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Bow_ChargeShotActive" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Bow_Skirmish_HasteWhenFoesNear" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Bow_Hunter_ArmorAimHeavy_Detect" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Blunderbuss" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_Blunderbuss.actionlist">
+			<AliasMap>
+				<Action ActionName="Ability_Blunderbuss_ClawShot" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_ClawShot_Hit_Confirm" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_ClawShot_Loop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_ClawShot_Attack" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_ClawShot_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ability_Blunderbuss_NetShot_UB" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_NetShot" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_NetShot_Early_Out" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_VortexShot" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_SplittingGrenade" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_SplittingGrenade_PullString" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ability_Blunderbuss_AzothShrapnelBlast" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_MortarShot" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Blunderbuss_MortarShot_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Charge_Unspec" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Ramp_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ability_Blunderbuss_ChargeActive" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ability_Blunderbuss_Overload_Activate" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ability_Blunderbuss_ADS_Fired" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_ExtendedChamber_Unspec" IsIgnoredByGrid="true"/>
+				<Action ActionName="Blunderbuss_Remove_StatusEffects_Sheathe" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Musket" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_Musket.actionlist">
+			<AliasMap>
+				<Action ActionName="Musket_PowerShot" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_PowderBurn" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_PowerShot_Upperbody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_PowderBurn_Upperbody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_StoppingPower" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_ShootersStance_Ready" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_ShootersStance_Aim_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_ShootersStance_Shoot" Alias="Shoot" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_ShootersStance_Reload_SubState" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_Traps_Toss" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_HuntersVision" IsIgnoredByGrid="true"/>
+				<Action ActionName="Musket_StickyBomb_Ready" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_StickyBomb_Aim" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_StickyBomb_Throw_FullBody" Alias="Shoot" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_StickyBomb_Reload" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Musket_ADS_Detection" Alias="Aim" IsIgnoredByGrid="true"/>
+				<Action ActionName="Musket_ADS_Detection_SafetyNet" Alias="Aim" IsIgnoredByGrid="true"/>
+				<Action ActionName="Musket_Dodge_Reload" Alias="Reload" IsIgnoredByGrid="true"/>
+				<Action ActionName="Musket_Headshot_Reload" Alias="Reload" IsIgnoredByGrid="true"/>
+				<Action ActionName="ApplyCooldownIfExitShootersStance" IsIgnoredByGrid="true"/>
+				<Action ActionName="PowerShotActive" IsIgnoredByGrid="true"/>
+				<Action ActionName="PowderBurnActive" IsIgnoredByGrid="true"/>
+				<Action ActionName="StoppingPowerActive" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Musket_NearbyEnemy_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Musket_StickyBombActive_HideAttachment" IsIgnoredByGrid="true"/>
+				<Action ActionName="Musket_ShootersStance_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="Musket_ReloadStartComplete_Active" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Spear" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_Spear.actionlist">
+			<AliasMap>
+				<Action ActionName="Spear_Throw_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Spear_Throw_FullBody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Spear_Throw_Reload" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Spear_Skewer" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Spear_Perforate" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Spear_Sweep" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Spear_Cyclone" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Spear_VaultKick" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Spear_Passive_BonusStamRegenOnLowStam" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Block.actionlist">
+			<AliasMap>
+				<Action ActionName="Block_Continue_UpperBody" Alias="Block" IsIgnoredByGrid="false"/>
+				<Action ActionName="Block_UpperBody" Alias="Block" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Build.actionlist">
+			<AliasMap>
+				<Action ActionName="Build" Alias="Build" IsIgnoredByGrid="false"/>
+				<Action ActionName="Build_Placement_Cancel" InputRequirements="Placing_Building" IsIgnoredByGrid="true"/>
+				<Action ActionName="Build_Placement_Commit" InputRequirements="Placing_Building+attack_primary+Placing_Valid_Location" Alias="Build" IsIgnoredByGrid="false"/>
+				<Action ActionName="Build_Placement_RotateLeft" InputRequirements="Placing_Building+switch_buildable_up+shift_mod" IsIgnoredByGrid="true"/>
+				<Action ActionName="Build_Placement_RotateRight" InputRequirements="Placing_Building+switch_buildable_dn+shift_mod" IsIgnoredByGrid="true"/>
+				<Action ActionName="Build_Placement_Nav_SubState" InputRequirements="Placing_Building" Alias="Build" IsIgnoredByGrid="false"/>
+				<Action ActionName="Build_Placement_Nav_Prone" InputRequirements="Placing_Building" Alias="Build" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Camera.actionlist">
+			<AliasMap>
+				<Action ActionName="Camera" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Cheat.actionlist">
+			<AliasMap>
+				<Action ActionName="Cheat" Alias="Cheat" IsIgnoredByGrid="false"/>
+				<Action ActionName="Unstuck_Teleport" Alias="Traversal" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Craft.actionlist">
+			<AliasMap>
+				<Action ActionName="Craft" Alias="Craft" InputRequirements="Start_Crafting" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Death.actionlist">
+			<AliasMap>
+				<Action ActionName="Death" Alias="Death" IsIgnoredByGrid="false"/>
+				<Action ActionName="Death_Slide" Alias="Death" IsIgnoredByGrid="false"/>
+				<Action ActionName="Death_Slide_End" Alias="Death" IsIgnoredByGrid="false"/>
+				<Action ActionName="DeathsDoor" Alias="DeathsDoor" IsIgnoredByGrid="false"/>
+				<Action ActionName="DeathsDoorRecover" Alias="DDrRcvr" IsIgnoredByGrid="false"/>
+				<Action ActionName="DeathsDoorRecover_Duel" Alias="DDrRcvr" IsIgnoredByGrid="false"/>
+				<Action ActionName="DeathsDoorRecover_Resuscitate" InputRequirements="notificationAccept" Alias="DDrRcvr" IsIgnoredByGrid="false"/>
+				<Action ActionName="Respawn" Alias="Respawn" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sacrifice" Alias="Death" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Debug.actionlist">
+			<AliasMap>
+				<Action ActionName="Enable_Debug_Combat" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Dodge.actionlist">
+			<AliasMap>
+				<Action ActionName="Dodge" Alias="Dodge" IsIgnoredByGrid="false"/>
+				<Action ActionName="Dodge_Stunlock" Alias="Dodge" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Fall.actionlist">
+			<AliasMap>
+				<Action ActionName="Fall" Alias="Fall" IsIgnoredByGrid="false"/>
+				<Action ActionName="Fall_From_Jump" Alias="Fall" IsIgnoredByGrid="false"/>
+				<Action ActionName="Fall_From_Dodge" Alias="Fall" IsIgnoredByGrid="false"/>
+				<Action ActionName="Land_Hard" Alias="Land" IsIgnoredByGrid="false"/>
+				<Action ActionName="Land_Normal" Alias="Land" IsIgnoredByGrid="false"/>
+				<Action ActionName="Land_Roll" Alias="Land" IsIgnoredByGrid="false"/>
+				<Action ActionName="Land_Sprint" Alias="Land" IsIgnoredByGrid="false"/>
+				<Action ActionName="Land_Sprint_Diagonal" Alias="Land" IsIgnoredByGrid="false"/>
+				<Action ActionName="Land_Soft" Alias="Land" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Musket+Blunderbuss" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Firearms.actionlist">
+			<AliasMap>
+				<Action ActionName="Firearm_AimShoot_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Firearm_ReadyWeapon" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Firearm_Reload_FullBody" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Firearm_Reload_SubState" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Firearm_Shoot_DryFire_FullBody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Firearm_Shoot_FullBody" Alias="Shoot" IsIgnoredByGrid="false"/>
+				<Action ActionName="Firearm_Shoot_HipFire_FullBody" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Firearm_Gunbutt" Alias="Attack" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Fishing.actionlist">
+			<AliasMap>
+				<Action ActionName="Fishing_SubState" Alias="Fishing" InputRequirements="fishing_activate" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Gather.actionlist">
+			<AliasMap>
+				<Action ActionName="Gather" Alias="Gather" IsIgnoredByGrid="false"/>
+				<Action ActionName="GatherDelay" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Global.actionlist">
+			<AliasMap>
+				<Action ActionName="Audio_SwitchManager" IsIgnoredByGrid="true"/>
+				<Action ActionName="AutoRun" IsIgnoredByGrid="true"/>
+				<Action ActionName="Exhausted" IsIgnoredByGrid="true"/>
+				<Action ActionName="Health_Desaturation" IsIgnoredByGrid="true"/>
+				<Action ActionName="Hide_Name_Tag" IsIgnoredByGrid="true"/>
+				<Action ActionName="Set_Reticle" IsIgnoredByGrid="true"/>
+				<Action ActionName="Sprint_TravelMode" IsIgnoredByGrid="true"/>
+				<Action ActionName="VFX_Weapon_Trail" Alias="VFX" IsIgnoredByGrid="false"/>
+				<Action ActionName="VFX_Ranged_Melee" IsIgnoredByGrid="true"/>
+				<Action ActionName="Weapon_Foley" IsIgnoredByGrid="true"/>
+				<Action ActionName="collisionsize" IsIgnoredByGrid="true"/>
+				<Action ActionName="Drown" IsIgnoredByGrid="true"/>
+				<Action ActionName="OneOffInteraction" IsIgnoredByGrid="true"/>
+				<Action ActionName="Show_Prerequisite_Warning" IsIgnoredByGrid="true"/>
+				<Action ActionName="ApplyMagicPrequisitePenalty" IsIgnoredByGrid="true"/>
+				<Action ActionName="MusketReloadTimer" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Firestaff_Pyro_Ultimate_ForceRemove" IsIgnoredByGrid="true"/>
+				<Action ActionName="Character_Collision_Toggle" IsIgnoredByGrid="true"/>
+				<Action ActionName="Traversal_Road_Sprint_Speed_Boost" IsIgnoredByGrid="true"/>
+				<Action ActionName="Traversal_Road_Sprint_Speed_SafetyNet" IsIgnoredByGrid="true"/>
+				<Action ActionName="Traversal_Road_Sprint_Speed_Boost_CombatRemoval" IsIgnoredByGrid="true"/>
+				<Action ActionName="InCombatEnterSettlement" IsIgnoredByGrid="true"/>
+				<Action ActionName="InCombatDuels" IsIgnoredByGrid="true"/>
+				<Action ActionName="InBossFight" IsIgnoredByGrid="true"/>
+				<Action ActionName="GreatAxe_Perk_InsatableGravityWell" IsIgnoredByGrid="true"/>
+				<Action ActionName="TargetedHealingUnlock" IsIgnoredByGrid="true"/>
+				<Action ActionName="TargetedHealingUnlockAutoRun" IsIgnoredByGrid="true"/>
+				<Action ActionName="InCutscene" IsIgnoredByGrid="true"/>
+				<Action ActionName="BonusManaRegenFoc300" IsIgnoredByGrid="true"/>
+				<Action ActionName="StoreMode" IsIgnoredByGrid="true"/>
+				<Action ActionName="TeamWipe_Death_Reaction" IsIgnoredByGrid="true"/>
+				<Action ActionName="NavSpeed_Toggle" IsIgnoredByGrid="true"/>
+				<Action ActionName="Process_Predicted_Effects" IsIgnoredByGrid="true"/>
+				<Action ActionName="ClearAttackInputsOnSwapInput" IsIgnoredByGrid="true"/>
+				<Action ActionName="OutOfCombat_PassiveRegen" IsIgnoredByGrid="true"/>
+				<Action ActionName="Perk_MortalEmpowerment_Removal" IsIgnoredByGrid="true"/>
+				<Action ActionName="OPR_StatusEffect_Removal" IsIgnoredByGrid="true"/>
+				<Action ActionName="UseBacktickInputs" IsIgnoredByGrid="true"/>
+				<Action ActionName="DisableLoadoutSwapping" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Idle.actionlist">
+			<AliasMap>
+				<Action ActionName="Idle" Alias="Idle" IsIgnoredByGrid="false"/>
+				<Action ActionName="Turn_InPlace" Alias="TurnInPlace" IsIgnoredByGrid="false"/>
+				<Action ActionName="FastTravel" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="Water_Deep_Upperbody" Alias="Wade" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_IdlePoseTransition.actionlist">
+			<AliasMap>
+				<Action ActionName="IdlePoseTransition_CrouchToProne" Alias="IdlePoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="IdlePoseTransition_CrouchToStand" Alias="IdlePoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="IdlePoseTransition_ProneToCrouch" Alias="IdlePoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="IdlePoseTransition_ProneToStand" Alias="IdlePoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="IdlePoseTransition_StandToCrouch" Alias="IdlePoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="IdlePoseTransition_StandToProne" Alias="IdlePoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="StrafePoseTransition_CrouchToStand" IsIgnoredByGrid="true"/>
+				<Action ActionName="StrafePoseTransition_StandToCrouch" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Interact.actionlist">
+			<AliasMap>
+				<Action ActionName="CommittedInteraction" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="CraftingStationInteraction" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="CampStatusEffectInteraction" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="DelayedInteraction" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="DelayedInteraction_MR" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="Delayed_Interact_MR_Outro" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="InteractionAnimation" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="AzothStaff_Barrier" Alias="Fishing" IsIgnoredByGrid="false"/>
+				<Action ActionName="Carry_CannonBall" Alias="Fishing" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Inventory.actionlist">
+			<AliasMap>
+				<Action ActionName="Inventory" Alias="Inventory" IsIgnoredByGrid="false"/>
+				<Action ActionName="Inventory_UpperBody" Alias="InventoryUpperBody" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="FireStaff" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_FireMagic.actionlist">
+			<AliasMap>
+				<Action ActionName="Fire_Staff_Cast_Primary" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Fire_Staff_Cast_Heavy" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Pillar" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Pillar_Cast" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Speed_Intro" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Speed_Loop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Speed_Stop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Storm" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Storm_Loop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Storm_Outro_Success" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Storm_Outro_Interrupted" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_FlameThrower" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Incinerate_Intro" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Fire_Staff_Incinerate_Loop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_FireStaff_Fireball" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Passive_Firestaff_Pyro_Ultimate_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ultimate_Firemage_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Firestaff_FireMage_DmgNoDmg_Cleanup" IsIgnoredByGrid="true"/>
+				<Action ActionName="Passive_Firestaff_FireMage_DmgFullMana_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="TrialByFire" IsIgnoredByGrid="true"/>
+				<Action ActionName="FireStaff_LowHealth_FireDmgBonus" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="LifeStaff" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_LifeMagic.actionlist">
+			<AliasMap>
+				<Action ActionName="Life_Staff_Cast_Primary" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Life_Staff_Cast_Heavy" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_HealingWave" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_HealingWave_Loop" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_HealingWave_SelfLoop" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_TouchOfLife" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_TouchOfLife_Cast" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_TouchOfLife_SelfCast" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_TouchOfLife_Channeling" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ability_Life_Staff_Speed_Intro" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_Speed_Loop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_Speed_Stop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_Smite" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_Smite_Cast" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_HolyShield_Intro" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_HolyShield_Loop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_HolyShield_Outro" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Lifestaff_OrbofProtection_Cast" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_LightsEmbrace" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_LightsEmbrace_Cast" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_LightsEmbrace_SelfCast" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Life_Staff_LightsEmbrace_Channeling" IsIgnoredByGrid="true"/>
+				<Action ActionName="Ability_Lifestaff_Beacon" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Passive_Lifestaff_Protection_HasteWhenLow_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="HealingAura" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="IceMagic" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_IceMagic.actionlist">
+			<AliasMap>
+				<Action ActionName="IceMagic_Attack_Primary" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_Attack_Heavy" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_Spikes" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_IceStorm" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_IceStorm_AimSubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_IceStorm_Casting" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_IceStorm_Cast" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_WindChill" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_WindChill_AimSubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_WindChill_Outro" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_Entombed" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_Entombed_DodgeExit" IsIgnoredByGrid="true"/>
+				<Action ActionName="IceMagic_IceShower" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_IcePylon" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="IceMagic_IcePylon_Dodge" IsIgnoredByGrid="true"/>
+				<Action ActionName="IceMagic_IcePylon_Cooldown" IsIgnoredByGrid="true"/>
+				<Action ActionName="IceMagic_IcePylon_Cooldown2" IsIgnoredByGrid="true"/>
+				<Action ActionName="IceMagic_IcePylon_Destroy" IsIgnoredByGrid="true"/>
+				<Action ActionName="IceMagic_Quick_Frost" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Nav.actionlist">
+			<AliasMap>
+				<Action ActionName="Nav" Alias="Nav" IsIgnoredByGrid="false"/>
+				<Action ActionName="Nav_Start" Alias="Nav" IsIgnoredByGrid="false"/>
+				<Action ActionName="Nav_Stop_B" Alias="Nav" IsIgnoredByGrid="false"/>
+				<Action ActionName="Nav_Stop_F" Alias="Nav" IsIgnoredByGrid="false"/>
+				<Action ActionName="Nav_Stop_L" Alias="Nav" IsIgnoredByGrid="false"/>
+				<Action ActionName="Nav_Stop_R" Alias="Nav" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_PostureInput.actionlist">
+			<AliasMap>
+				<Action ActionName="ToggleCrouch" Alias="IdlePoseTrans" IsIgnoredByGrid="true"/>
+				<Action ActionName="ToggleProne" Alias="IdlePoseTrans" InputRequirements="prone_toggle_virtual" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Offline.actionlist">
+			<AliasMap>
+				<Action ActionName="Offline" Alias="Offline" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Reaction.actionlist">
+			<AliasMap>
+				<Action ActionName="Deflection" Alias="Reaction" IsIgnoredByGrid="false"/>
+				<Action ActionName="Reaction" Alias="Reaction" IsIgnoredByGrid="false"/>
+				<Action ActionName="Reaction_Knockdown" Alias="Reaction" IsIgnoredByGrid="false"/>
+				<Action ActionName="UpperBodyReaction" Alias="UpperbodyReaction" IsIgnoredByGrid="false"/>
+				<Action ActionName="Stun" Alias="Stun" IsIgnoredByGrid="false"/>
+				<Action ActionName="Stun_Loop" Alias="Stun" IsIgnoredByGrid="false"/>
+				<Action ActionName="Stun_End" Alias="Stun" IsIgnoredByGrid="false"/>
+				<Action ActionName="Pushable" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Sheathe.actionlist">
+			<AliasMap>
+				<Action ActionName="Unsheathe_MainHand_1_UB" Alias="Sheathe" IsIgnoredByGrid="false"/>
+				<Action ActionName="Unsheathe_MainHand_2_UB" Alias="Sheathe" IsIgnoredByGrid="false"/>
+				<Action ActionName="Unsheathe_MainHand_3_UB" Alias="Sheathe" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sheathe_MainHand_1_UB" Alias="Sheathe" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sheathe_MainHand_2_UB" Alias="Sheathe" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sheathe_MainHand_3_UB" Alias="Sheathe" IsIgnoredByGrid="false"/>
+				<Action ActionName="Switch_MainHand_1_UB" IsIgnoredByGrid="true"/>
+				<Action ActionName="Switch_MainHand_2_UB" IsIgnoredByGrid="true"/>
+				<Action ActionName="Switch_MainHand_3_UB" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Social.actionlist">
+			<AliasMap>
+				<Action ActionName="Emote" Alias="Emote" IsIgnoredByGrid="false"/>
+				<Action ActionName="Emote_Menu" Alias="Emote" InputRequirements="toggleEmoteWindow" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_MusicalPerformance.actionlist">
+			<AliasMap>
+				<Action ActionName="MusicalPerformance" Alias="Interact" IsIgnoredByGrid="false"/>
+				<Action ActionName="MusicalPerformance_Drumstick_Toggle" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Sprint.actionlist">
+			<AliasMap>
+				<Action ActionName="Sprint_RightToLeft_180" Alias="Sprint" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sprint_LeftToRight_180" Alias="Sprint" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sprint" Alias="Sprint" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sprint_180_Turn" Alias="Sprint" IsIgnoredByGrid="false"/>
+				<Action ActionName="Sprint_Start" Alias="Sprint" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_SprintPoseTransition.actionlist">
+			<AliasMap>
+				<Action ActionName="SprintPoseTransition_CrouchToProne" Alias="SprintPoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="SprintPoseTransition_CrouchToStand" Alias="SprintPoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="SprintPoseTransition_ProneToCrouch" Alias="SprintPoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="SprintPoseTransition_ProneToStand" Alias="SprintPoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="SprintPoseTransition_StandToCrouch" Alias="SprintPoseTrans" IsIgnoredByGrid="false"/>
+				<Action ActionName="SprintPoseTransition_StandToProne" Alias="SprintPoseTrans" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Throw.actionlist">
+			<AliasMap>
+				<Action ActionName="Throw_FullBody" Alias="Shoot" IsIgnoredByGrid="false"/>
+				<Action ActionName="Throw_Reload" Alias="Reload" IsIgnoredByGrid="false"/>
+				<Action ActionName="Throw_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+				<Action ActionName="Throw_Item_SubState" Alias="Aim" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Traversal.actionlist">
+			<AliasMap>
+				<Action ActionName="Mantle" Alias="Traversal" IsIgnoredByGrid="false"/>
+				<Action ActionName="StepUp" Alias="Traversal" IsIgnoredByGrid="false"/>
+				<Action ActionName="StepUp_Automatic" Alias="Traversal" IsIgnoredByGrid="false"/>
+				<Action ActionName="Vault" Alias="Traversal" IsIgnoredByGrid="false"/>
+				<Action ActionName="Jump" Alias="Jump" IsIgnoredByGrid="false"/>
+				<Action ActionName="Jump_Diagonal" Alias="Jump" IsIgnoredByGrid="false"/>
+				<Action ActionName="Standing_Jump" Alias="Jump" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Use.actionlist">
+			<AliasMap>
+				<Action ActionName="Use_QuickSlot_1" InputRequirements="Use_Quickslot_1" InputRequirementsBackTicks="15" Alias="Use" IsIgnoredByGrid="false"/>
+				<Action ActionName="Use_QuickSlot_2" InputRequirements="Use_Quickslot_2" InputRequirementsBackTicks="15" Alias="Use" IsIgnoredByGrid="false"/>
+				<Action ActionName="Use_QuickSlot_3" InputRequirements="Use_Quickslot_3" InputRequirementsBackTicks="15" Alias="Use" IsIgnoredByGrid="false"/>
+				<Action ActionName="Use_QuickSlot_4" InputRequirements="Use_Quickslot_4" InputRequirementsBackTicks="15" Alias="Use" IsIgnoredByGrid="false"/>
+				<Action ActionName="Read_Lore_Item" Alias="Use" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Intro.actionlist">
+			<AliasMap>
+				<Action ActionName="IslandStart" Alias="IslandStart" IsIgnoredByGrid="false"/>
+				<Action ActionName="Cutscene" Alias="Cutscene" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_FreeCam.actionlist">
+			<AliasMap>
+				<Action ActionName="FreeCam" Alias="FreeCam" IsIgnoredByGrid="false"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_SpectatorMode.actionlist">
+			<AliasMap>
+				<Action ActionName="SpectatorMode" Alias="SpectatorMode" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="2hhammer" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_WarHammer.actionlist">
+			<AliasMap>
+				<Action ActionName="Ability_WarHammer_ArmorBreaker" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_WarHammer_MightyGavel" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_WarHammer_WreckingBall" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_WarHammer_WreckingBall_C2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_WarHammer_WreckingBall_C3" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_WarHammer_PathOfDestiny" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_WarHammer_ClearOut" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_WarHammer_Shockwave" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_WarHammer_HeavyC3_Alt" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Warhammer_ArmorPerNearbyEnemy_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="Warhammer_Passve_SprintDmgRed" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="Rapier" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_Rapier.actionlist">
+			<AliasMap>
+				<Action ActionName="Ability_Rapier_Slash" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Flurry" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Flourish" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Finish" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Finish_Ultimate" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Riposte" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Riposte_Out" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Aerial_Lunge_Intro" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Aerial_Lunge_Loop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Aerial_Lunge_Stop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Aerial_Lunge_Stop_Instant_Wake" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Wake" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Evasion" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Ability_Rapier_Evade_Attack" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Rapier_Momentum_Active" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="VoidGauntlet" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_VoidGauntlet.actionlist">
+			<AliasMap>
+				<Action ActionName="VoidGauntlet_Harvest" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Start" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="VoidGauntlet_Blade_FX_Toggle" IsIgnoredByGrid="true"/>
+				<Action ActionName="VoidGauntlet_Blade_Stop" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Attack_Charge" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Attack_Charge_C2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Attack_Charge_C3" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Attack_Light_C1" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Attack_Light_C2" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Attack_Light_C3" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Blade_Attack_Heavy" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_NullChamber" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_Scream" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_DecayingOrb" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_DecayingOrb_Detonate_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="VoidGauntlet_DrainingTether" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_DrainingTether_Active" IsIgnoredByGrid="true"/>
+				<Action ActionName="VoidGauntlet_EssenceRupture" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="VoidGauntlet_EmpowerCloseRange_Detect" IsIgnoredByGrid="true"/>
+				<Action ActionName="VoidGauntlet_EmpowerCloseRange_Remove" IsIgnoredByGrid="true"/>
+				<Action ActionName="VoidGauntlet_EmpowerLowMana" IsIgnoredByGrid="true"/>
+				<Action ActionName="VoidGauntlet_DrainingTether_ManaRegen" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList WeaponRequirements="GreatSword" Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_GreatSword.actionlist">
+			<AliasMap>
+				<Action ActionName="Greatsword_DashAttack" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Greatsword_Combo" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Greatsword_DefenseBreak" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Greatsword_Counter" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Greatsword_Counter_Followup" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Greatsword_DrainAttack" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Greatsword_Burst" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Greatsword_OffenseStance" IsIgnoredByGrid="true"/>
+				<Action ActionName="Greatsword_DefenseStance" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerActions_Ability_Runes.actionlist">
+			<AliasMap>
+				<Action ActionName="Rune_BileBomb" Alias="UpperBodyAttack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Rune_GraspingVines" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Rune_Detonate" IsIgnoredByGrid="true"/>
+				<Action ActionName="Rune_HereticFall" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Rune_HereticFall_Loop" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Rune_HereticFall_Land" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Rune_CannonBlast" Alias="Attack" IsIgnoredByGrid="false"/>
+				<Action ActionName="Rune_StoneForm" IsIgnoredByGrid="true"/>
+				<Action ActionName="Rune_StoneForm_Explode" IsIgnoredByGrid="true"/>
+			</AliasMap>
+		</ActionList>
+	</ActionLists>
+	<VirtualInputLists>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerInput_Combat.actionlist"/>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerInput_Craft.actionlist"/>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerInput_Gather.actionlist"/>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerInput_Interact.actionlist"/>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerInput_Navigation.actionlist"/>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerInput_UIAction.actionlist"/>
+	</VirtualInputLists>
+	<ReactionTables>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerDeathReactionTableHarness.actionlist"/>
+		<ActionList Path="SharedAssets/SpringboardEntitites/PlayerData/CAGE/PlayerReactionTableHarness.actionlist"/>
+	</ReactionTables>
+</Grid>
+

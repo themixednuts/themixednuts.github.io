@@ -1,0 +1,215 @@
+<TagDefinition version="2">
+	<Tags>
+		<Group name="OffhandGroupNOTFORUSE">
+			<Tag name="Offhand"/>
+		</Group>
+		<Group name="OilGroupNOTFORUSE">
+			<Tag name="Oil"/>
+		</Group>
+		<Group name="WeaponStance">
+			<Tag name="Unarmed"/>
+			<Tag name="1H_Melee"/>
+			<Tag name="Bow"/>
+			<Tag name="1H_Ranged"/>
+			<Tag name="Crafting"/>
+			<Tag name="2H_Melee"/>
+			<Tag name="2H_Ranged"/>
+			<Tag name="MagicGauntlet"/>
+			<Tag name="MagicStaff"/>
+		</Group>
+		<Group name="WeaponType">
+			<Tag name="Sword"/>
+			<Tag name="Axe"/>
+			<Tag name="Club"/>
+			<Tag name="Spear"/>
+			<Tag name="Pistol"/>
+			<Tag name="Rifle"/>
+			<Tag name="Knife"/>
+			<Tag name="GreatAxe"/>
+			<Tag name="DemoHammer"/>
+			<Tag name="Sickle"/>
+			<Tag name="Pick"/>
+			<Tag name="Rapier"/>
+			<Tag name="LongBow"/>
+			<Tag name="Warhammer"/>
+			<Tag name="FishingPole"/>
+			<Tag name="Blunderbuss"/>
+			<Tag name="Greatsword"/>
+			<Tag name="AzothFlute"/>
+			<Tag name="Drums"/>
+			<Tag name="Guitar"/>
+			<Tag name="UprightBass"/>
+			<Tag name="Mandolin"/>
+		</Group>
+		<Group name="Posture">
+			<Tag name="Stand"/>
+			<Tag name="Crouch" priority="2"/>
+			<Tag name="Prone"/>
+		</Group>
+		<Group name="Aiming">
+			<Tag name="ChargedAim" priority="1"/>
+			<Tag name="Aim" priority="1"/>
+			<Tag name="HipAim"/>
+			<Tag name="HeavyAim"/>
+			<Tag name="SmokeAim"/>
+			<Tag name="PenetratingAim"/>
+		</Group>
+		<Group name="Reloading">
+			<Tag name="Reload"/>
+		</Group>
+		<Group name="FragmentVariant">
+			<Tag name="Variant1"/>
+		</Group>
+		<Group name="CraftingItem">
+			<Tag name="CookFire_Craft"/>
+			<Tag name="Carpentry_Craft"/>
+			<Tag name="Masonry_Craft"/>
+			<Tag name="Hand_Craft"/>
+			<Tag name="Blacksmithing_Craft"/>
+			<Tag name="Outfitting_Craft"/>
+			<Tag name="Smelting_Craft"/>
+			<Tag name="Leather_Craft"/>
+			<Tag name="Weaving_Craft"/>
+		</Group>
+		<Group name="Land">
+			<Tag name="Soft"/>
+			<Tag name="Hard"/>
+			<Tag name="Normal"/>
+		</Group>
+		<Group name="PostureTransition">
+			<Tag name="FromStand"/>
+			<Tag name="FromCrouch"/>
+			<Tag name="FromProne"/>
+		</Group>
+		<Group name="DesiredPosture">
+			<Tag name="Stand_Desired"/>
+			<Tag name="Crouch_Desired"/>
+			<Tag name="Prone_Desired"/>
+		</Group>
+		<Group name="Debug_Cameras">
+			<Tag name="Dynamic"/>
+			<Tag name="Zoom1Camera"/>
+			<Tag name="Zoom2Camera"/>
+			<Tag name="CloseCamera"/>
+			<Tag name="MidCamera"/>
+			<Tag name="NormalCamera"/>
+			<Tag name="BirdsEyeViewCamera"/>
+			<Tag name="Interior"/>
+		</Group>
+		<Group name="WeaponStance_OH">
+			<Tag name="Torch_OH"/>
+			<Tag name="Unarmed_OH"/>
+			<Tag name="Melee_OH"/>
+			<Tag name="Ranged_OH"/>
+			<Tag name="Shield_OH" priority="1"/>
+		</Group>
+		<Group name="ItemTag">
+			<Tag name="Drink"/>
+			<Tag name="Eat"/>
+			<Tag name="WeaponOil"/>
+			<Tag name="Potion"/>
+			<Tag name="Bandage"/>
+			<Tag name="Call"/>
+		</Group>
+		<Group name="AutoWeaponSheathe">
+			<Tag name="AutoSheathe"/>
+			<Tag name="AutoUnsheathe"/>
+			<Tag name="KeepWeaponSheathed"/>
+		</Group>
+		<Group name="NavDirection">
+			<Tag name="ForwardNav"/>
+			<Tag name="LeftNav"/>
+			<Tag name="RightNav"/>
+			<Tag name="BackNav"/>
+		</Group>
+		<Group name="WeaponStatus">
+			<Tag name="ReloadRequired"/>
+		</Group>
+		<Group name="WeaponStanceTransition">
+			<Tag name="From_1H_Melee"/>
+			<Tag name="From_1H_Ranged"/>
+			<Tag name="From_2H_Melee"/>
+			<Tag name="From_2H_Ranged"/>
+			<Tag name="From_Bow"/>
+			<Tag name="From_Unarmed"/>
+			<Tag name="From_MagicGauntlet"/>
+			<Tag name="From_Spear"/>
+			<Tag name="From_MagicStaff"/>
+			<Tag name="From_FireGauntlet"/>
+			<Tag name="From_1H_Melee_Sword"/>
+			<Tag name="From_MagicStaff_Life"/>
+			<Tag name="From_VoidGauntlet"/>
+			<Tag name="From_Blunderbuss"/>
+			<Tag name="From_Greatsword"/>
+		</Group>
+		<Group name="OffhandStanceTransition">
+			<Tag name="From_Torch_OH"/>
+			<Tag name="From_Melee_OH"/>
+			<Tag name="From_Ranged_OH"/>
+			<Tag name="From_Unarmed_OH"/>
+			<Tag name="From_Shield_OH" priority="1"/>
+		</Group>
+		<Group name="NavigationType">
+			<Tag name="Run"/>
+			<Tag name="Walk"/>
+			<Tag name="Sprint"/>
+			<Tag name="ContextualNav"/>
+		</Group>
+		<Group name="Gathering">
+			<Tag name="Chopping"/>
+			<Tag name="Chopping_Vertical"/>
+			<Tag name="Mining"/>
+			<Tag name="Dressing"/>
+			<Tag name="Cutting"/>
+			<Tag name="Handpicking"/>
+			<Tag name="Handcrafting"/>
+			<Tag name="AzothStaff_High"/>
+			<Tag name="AzothStaff_Low"/>
+			<Tag name="Etching"/>
+			<Tag name="AzothStaffCreate"/>
+			<Tag name="MSQTheRitual"/>
+			<Tag name="Welling"/>
+			<Tag name="Mining_Gleamite"/>
+			<Tag name="Kicking"/>
+		</Group>
+		<Group name="Magic">
+			<Tag name="Heal"/>
+			<Tag name="Fire"/>
+			<Tag name="Ice"/>
+			<Tag name="VoidGauntlet"/>
+		</Group>
+		<Group name="GenericTags">
+			<Tag name="GenericTagA"/>
+			<Tag name="GenericTagB"/>
+			<Tag name="GenericTagC"/>
+		</Group>
+		<Tag name="DeathsDoor" priority="1"/>
+		<Tag name="DisableLookAimIK"/>
+		<Tag name="DisableAim"/>
+		<Tag name="Sprint_TravelMode"/>
+		<Tag name="TurnInPlace"/>
+		<Tag name="Idle"/>
+		<Tag name="ChargeTimer"/>
+		<Tag name="DEBUG_Strafe_Dodge"/>
+		<Tag name="Shoot"/>
+		<Tag name="AimDownSights"/>
+		<Tag name="Debug_Combat"/>
+		<Tag name="Reaction"/>
+		<Tag name="Respawn"/>
+		<Tag name="Exhausted"/>
+		<Tag name="OneTimeScriptDone"/>
+		<Tag name="Dodging"/>
+		<Tag name="TurnInPlaceTimer"/>
+		<Tag name="Blocking" priority="1"/>
+		<Tag name="Throwable"/>
+		<Tag name="AutoRun"/>
+		<Tag name="AttackAction"/>
+		<Tag name="FirstAttack"/>
+		<Tag name="TEMP_WeaponMaster"/>
+		<Tag name="Tool"/>
+		<Tag name="TurretCamera"/>
+		<Tag name="TowerShield"/>
+		<Tag name="ContinueAutoRun"/>
+	</Tags>
+</TagDefinition>
+

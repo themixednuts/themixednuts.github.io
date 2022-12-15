@@ -1,0 +1,25 @@
+<ActionList>
+	<Actions>
+		<Action Name="AimPose" FragmentName="Aim">
+			<ActivationCondition>
+				<And>
+					<Not>
+						<IfMannequinMarker MarkerName="DisableAimBlend"/>
+					</Not>
+					<Or>
+						<IfMannequinTag TagName="Aim"/>
+						<IfMannequinTag TagName="ChargedAim"/>
+						<IfMannequinTag TagName="HipAim"/>
+						<IfMannequinTag TagName="AimDownSights"/>
+						<IfMannequinTag TagName="HeavyAim"/>
+						<IfMannequinTag TagName="SmokeAim"/>
+						<IfMannequinMarker MarkerName="AimDownSightsAbility"/>
+					</Or>
+				</And>
+			</ActivationCondition>
+			<Activities/>
+		</Action>
+	</Actions>
+	<Conditions/>
+</ActionList>
+

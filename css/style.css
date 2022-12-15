@@ -30,15 +30,16 @@
 body {
     background-color: #1F1F1F;
     color: #D4CFC4;
-
+    display: flex;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow-x: hidden;
-    margin-top: 0;
-    margin-bottom: 0;
-    min-width: 600px
+    margin: 0;
+    min-width: 550px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .container {
@@ -51,7 +52,6 @@ body {
     max-width: 1400px;
     transition: flex 1000ms linear;
     gap: 20px;
-    margin-bottom: 200px;
 }
 
 
@@ -233,11 +233,12 @@ body {
     white-space: pre-line;
     gap: 1rem;
     flex: 1;
+    width: auto;
 
 }
 
 .targetconditions_container {
-    width: 600px;
+    width: auto;
 }
 
 .target_level_container {
@@ -266,7 +267,7 @@ body {
     gap: 2rem;
     height: fit-content;
     max-width: 600px;
-    min-width: 600px;
+
 }
 
 .weaponperk_container {
@@ -275,6 +276,19 @@ body {
     flex-wrap: nowrap;
     gap: .5rem;
     flex-direction: column;
+}
+
+.input {
+    all: unset;
+    position: relative;
+    flex: 0;
+    font-size: 2rem;
+    background-color: transparent;
+    text-align: center;
+    width: 50px;
+    font-weight: 600;
+    align-self: center;
+
 }
 
 .gearscore_container {
@@ -288,44 +302,26 @@ body {
 .gearscore_icon {
     position: relative;
     flex: 0;
-    width: 64px;
-    height: 64px;
+    width: 42px;
+    height: 42px;
 }
 
-
-
-.input {
-    all: unset;
-    position: relative;
-    font-size: 4rem;
-    font-weight: 600;
-    background-color: #1F1F1F;
-    text-align: center;
-    width: 120px;
-    flex-grow: 0;
-    height: 72px;
+.gearscore {
+    height: 42px;
+    width: 70px;
 }
-
-/* input:hover{
-    border: 1px solid;
-    border-color: white;
-} */
 
 .attribute {
-    font-weight: 10;
-    align-self: center;
-    top: 50%;
-    transform: translateY(15%);
     animation-name: attr;
 }
 
+.attribute,
 .level {
+    height: 35px;
+    line-height: 40px;
     font-weight: 10;
-    align-self: center;
-    top: 50%;
-    transform: translateY(15%);
-
 }
+
 
 .attr_up {
     animation: attrup 2s linear infinite;
@@ -340,7 +336,6 @@ body {
     container-type: inline-size;
     grid-column: 2/ -1;
     grid-row: 1/-1;
-    min-width: 600px;
     max-width: 2400px;
     text-align: right;
     flex-grow: 1;
@@ -465,8 +460,8 @@ body {
 .gem_bg {
     position: relative;
     display: flex;
-    width: 52px;
-    height: 52px;
+    width: 42px;
+    height: 42px;
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -479,7 +474,7 @@ body {
 .tippy-box[data-theme~='ability-tooltip'] {
     background-color: black;
     overflow-wrap: break-word;
-    min-width: max-content;
+    max-width: 250px;
 }
 
 
@@ -499,8 +494,6 @@ body {
 
 .tippy-content {
     white-space: pre-line;
-    scale: 1vw;
-
 }
 
 .appended_ability_div_tooltip_ctrl {
@@ -779,6 +772,7 @@ option {
 } */
 ::-webkit-scrollbar {
     width: 1em;
+    margin: 20px;
 }
 
 ::-webkit-scrollbar-track {
@@ -972,52 +966,57 @@ option {
 .equiprow {
     position: relative;
     display: inline-flex;
-    gap: 2rem;
+    gap: .75rem;
     justify-content: center;
     align-items: center;
 }
 
 .imgslot {
     height: auto;
-    max-width: 52px;
+    width: 38px;
 }
 
 .targetequip_container {
     position: relative;
     display: flex;
     flex-direction: column;
+    grid-column: 3/4;
+    grid-row: 1/-1;
+    flex-wrap: nowrap;
+    align-content: flex-start;
     gap: 1rem;
+    flex: 1 1 auto;
 }
 
 .removebttn {
     height: 16px;
     width: 16px;
     position: absolute;
-    top: -25%;
-    left: -25%;
+    top: -5%;
+    left: -15%;
     background-image: url("../lyshineui/images/button_close_a.png");
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: 0 0;
+    background-position: center;
     display: none;
 }
 
 .list_container {
     position: absolute;
-    top: calc(100% + .5rem);
+    top: 100%;
     height: 15rem;
-    padding: 10px;
-    width: 22rem;
+    padding: 5px;
+    max-width: calc(15rem);
     display: none;
     background-color: #000000;
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .icon_div {
-    width: 72px;
-    height: 72px;
+    width: 42px;
+    height: 42px;
     background-image: url("../lyshineui/images/equipment/equipmentbg.png");
-    background-size: 72px;
+    background-size: 42px;
     background-position: center;
     background-repeat: no-repeat;
     display: flex;
@@ -1057,17 +1056,15 @@ option {
 }
 
 .perkslot {
-    max-width: 52px;
+    max-width: 42px;
     height: auto;
 }
 
 .gemslot {
     -webkit-appearance: none;
     appearance: none;
-    max-width: 42px;
-    height: auto;
-    min-width: 12px;
-    min-height: 12px;
+    width: 38px;
+    height: 38px;
     border: 0px;
 }
 
@@ -1207,9 +1204,8 @@ option {
     margin: 2px;
 }
 
-.weaponsmall,
-.weaponslot {
-    max-width: 60px;
+.weaponsmall {
+    max-width: 42px;
     height: auto;
 }
 
@@ -1328,38 +1324,8 @@ option {
     }
 }
 
-@container (max-width: 10rem) {}
-
-@container (min-width: 1120px) {
-    .maincontent {
-        justify-content: space-between;
-    }
-}
-
-@media (max-width:1250px) {
-    .abilitiescontainer {
-        justify-content: center;
-    }
-}
 
 
-@media (max-width: 900px) {
-    .topcontainer {
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr max-content;
-    }
-
-    .weaponcontainer {
-        grid-column: 1/-1;
-        grid-row: 2/-1;
-    }
-
-    .playercondition_container {
-        grid-column: 1/-1;
-        grid-row: 1/2;
-    }
-
-}
 
 @font-face {
     font-family: 'defaulttest';

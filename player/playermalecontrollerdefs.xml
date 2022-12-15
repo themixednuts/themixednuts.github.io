@@ -1,0 +1,1011 @@
+<ControllerDef>
+	<Tags filename="Animations/Mannequin/ADB/Player/PlayerMaleTags.xml"/>
+	<Fragments filename="animations/Mannequin/ADB/Player/PlayerMaleActions.xml"/>
+	<FragmentDefs>
+		<_UpperBody_Addit_End scopes="AimBlend"/>
+		<_UpperBody_End scopes="UpperBody+OffhandTransition"/>
+		<r_Death scopes="FullBody"/>
+		<r_R1_F scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<r_R1_B scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<r_R1_L scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R1_L>
+		<r_R1_R scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R1_R>
+		<r_R3_F scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R3_F>
+		<_AimBlend_End scopes="AimBlend"/>
+		<Crafting_Stake_Equip scopes="FullBody+UpperBody"/>
+		<Crafting_Stake_Claim scopes="FullBody+UpperBody+Offhand"/>
+		<Unarmed_Eat scopes="UpperBody"/>
+		<r_R3_B scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R3_B>
+		<r_R3_L scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R3_L>
+		<r_R3_R scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R3_R>
+		<Unarmed_Wave scopes="UpperBody+OffhandTransition"/>
+		<Idle scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff+Aim+Fire" scopes="FullBody+Offhand+Weapon+SlaveChar"/>
+			<Override tags="MagicStaff+Aim+Heal" scopes="FullBody+Offhand+Weapon+SlaveChar"/>
+		</Idle>
+		<Strafe scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff+Aim+Fire" scopes="FullBody+Offhand+Weapon+SlaveChar"/>
+			<Override tags="MagicStaff+Aim+Heal" scopes="FullBody+Offhand+Weapon+SlaveChar"/>
+		</Strafe>
+		<Sprint scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<MountIdle scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<MountNav scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<r_R0_F scopes="UpperBody_Addit"/>
+		<r_R0_B scopes="UpperBody_Addit"/>
+		<r_R0_L scopes="UpperBody_Addit"/>
+		<r_R0_R scopes="UpperBody_Addit"/>
+		<r_R2_B scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R2_B>
+		<r_R2_F scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R2_F>
+		<r_R2_L scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R2_L>
+		<r_R2_R scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff" scopes="FullBody+Weapon"/>
+		</r_R2_R>
+		<Crafting_Interaction scopes="FullBody+Offhand"/>
+		<Fall scopes="FullBody+Offhand+Weapon"/>
+		<Attack_Primary scopes="FullBody+Offhand+Weapon">
+			<Override tags="MagicGauntlet+Ice" scopes="UpperBody+Offhand+Weapon"/>
+		</Attack_Primary>
+		<Land scopes="FullBody+Offhand"/>
+		<Idle_PostureTransition scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Sprint_PostureTransition scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Trans_Land_Hard_To_Strafe scopes="FullBody+Offhand"/>
+		<Unsheathe_UpperBody scopes="UpperBody+OffhandTransition" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Offhand+1H_Melee+Shield_OH+From_Unarmed_OH" scopes="UpperBody+OffhandTransition"/>
+			<Override tags="MagicGauntlet+Fire+Idle" scopes="UpperBody+OffhandTransition"/>
+		</Unsheathe_UpperBody>
+		<Sheathe_UpperBody scopes="UpperBody+OffhandTransition+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicGauntlet+From_MagicGauntlet+Fire+Idle" scopes="FullBody+OffhandTransition"/>
+		</Sheathe_UpperBody>
+		<Turn_InPlace scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="MagicStaff+Aim+Heal" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="2H_Ranged+Rifle+SmokeAim" scopes="FullBody"/>
+		</Turn_InPlace>
+		<Attack_Primary_Strike2 scopes="FullBody+Offhand+Weapon">
+			<Override tags="2H_Melee+Warhammer" scopes="FullBody+Offhand+Weapon"/>
+		</Attack_Primary_Strike2>
+		<ReactionPending scopes="FullBody+UpperBody+Weapon"/>
+		<Bow_Aim_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Shoot_UpperBody scopes="UpperBody+Weapon"/>
+		<Bow_Shake_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Charge_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Unsheathe scopes="FullBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Sheathe scopes="FullBody"/>
+		<Aim scopes="AimBlend" flags="AutoReinstall"/>
+		<r_R0_Def_B scopes="UpperBody_Addit"/>
+		<r_R0_Def_F scopes="UpperBody_Addit"/>
+		<r_R0_Def_L scopes="UpperBody_Addit"/>
+		<r_R0_Def_R scopes="UpperBody_Addit"/>
+		<Gather scopes="FullBody+Offhand+Weapon" flags="AutoReinstall"/>
+		<Whistle_A scopes="UpperBody"/>
+		<Whistle_Af scopes="UpperBody"/>
+		<Whistle_B scopes="UpperBody"/>
+		<Whistle_C scopes="UpperBody"/>
+		<Whistle_Cf scopes="UpperBody"/>
+		<Whistle_D scopes="UpperBody"/>
+		<Whistle_Df scopes="UpperBody"/>
+		<Whistle_Ff scopes="UpperBody"/>
+		<Whistle_G scopes="UpperBody"/>
+		<Whistle_Gf scopes="UpperBody"/>
+		<SnareDrum_A scopes="UpperBody"/>
+		<Cheat scopes="FullBody"/>
+		<Fall_Intro scopes="FullBody+Offhand"/>
+		<Bow_Lower_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Attack_Sprint scopes="FullBody+Offhand+Weapon">
+			<Override tags="1H_Melee+Sword+Shield_OH" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="1H_Melee+Shield_OH" scopes="FullBody+Offhand+Weapon"/>
+		</Attack_Sprint>
+		<r_R4_F scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<r_R4_B scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Offhand+Shield_OH" scopes="FullBody+Offhand"/>
+		</r_R4_B>
+		<Bow_Shoot_Charged scopes="UpperBody+Weapon"/>
+		<Use scopes="UpperBody+OffhandTransition+Oils" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Inventory scopes="FullBody"/>
+		<Respawn scopes="FullBody"/>
+		<Place_Buildable scopes="FullBody+Offhand"/>
+		<Bow_Shake_End_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Offline scopes="FullBody"/>
+		<Block_UpperBody scopes="UpperBody" flags="TimewarpAutoReinstall"/>
+		<r_DeathsDoor scopes="FullBody"/>
+		<r_DeathsDoorRecover scopes="FullBody"/>
+		<r_DeathsDoorRecoverPending scopes="FullBody"/>
+		<Throw_Primary_UpperBody scopes="UpperBody"/>
+		<Throw_Primary scopes="FullBody+OffhandTransition">
+			<Override tags="MagicGauntlet+Fire" scopes="UpperBody+OffhandTransition"/>
+			<Override tags="MagicGauntlet" scopes="UpperBody+OffhandTransition"/>
+		</Throw_Primary>
+		<Throw_Reload_UpperBody scopes="UpperBody+OffhandTransition" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<StepUp scopes="FullBody+Offhand"/>
+		<StepUp_Low scopes="FullBody+Offhand"/>
+		<_RunTest scopes="FullBody"/>
+		<r_B0 scopes="UpperBody_Addit">
+			<Override tags="1H_Melee" scopes="UpperBody_Addit"/>
+			<Override tags="2H_Melee" scopes="UpperBody_Addit"/>
+			<Override tags="MagicStaff" scopes="UpperBody_Addit"/>
+			<Override tags="MagicGauntlet" scopes="UpperBody_Addit"/>
+		</r_B0>
+		<r_B0_Break scopes="FullBody">
+			<Override tags="1H_Melee+Shield_OH" scopes="FullBody+Offhand"/>
+		</r_B0_Break>
+		<DeflectionPending scopes="FullBody+UpperBody+Weapon"/>
+		<Deflect scopes="FullBody+Offhand+Weapon"/>
+		<Block_UpperBody_Lower scopes="UpperBody" flags="TimewarpAutoReinstall"/>
+		<Attack_Primary_Strike3 scopes="FullBody+Offhand+Weapon">
+			<Override tags="2H_Melee+GreatAxe" scopes="FullBody+Offhand+Weapon"/>
+		</Attack_Primary_Strike3>
+		<Block_UpperBody_Raise scopes="UpperBody+OffhandTransition" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Offhand+1H_Melee+Shield_OH+Idle" scopes="UpperBody+OffhandTransition"/>
+			<Override tags="Offhand+1H_Melee+Shield_OH" scopes="UpperBody+OffhandTransition"/>
+		</Block_UpperBody_Raise>
+		<Inventory_Exit scopes="FullBody"/>
+		<Sprint_Start scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</Sprint_Start>
+		<Throw_ReadyWeapon_UpperBody scopes="UpperBody+OffhandTransition" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Throw_LowerWeapon_UpperBody scopes="UpperBody+OffhandTransition" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Throw_Aim_UpperBody scopes="UpperBody"/>
+		<Firearm_ReadyWeapon_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Firearm_LowerWeapon_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Firearm_Shoot_Primary_UpperBody scopes="UpperBody+Weapon"/>
+		<Firearm_Aim_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Firearm_Reload_Start_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Firearm_Reload_Loop_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Firearm_Reload_Finish_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Firearm_Reload_Start scopes="FullBody"/>
+		<Firearm_Reload_Loop scopes="FullBody"/>
+		<Firearm_Reload_Finish scopes="FullBody"/>
+		<Firearm_Aim_ProneNav scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Firearm_Shoot_Primary scopes="FullBody+Weapon"/>
+		<Firearm_Shoot_HipFire scopes="UpperBody+Weapon">
+			<Override tags="2H_Ranged+Crouch" scopes="UpperBody+Weapon"/>
+			<Override tags="2H_Ranged+Blunderbuss+TEMP_WeaponMaster" scopes="UpperBody+Weapon"/>
+			<Override tags="2H_Ranged+GenericTagA" scopes="UpperBody+Weapon"/>
+			<Override tags="2H_Ranged" scopes="UpperBody+Weapon"/>
+		</Firearm_Shoot_HipFire>
+		<Firearm_Shoot_DryFire scopes="FullBody+Weapon">
+			<Override tags="2H_Ranged" scopes="UpperBody+Weapon"/>
+		</Firearm_Shoot_DryFire>
+		<Firearm_Shoot_DryFire_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Reload_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Reload_Charged_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Lower_FromShoot_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Lower_FromShoot_Charged_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_ReadyWeapon_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<_UpperBody_End_20F scopes="UpperBody"/>
+		<r_R4_L scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</r_R4_L>
+		<r_R4_R scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</r_R4_R>
+		<Attack_Tool_Primary scopes="FullBody+Offhand+Weapon"/>
+		<r_R4_F_Overhead scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</r_R4_F_Overhead>
+		<Attack_Start_Charge scopes="FullBody+Offhand+Weapon">
+			<Override tags="2H_Melee+Warhammer" scopes="FullBody+Offhand"/>
+			<Override tags="MagicGauntlet+Ice" scopes="UpperBody+Offhand+Weapon"/>
+		</Attack_Start_Charge>
+		<Attack_Heavy scopes="FullBody+Offhand+Weapon"/>
+		<Attack_Start_Charge_C2 scopes="FullBody+Offhand+Weapon"/>
+		<Attack_Start_Charge_C3 scopes="FullBody+Offhand+Weapon"/>
+		<Attack_Heavy_C2 scopes="FullBody+Offhand+Weapon"/>
+		<Attack_Heavy_C3 scopes="FullBody+Offhand+Weapon"/>
+		<Nav_Stop scopes="FullBody+Offhand">
+			<Override tags="MagicStaff+Stand+Aim+Run+Fire" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="MagicStaff+Stand+Aim+Walk+Fire" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="MagicStaff+Stand+Aim+Walk+Heal" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="MagicStaff+Stand+Aim+Run+Heal" scopes="FullBody+Offhand+Weapon"/>
+		</Nav_Stop>
+		<Sprint_180_Turn scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Sprint_Jump scopes="FullBody+Offhand"/>
+		<Dodge_Roll scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Bow+BackNav" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow+LeftNav" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</Dodge_Roll>
+		<Dodge_Roll_Fast scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Bow+BackNav" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow+LeftNav" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</Dodge_Roll_Fast>
+		<Dodge_Roll_Slow scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Bow+BackNav" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow+LeftNav" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</Dodge_Roll_Slow>
+		<Attack_Special scopes="FullBody+Offhand+Weapon">
+			<Override tags="2H_Ranged+Rifle" scopes="FullBody+Offhand"/>
+		</Attack_Special>
+		<Dodge_Start_Charge scopes="FullBody+Offhand+Weapon"/>
+		<Bow_Shoot_HipFire scopes="FullBody+Weapon">
+			<Override tags="Bow+Crouch" scopes="UpperBody+Weapon"/>
+			<Override tags="Bow" scopes="UpperBody+Weapon"/>
+		</Bow_Shoot_HipFire>
+		<Land_Roll scopes="FullBody+Offhand"/>
+		<Bow_Empty_UpperBody scopes="UpperBody+WeaponTransition" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Empty_HipFire scopes="FullBody+Weapon">
+			<Override tags="Bow" scopes="FullBody+Weapon"/>
+		</Bow_Empty_HipFire>
+		<VFX_Weapon_Trail scopes="Oils"/>
+		<Dodge_PostureTransition scopes="FullBody+Offhand+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Vault_Low scopes="FullBody+Offhand"/>
+		<Vault scopes="FullBody+Offhand"/>
+		<Mantle_High scopes="FullBody"/>
+		<Mantle_Low scopes="FullBody"/>
+		<Slide scopes="FullBody+Offhand"/>
+		<Stumble scopes="FullBody+Offhand"/>
+		<Slide_End scopes="FullBody+Offhand+Weapon"/>
+		<Stumble_UpperBody scopes="UpperBody"/>
+		<Vault_High_Thin scopes="FullBody+Offhand"/>
+		<Vault_Low_Thin scopes="FullBody+Offhand"/>
+		<r_Death_Slide scopes="FullBody"/>
+		<r_Death_Slide_End scopes="FullBody"/>
+		<Attack_Falling scopes="FullBody+Offhand+Weapon"/>
+		<Unsheathe_Offhand_UpperBody scopes="UpperBody+OffhandTransition" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Sheathe_Offhand_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Offhand_Attack scopes="FullBody+Offhand+Weapon">
+			<Override tags="Offhand+1H_Melee+Sword+Shield_OH" scopes="FullBody+Offhand"/>
+			<Override tags="1H_Melee+Sword+Shield_OH" scopes="FullBody+Offhand+Weapon"/>
+		</Offhand_Attack>
+		<Offhand_Shoot_HipFire scopes="FullBody+Offhand+Weapon"/>
+		<Crafting_Station_Interaction scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Crafting_ApplyResources scopes="FullBody+Offhand"/>
+		<Attack_Exhausted scopes="FullBody+Offhand+Weapon"/>
+		<r_R4_F_Crumple scopes="FullBody" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Offhand+Shield_OH" scopes="FullBody+Offhand"/>
+		</r_R4_F_Crumple>
+		<Sprint_LeftToRight_180 scopes="FullBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Sprint_RightToLeft_180 scopes="FullBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Magic_Aim scopes="UpperBody"/>
+		<Magic_Cast scopes="FullBody"/>
+		<Magic_Fail scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Magic_Cast_UpperBody scopes="UpperBody"/>
+		<Magic_ReadyWeapon scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Magic_LowerWeapon scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Reload_Exhausted_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_ReadyWeapon_Exhausted_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Bow_Reload_Charged_Exhausted_UpperBody scopes="UpperBody+Weapon" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Place_Buildable_Start_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Place_Buildable_Loop_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Place_Buildable_End_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Place_Buildable_Prone_Loop_UpperBody scopes="UpperBody"/>
+		<Crafting_Station_CraftLoop scopes="FullBody"/>
+		<Unstuck_Teleport scopes="FullBody"/>
+		<BeachWakeup scopes="FullBody"/>
+		<Attack_Heavy_Charged scopes="FullBody+Offhand+Weapon"/>
+		<Attack_Special_Charge scopes="FullBody+Offhand+Weapon"/>
+		<Firearm_GunButt scopes="FullBody+Weapon"/>
+		<Bow_GunButt scopes="FullBody+Weapon"/>
+		<r_B2 scopes="FullBody+Offhand"/>
+		<r_B3 scopes="FullBody+Offhand"/>
+		<r_B1 scopes="FullBody+Offhand"/>
+		<Interact_Camp scopes="FullBody"/>
+		<Emote_Wave scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_2Fingers scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Bow scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_OverHere scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_EyesOnYou scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_No scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Clap scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Surrender scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Sit scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Pray scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_ThroatSlit scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_ForearmJerk scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_NoDeal scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Shhh scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_FingerWag scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_LoudPoint scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Cheer scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Beckon scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_2ThumbsUp scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_DiceRoll scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_FarmerBlow scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Revel scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Whistle scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Hi scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Goodbye scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Apol1 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Apol2 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_ThumbsSide scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_ThumbsUp scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_ThumbsDown scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_HighFive scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_FistBump scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_ForearmBump scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_SlowClap scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Rock scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Paper scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Scissors scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Laugh1 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Laugh2 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Cry1 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Cry2 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Cry3 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Impatient scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_CoinToss scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_ChestPound scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_FistShake scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_ChinScrape scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_PushUps scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Flex1 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Flex2 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Flex3 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_RussianDance scopes="FullBody+Offhand" flags="AutoReinstall"/>
+		<Emote_IrishDance scopes="FullBody"/>
+		<Emote_RockPaperScissors scopes="FullBody"/>
+		<Emote_GolfClap scopes="FullBody"/>
+		<Emote_Firework1 scopes="FullBody" flags="AutoReinstall"/>
+		<VFX_Ranged_Melee scopes="Oils"/>
+		<Attack_Special_Charge_Exit scopes="FullBody"/>
+		<Attack_Sprint_Land scopes="FullBody+Offhand+Weapon"/>
+		<Attack_Special_C2 scopes="FullBody+Offhand+Weapon"/>
+		<r_R4_F_Stumble scopes="FullBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Attack_Heavy_Charged_C2 scopes="FullBody+Offhand+Weapon"/>
+		<Attack_Heavy_Charged_C3 scopes="FullBody+Offhand+Weapon"/>
+		<Delayed_Interact scopes="FullBody+SlaveChar"/>
+		<Magic_Cast_Primary scopes="FullBody"/>
+		<Magic_Staff_Channel_Intro scopes="FullBody"/>
+		<Magic_Staff_Channel_Loop scopes="FullBody"/>
+		<Magic_Staff_Channel_Outro scopes="FullBody"/>
+		<Magic_Cast_Heavy scopes="FullBody"/>
+		<Magic_Staff_Channel_Cast scopes="FullBody+Weapon"/>
+		<Throw_Magic_Special scopes="FullBody">
+			<Override tags="MagicGauntlet+Fire" scopes="FullBody+UpperBody"/>
+		</Throw_Magic_Special>
+		<Throw_Magic_Special_UpperBody scopes="UpperBody"/>
+		<Throw_Magic_FromAim scopes="FullBody">
+			<Override tags="MagicGauntlet+Fire" scopes="FullBody"/>
+		</Throw_Magic_FromAim>
+		<Magic_Staff_Cast_Heavy scopes="FullBody"/>
+		<Magic_Staff_Start_Charge scopes="FullBody+UpperBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody"/>
+		</Magic_Staff_Start_Charge>
+		<Magic_Staff_Cast_Heavy_Charged scopes="FullBody"/>
+		<Magic_Staff_Heavy_Channel_Intro scopes="FullBody"/>
+		<Magic_Staff_Heavy_Channel_Loop scopes="FullBody"/>
+		<Magic_Staff_Heavy_Channel_Outro scopes="FullBody"/>
+		<Magic_Staff_Aim scopes="UpperBody"/>
+		<Magic_Staff_ReadyWeapon scopes="UpperBody"/>
+		<Magic_Staff_Cast_Primary_C1 scopes="UpperBody">
+			<Override tags="MagicStaff+Fire" scopes="UpperBody+Weapon"/>
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Magic_Staff_Cast_Primary_C1>
+		<Ability_Life_Staff_Beacon scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Ability_Life_Staff_Beacon>
+		<Ability_Life_Saff_OrbofProtection scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Ability_Life_Saff_OrbofProtection>
+		<Magic_Cast_Start_Charge scopes="FullBody"/>
+		<Magic_Cast_Heavy_Charged scopes="FullBody"/>
+		<Magic_Shoot_Upperbody scopes="UpperBody"/>
+		<Magic_Charge_Upperbody scopes="UpperBody"/>
+		<Magic_Shoot_Charged scopes="FullBody"/>
+		<FG_ReadyWeapon_Upperbody scopes="UpperBody"/>
+		<FG_Empty_UpperBody scopes="UpperBody"/>
+		<FG_Empty_HipFire scopes="FullBody"/>
+		<FG_Aim_UpperBody scopes="UpperBody+Weapon"/>
+		<FG_Shoot_Hipfire scopes="FullBody"/>
+		<FG_Shoot_UpperBody scopes="UpperBody"/>
+		<FG_Shoot_Charged scopes="FullBody"/>
+		<FG_Lower_FromShoot_Charged_UpperBody scopes="UpperBody"/>
+		<FG_Reload_UpperBody scopes="UpperBody"/>
+		<FG_Reload_Charged_UpperBody scopes="UpperBody"/>
+		<FG_Lower_UpperBody scopes="UpperBody+Weapon"/>
+		<FG_Reload_Charged_Exhausted_UpperBody scopes="UpperBody"/>
+		<FG_Reload_Exhausted_UpperBody scopes="UpperBody"/>
+		<FG_ReadyWeapon_Exhausted_UpperBody scopes="UpperBody"/>
+		<FG_Charge_Upperbody scopes="UpperBody"/>
+		<FG_Shake_UpperBody scopes="UpperBody"/>
+		<FG_Shake_End_UpperBody scopes="UpperBody"/>
+		<FG_Lower_FromShoot_UpperBody scopes="UpperBody"/>
+		<Magic_Staff_Cast_Primary_C2 scopes="UpperBody">
+			<Override tags="MagicStaff+Fire" scopes="UpperBody+Weapon"/>
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Magic_Staff_Cast_Primary_C2>
+		<Attack_ShoulderCharge scopes="FullBody"/>
+		<Throw_Magic_LowerWeapon_Upperbody scopes="UpperBody+OffhandTransition"/>
+		<Attack_Special3 scopes="FullBody+Offhand">
+			<Override tags="1H_Melee+Sword" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow+LongBow" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="2H_Melee+Spear" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="1H_Melee+Club" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="1H_Melee+Axe" scopes="FullBody+Offhand+Weapon"/>
+		</Attack_Special3>
+		<FG_Attack_Primary scopes="FullBody"/>
+		<Inventory_DyePose scopes="FullBody"/>
+		<Interact_Pet scopes="FullBody+SlaveChar"/>
+		<Attack_Unsheathe_C2 scopes="FullBody+Weapon">
+			<Override tags="1H_Melee+Axe" scopes="FullBody+Weapon+WeaponTransition"/>
+		</Attack_Unsheathe_C2>
+		<Offhand_Attack2 scopes="FullBody+Weapon"/>
+		<FG_Dash_Intro scopes="FullBody+Weapon"/>
+		<FG_Dash_Loop scopes="FullBody+Weapon"/>
+		<FG_Dash_Stop scopes="FullBody+Weapon"/>
+		<Attack_Special_Rifle scopes="FullBody+Weapon"/>
+		<FastTravel scopes="FullBody"/>
+		<Sacrifice scopes="FullBody"/>
+		<r_R2_F_Disarm scopes="FullBody"/>
+		<r_R2_B_Disarm scopes="FullBody"/>
+		<r_R2_L_Disarm scopes="FullBody"/>
+		<r_R2_R_Disarm scopes="FullBody"/>
+		<Attack_Special2 scopes="FullBody+Weapon"/>
+		<Ability_Sword_SpinAttack scopes="FullBody+Offhand+Weapon">
+			<Override tags="Offhand+1H_Melee+Sword+Shield_OH" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="1H_Melee+Sword+Shield_OH" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="1H_Melee+Sword" scopes="FullBody+Weapon"/>
+		</Ability_Sword_SpinAttack>
+		<Ability_Sword_ShieldRush scopes="FullBody">
+			<Override tags="1H_Melee+Sword+Shield_OH" scopes="FullBody+Offhand+Weapon"/>
+		</Ability_Sword_ShieldRush>
+		<Ability_Sword_LastStand scopes="FullBody"/>
+		<Ability_Sword_Charge scopes="FullBody+Weapon">
+			<Override tags="1H_Melee+Sword+Shield_OH" scopes="FullBody+Offhand+Weapon"/>
+		</Ability_Sword_Charge>
+		<Interact_Horn scopes="FullBody+SlaveChar"/>
+		<Attack_Special4 scopes="FullBody"/>
+		<Ability_Sword_SwipeStabAttack scopes="FullBody+Offhand+Weapon"/>
+		<Ability_Sword_ShieldBash scopes="FullBody+Offhand"/>
+		<Attack_Special5 scopes="FullBody"/>
+		<r_Stun scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Ability_Sword_ChargingShout scopes="FullBody"/>
+		<Interact_Bed scopes="FullBody"/>
+		<Interact_Bed_Mirror scopes="FullBody"/>
+		<Interact_Rug scopes="FullBody"/>
+		<Interact_Chair scopes="FullBody"/>
+		<Interact_Bed_Exit scopes="FullBody"/>
+		<Interact_Bed_Mirror_Exit scopes="FullBody"/>
+		<Interact_Pet_Exit scopes="FullBody"/>
+		<Interact_Chair_Exit scopes="FullBody"/>
+		<Interact_Rug_Exit scopes="FullBody"/>
+		<r_Stun_Loop scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall">
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</r_Stun_Loop>
+		<r_Stun_End scopes="FullBody+Offhand" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Ability_Bow_RapidShot scopes="FullBody+Weapon"/>
+		<Ability_Bow_ExplosiveArrow scopes="UpperBody+Weapon"/>
+		<Ability_Bow_JumpBackShot scopes="FullBody+Weapon"/>
+		<Bow_Shoot_RainOfArrows scopes="FullBody+Weapon"/>
+		<Ability_Bow_SpreadShot_Quick scopes="FullBody+Weapon"/>
+		<Ability_Bow_SpreadShot_Quick5 scopes="FullBody+Weapon"/>
+		<Ability_WarHammer_BlockBreaker scopes="FullBody+Weapon"/>
+		<Ability_WarHammer_MightyGavel scopes="FullBody+Weapon"/>
+		<Ability_WarHammer_WreckingBall scopes="FullBody+Weapon">
+			<Override tags="2H_Melee+Warhammer" scopes="FullBody+Weapon"/>
+		</Ability_WarHammer_WreckingBall>
+		<Ability_WarHammer_PathOfDestiny scopes="FullBody+Weapon"/>
+		<Ability_WarHammer_Shockwave scopes="FullBody+Weapon+SlaveChar"/>
+		<Ability_WarHammer_HeavyC3_Alt scopes="FullBody+Weapon"/>
+		<Ability_WarHammer_ClearOut scopes="FullBody+Weapon"/>
+		<Ability_WarHammer_MightyGavel_Upg scopes="FullBody+Weapon"/>
+		<Ability_Life_Staff_HealingWave scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Ability_Life_Staff_TouchOfLife scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Ability_Life_Staff_LightsEmbrace scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Ability_Life_Staff_Speed_Intro scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="FullBody+Weapon"/>
+		</Ability_Life_Staff_Speed_Intro>
+		<Ability_Life_Staff_Speed_Loop scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="FullBody+Weapon"/>
+		</Ability_Life_Staff_Speed_Loop>
+		<Ability_Life_Staff_Speed_Stop scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="FullBody"/>
+		</Ability_Life_Staff_Speed_Stop>
+		<Ability_Life_Staff_Smite scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Ability_Life_Staff_HolyShield_Intro scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="FullBody+Weapon"/>
+		</Ability_Life_Staff_HolyShield_Intro>
+		<Ability_Life_Staff_HolyShield_Loop scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="FullBody+Weapon"/>
+		</Ability_Life_Staff_HolyShield_Loop>
+		<Ability_Life_Staff_HolyShield_Outro scopes="FullBody"/>
+		<Ability_Life_Staff_Smite_Aim scopes="UpperBody"/>
+		<Ability_Life_Staff_HealingWave_Aim scopes="UpperBody"/>
+		<Ability_Life_Staff_TouchOfLife_Aim scopes="UpperBody"/>
+		<Ability_Life_Staff_LightsEmbrace_Aim scopes="UpperBody"/>
+		<Ability_Life_Staff_HealingWave_Loop scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Ability_Life_Staff_HealingWave_Loop>
+		<Ability_Life_Staff_HealingWave_Outro scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody"/>
+		</Ability_Life_Staff_HealingWave_Outro>
+		<Ability_Fire_Staff_Speed_Intro scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Speed_Intro>
+		<Ability_Fire_Staff_Speed_Loop scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Speed_Loop>
+		<Ability_Fire_Staff_Speed_Stop scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody"/>
+		</Ability_Fire_Staff_Speed_Stop>
+		<Ability_Fire_Staff_Pillar scopes="UpperBody"/>
+		<Ability_Fire_Staff_Pillar_Aim scopes="UpperBody"/>
+		<Ability_Fire_Staff_Pillar_Cast scopes="UpperBody">
+			<Override tags="MagicStaff+Fire" scopes="UpperBody+Weapon"/>
+		</Ability_Fire_Staff_Pillar_Cast>
+		<Ability_Fire_Staff_Storm scopes="UpperBody"/>
+		<Ability_Fire_Staff_Storm_Aim scopes="UpperBody"/>
+		<Ability_Fire_Staff_Storm_Loop scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Storm_Loop>
+		<Ability_Fire_Staff_Storm_Outro scopes="FullBody"/>
+		<Ability_Fire_Staff_FlameThrower scopes="FullBody+UpperBody">
+			<Override tags="MagicStaff+Fire" scopes="UpperBody+Weapon"/>
+		</Ability_Fire_Staff_FlameThrower>
+		<Ability_Life_Staff_Speed_Loop_10m_Upgrade scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="FullBody+Weapon"/>
+		</Ability_Life_Staff_Speed_Loop_10m_Upgrade>
+		<Ability_Life_Staff_Smite_Cast scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="FullBody+Weapon"/>
+		</Ability_Life_Staff_Smite_Cast>
+		<Delayed_Interact_MR scopes="FullBody"/>
+		<Delayed_Interact_MR_Outro scopes="FullBody"/>
+		<LifeStaff_Resuscitate_Passive scopes="FullBody"/>
+		<r_DeathsDoorRecover_Resuscitate scopes="FullBody"/>
+		<Ability_Fire_Staff_Incinerate_Intro scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Incinerate_Intro>
+		<Ability_Fire_Staff_Incinerate_Loop scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Incinerate_Loop>
+		<Ability_Fire_Staff_FlameThrower_Outro scopes="UpperBody">
+			<Override tags="MagicStaff+Fire" scopes="UpperBody+Weapon"/>
+		</Ability_Fire_Staff_FlameThrower_Outro>
+		<Ability_Fire_Staff_Siege_Intro scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+WeaponTransition"/>
+		</Ability_Fire_Staff_Siege_Intro>
+		<Ability_Fire_Staff_Siege_Loop scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Siege_Loop>
+		<Ability_Fire_Staff_Siege_Outro scopes="FullBody"/>
+		<Ability_Fire_Staff_Siege_Loop_Shoot scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Siege_Loop_Shoot>
+		<Ability_Fire_Staff_Siege_Loop_Recharge scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Siege_Loop_Recharge>
+		<Ability_Fire_Staff_Siege_Loop_Shoot_Ready scopes="FullBody">
+			<Override tags="MagicStaff+Fire" scopes="FullBody+Weapon"/>
+		</Ability_Fire_Staff_Siege_Loop_Shoot_Ready>
+		<Attack_Unsheathe_C1 scopes="FullBody+Weapon"/>
+		<Attack_Unsheathe_C3 scopes="FullBody+Weapon"/>
+		<Ability_Musket_PowerShot scopes="FullBody+Weapon"/>
+		<Ability_Musket_ShootersStance_Ready scopes="UpperBody"/>
+		<Ability_Musket_ShootersStance_Aim scopes="UpperBody"/>
+		<Ability_Musket_ShootersStance_Shoot scopes="UpperBody"/>
+		<Ability_Musket_ShootersStance_Reload scopes="FullBody"/>
+		<Ability_Musket_Trap_Toss scopes="UpperBody"/>
+		<Ability_Musket_Trap scopes="FullBody"/>
+		<Ability_Musket_PlayDead scopes="FullBody"/>
+		<Ability_Musket_PlayDead_Shoot scopes="FullBody"/>
+		<Ability_Fire_Staff_Siege_Kickout scopes="FullBody"/>
+		<Ability_Musket_PowerShot_Fast scopes="FullBody"/>
+		<Ability_Musket_StickyBomb_Ready scopes="UpperBody"/>
+		<Ability_Musket_StickyBomb_Throw scopes="UpperBody"/>
+		<Ability_Musket_StickyBomb_Reload scopes="UpperBody"/>
+		<Ability_Musket_StickyBomb_Lower scopes="UpperBody"/>
+		<Ability_Musket_StickyBomb_Aim scopes="UpperBody"/>
+		<Ability_Musket_Trap_Toss_Interact scopes="UpperBody"/>
+		<Interact_FireDropper scopes="FullBody+SlaveChar"/>
+		<Ability_Life_Staff_TouchOfLife_Cast scopes="UpperBody+Weapon"/>
+		<Ability_Life_Staff_LightsEmbrace_Cast scopes="FullBody+Weapon">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Ability_Life_Staff_LightsEmbrace_Cast>
+		<Ability_Fire_Staff_FlameThrower_Aim scopes="FullBody+Weapon"/>
+		<Bow_Lower_FromRain_UpperBody scopes="UpperBody+Weapon"/>
+		<Ability_Warhammer_WreckingBall_C2 scopes="FullBody+Weapon">
+			<Override tags="2H_Melee+Warhammer" scopes="FullBody+Weapon"/>
+		</Ability_Warhammer_WreckingBall_C2>
+		<Ability_Warhammer_WreckingBall_C3 scopes="FullBody+Weapon"/>
+		<Crafting_ApplyResources_Camp scopes="FullBody"/>
+		<Ability_Life_Staff_TouchOfLife_Outro scopes="UpperBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Ability_Life_Staff_TouchOfLife_Outro>
+		<Ability_Life_Staff_LightsEmbrace_Outro scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody"/>
+		</Ability_Life_Staff_LightsEmbrace_Outro>
+		<Ability_Musket_PlayDead_Loop scopes="FullBody"/>
+		<Interact_Pet_Bobcat scopes="FullBody"/>
+		<Interact_Pet_Exit_Bobcat scopes="FullBody"/>
+		<Interact_Pet_Hare scopes="FullBody"/>
+		<Interact_Pet_Exit_Hare scopes="FullBody"/>
+		<Ability_Spear_Skewer scopes="FullBody+Weapon"/>
+		<Ability_Spear_Perforate scopes="FullBody+Weapon"/>
+		<Ability_Spear_Sweep scopes="FullBody+Weapon"/>
+		<Ability_Rapier_Slash scopes="FullBody">
+			<Override tags="1H_Melee+Rapier" scopes="FullBody+Weapon"/>
+		</Ability_Rapier_Slash>
+		<Ability_Rapier_Flurry scopes="FullBody">
+			<Override tags="1H_Melee+Rapier" scopes="FullBody+Weapon"/>
+		</Ability_Rapier_Flurry>
+		<Ability_Rapier_Riposte scopes="FullBody">
+			<Override tags="1H_Melee+Rapier" scopes="FullBody+Weapon"/>
+		</Ability_Rapier_Riposte>
+		<Ability_Rapier_Evasion scopes="FullBody"/>
+		<Ability_Spear_Cyclone scopes="FullBody+Weapon"/>
+		<Ability_Spear_VaultKick scopes="FullBody+Weapon"/>
+		<Attack_Primary_Strike4 scopes="FullBody">
+			<Override tags="1H_Melee+Rapier" scopes="FullBody+Weapon"/>
+			<Override tags="1H_Melee+Axe" scopes="FullBody+Weapon"/>
+		</Attack_Primary_Strike4>
+		<Attack_Primary_Strike5 scopes="FullBody+Weapon"/>
+		<Attack_Start_Charge_C4 scopes="FullBody"/>
+		<Attack_Start_Charge_C5 scopes="FullBody"/>
+		<Attack_Start_Charge_C6 scopes="FullBody"/>
+		<Attack_Primary_Strike6 scopes="FullBody">
+			<Override tags="1H_Melee+Rapier" scopes="FullBody+Weapon"/>
+		</Attack_Primary_Strike6>
+		<Ability_Spear_Skewer_Kick scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_GravityWell scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Engage scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Whirlwind scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Whirlwind_Upgrade scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_JudgementsReach scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Maelstrom scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Maelstrom_Upgrade scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Executioner scopes="FullBody+Weapon"/>
+		<Ability_Rapier_Riposte_Kickout scopes="FullBody">
+			<Override tags="1H_Melee+Rapier" scopes="FullBody"/>
+		</Ability_Rapier_Riposte_Kickout>
+		<Ability_Rapier_Riposte_Out scopes="FullBody">
+			<Override tags="1H_Melee+Rapier" scopes="FullBody+Weapon"/>
+		</Ability_Rapier_Riposte_Out>
+		<Ability_Rapier_Riposte_Loop scopes="FullBody">
+			<Override tags="1H_Melee+Rapier" scopes="FullBody+Weapon"/>
+		</Ability_Rapier_Riposte_Loop>
+		<Ability_Spear_Sweep_Finish scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Executioner_Upgrade scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Engage_Uppercut scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Engage_Swing scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_JudgementsReach_Upgrade scopes="FullBody+Weapon"/>
+		<Fishing_Ready_Draw scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Ready_Idle scopes="UpperBody+Weapon+SlaveChar" flags="AutoReinstall"/>
+		<Dodge_Stunlock scopes="FullBody+Offhand" flags="AutoReinstall">
+			<Override tags="Bow+BackNav" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow+LeftNav" scopes="FullBody+Offhand+Weapon"/>
+			<Override tags="Bow" scopes="FullBody+Offhand+Weapon"/>
+		</Dodge_Stunlock>
+		<Ability_GreatAxe_Whirlwind_Exit180 scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Engage_Swing2 scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Engage_Swing3 scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Engage_Uppercut2 scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Engage_Uppercut3 scopes="FullBody+Weapon"/>
+		<Fishing_Cast_Charge scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Cast_Release scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Cast_Idle scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Cast_Fail scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Reel_Start scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Reel_Active scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Reel_Recover scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Reel_LineBreak scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Catch_Fail scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_Catch_Success scopes="UpperBody+Weapon+SlaveChar"/>
+		<Ability_GreatAxe_Engage_UppercutDetect scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Whirlwind_Exit_Short scopes="FullBody+Weapon"/>
+		<Ability_GreatAxe_Whirlwind_Exit_Long scopes="FullBody+Weapon"/>
+		<Fishing_Exit scopes="UpperBody+Weapon+SlaveChar"/>
+		<Fishing_ApplyBait scopes="UpperBody+Weapon+SlaveChar"/>
+		<r_DeathsDoor_Duel scopes="FullBody"/>
+		<r_DeathsDoorRecover_Duel scopes="FullBody"/>
+		<Fishing_ApplyBait_Exit scopes="UpperBody+Weapon+SlaveChar"/>
+		<Ability_Life_Staff_TouchOfLife_CastChannel scopes="FullBody"/>
+		<Ability_Life_Staff_TouchOfLife_SelfCast scopes="UpperBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Ability_Life_Staff_TouchOfLife_SelfCast>
+		<Ability_Life_Staff_LightsEmbrace_CastChannel scopes="FullBody"/>
+		<Ability_Life_Staff_LightsEmbrace_SelfCast scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Ability_Life_Staff_LightsEmbrace_SelfCast>
+		<Ability_Life_Staff_HealingWave_SelfLoop scopes="FullBody">
+			<Override tags="MagicStaff+Heal" scopes="UpperBody+Weapon"/>
+		</Ability_Life_Staff_HealingWave_SelfLoop>
+		<Fishing_Cast_Charge_Cancel scopes="UpperBody+Weapon+SlaveChar"/>
+		<Ability_Rapier_Flourish scopes="FullBody+Offhand+Weapon"/>
+		<Ability_Rapier_Aerial_Lunge scopes="FullBody+Offhand+Weapon"/>
+		<Ability_Rapier_Aerial_Lunge_Loop scopes="FullBody+Offhand+Weapon"/>
+		<Ability_Rapier_Aerial_Lunge_Intro scopes="FullBody+Offhand+Weapon"/>
+		<Ability_Rapier_Aerial_Lunge_Stop scopes="FullBody+Offhand+Weapon"/>
+		<Ability_Rapier_Finish scopes="FullBody+Offhand+Weapon"/>
+		<Ability_Rapier_Wake scopes="FullBody+Offhand+Weapon"/>
+		<Ability_Rapier_Aerial_Lunge_Stop_Instant_Wake scopes="FullBody+Offhand+Weapon"/>
+		<Ability_IceMagic_Primary scopes="UpperBody">
+			<Override tags="MagicGauntlet+Ice" scopes="UpperBody"/>
+		</Ability_IceMagic_Primary>
+		<Ability_IceMagic_WindChill_Outro scopes="UpperBody"/>
+		<Ability_IceMagic_WindChill_Intro scopes="UpperBody"/>
+		<Ability_Rapier_Finish_Ultimate scopes="FullBody+Offhand+Weapon"/>
+		<Ability_IceMagic_Heavy scopes="UpperBody"/>
+		<Ability_IceMagic_Pylon scopes="FullBody"/>
+		<Ability_IceMagic_Spikes scopes="FullBody"/>
+		<Ability_IceMagic_Spikes_Out1 scopes="FullBody"/>
+		<Ability_IceMagic_Entombed_Intro scopes="FullBody"/>
+		<Ability_IceMagic_Entombed_Loop scopes="FullBody"/>
+		<Ability_IceMagic_Entombed_Outro scopes="FullBody"/>
+		<Ability_IceMagic_Entombed_Break scopes="FullBody"/>
+		<Ability_IceMagic_IceStorm_Intro scopes="UpperBody"/>
+		<Ability_IceMagic_IceStorm_Aim scopes="UpperBody">
+			<Override tags="MagicGauntlet+Ice" scopes="UpperBody"/>
+		</Ability_IceMagic_IceStorm_Aim>
+		<Ability_IceMagic_IceStorm_Casting scopes="UpperBody">
+			<Override tags="MagicGauntlet+Ice" scopes="UpperBody"/>
+		</Ability_IceMagic_IceStorm_Casting>
+		<Ability_IceMagic_IceStorm_Cast scopes="UpperBody"/>
+		<Ability_IceMagic_IceStorm_Outro scopes="UpperBody">
+			<Override tags="MagicGauntlet+Ice" scopes="UpperBody"/>
+		</Ability_IceMagic_IceStorm_Outro>
+		<Ability_IceMagic_Shower scopes="UpperBody"/>
+		<Ability_IceMagic_WindChill_Aim scopes="UpperBody"/>
+		<Ability_IceMagic_Spikes_Out2 scopes="FullBody"/>
+		<Ability_IceMagic_Spikes_Out3 scopes="FullBody"/>
+		<Ability_IceMagic_Spikes_Out4 scopes="FullBody"/>
+		<Ability_IceMagic_Spikes_Out5 scopes="FullBody"/>
+		<Ability_IceMagic_IceStorm_Casting_Outro scopes="UpperBody">
+			<Override tags="MagicGauntlet+Ice" scopes="UpperBody"/>
+		</Ability_IceMagic_IceStorm_Casting_Outro>
+		<Attack_Start_Charge_UpperBody scopes="UpperBody+Weapon"/>
+		<Ability_IceMagic_WindChill_Aim_Long scopes="UpperBody"/>
+		<Ability_Rapier_Evade_Attack scopes="FullBody+UpperBody+Weapon+WeaponTransition"/>
+		<Ability_Hatchet_DistancingThrow scopes="FullBody+Weapon"/>
+		<Ability_Hatchet_RapidStrikes scopes="FullBody+Weapon"/>
+		<Ability_Hatchet_RendingThrow_UpperBody scopes="UpperBody+Weapon"/>
+		<Ability_Hatchet_DistancingThrow_Upperbody scopes="UpperBody+Weapon"/>
+		<Interact_HousingCannon scopes="FullBody+SlaveChar"/>
+		<Ability_Hatchet_RapidStrikes_FinalBlow scopes="FullBody+Weapon"/>
+		<Inventory_Storage scopes="FullBody"/>
+		<Attack_Primary_Upperbody_C1 scopes="UpperBody+Weapon"/>
+		<Attack_Primary_Upperbody_C2 scopes="UpperBody"/>
+		<Attack_Start_Charge_Upperbody_C2 scopes="UpperBody"/>
+		<Attack_Heavy_Upperbody scopes="UpperBody"/>
+		<Attack_Heavy_Upperbody_C2 scopes="UpperBody"/>
+		<Ability_VoidGauntlet_Harvest scopes="UpperBody"/>
+		<Ability_VoidGauntlet_Harvest_Exit scopes="UpperBody"/>
+		<Ability_VoidGauntlet_Blade_Start scopes="UpperBody"/>
+		<Ability_VoidGauntlet_Blade_Attack_Light_C1 scopes="FullBody"/>
+		<Ability_VoidGauntlet_Blade_Attack_Light_C2 scopes="FullBody"/>
+		<Ability_VoidGauntlet_Blade_Stop scopes="UpperBody"/>
+		<Ability_VoidGauntlet_Blade_Attack_Light_C3 scopes="FullBody"/>
+		<Ability_VoidGauntlet_NullChamber scopes="FullBody"/>
+		<Ability_VoidGauntlet_Scream scopes="FullBody"/>
+		<Ability_VoidGauntlet_DecayingOrb scopes="UpperBody"/>
+		<Ability_VoidGauntlet_Blade_Attack_Charge scopes="FullBody"/>
+		<Ability_VoidGauntlet_Blade_Attack_Heavy scopes="FullBody"/>
+		<Ability_VoidGauntlet_Blade_Attack_Charge_C2 scopes="FullBody"/>
+		<Ability_VoidGauntlet_Blade_Attack_Charge_C3 scopes="FullBody"/>
+		<Ability_VoidGauntlet_DrainingTether scopes="UpperBody"/>
+		<Ability_VoidGauntlet_EssenceRupture scopes="UpperBody"/>
+		<Inventory_Storage_Exit scopes="FullBody"/>
+		<Ability_FireStaff_Fireball scopes="UpperBody">
+			<Override tags="MagicStaff+Fire" scopes="UpperBody+Weapon"/>
+		</Ability_FireStaff_Fireball>
+		<Interact_Pet_Rabbit scopes="FullBody+SlaveChar"/>
+		<Interact_Pet_Exit_Rabbit scopes="FullBody+SlaveChar"/>
+		<Interact_Pet_Tiger scopes="FullBody+SlaveChar"/>
+		<Interact_Pet_Exit_Tiger scopes="FullBody+SlaveChar"/>
+		<AzothStaff_Barrier scopes="UpperBody"/>
+		<Emote_Firework2 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Firework3 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Firework4 scopes="FullBody" flags="AutoReinstall"/>
+		<Emote_Firework5 scopes="FullBody" flags="AutoReinstall"/>
+		<Land_Sprint scopes="FullBody+Offhand"/>
+		<Ability_Blunderbuss_ClawShot_Start scopes="UpperBody+Weapon+WeaponTransition"/>
+		<Ability_Blunderbuss_ClawShot_Loop scopes="FullBody+UpperBody+Weapon+WeaponTransition"/>
+		<Ability_Blunderbuss_ClawShot_End scopes="FullBody+UpperBody+Weapon+WeaponTransition"/>
+		<Ability_Blunderbuss_SplittingGrenade scopes="UpperBody+Weapon+WeaponTransition"/>
+		<Ability_Blunderbuss_MortarShot_Start scopes="UpperBody+Weapon+WeaponTransition"/>
+		<Jump scopes="FullBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Jump_Standing scopes="FullBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Jump_Diagonal scopes="FullBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Land_Sprint_Diagonal scopes="FullBody"/>
+		<Interact_AzothStaff_Create scopes="FullBody+UpperBody+AimBlend+Offhand+OffhandTransition+UpperBody_Addit+Weapon+WeaponTransition+Oils+SlaveChar"/>
+		<Deposit_Azoth scopes="FullBody"/>
+		<Interact_MSQ_TheRitual scopes="FullBody+UpperBody+AimBlend+Offhand+OffhandTransition+UpperBody_Addit+Weapon+WeaponTransition+Oils+SlaveChar"/>
+		<Ability_Blunderbuss_AzothShrapnelBlast scopes="FullBody+Weapon"/>
+		<Ability_Blunderbuss_VortexShot scopes="FullBody+Weapon"/>
+		<Emote_BlowKiss scopes="FullBody"/>
+		<Emote_PiratePose scopes="FullBody"/>
+		<Ability_Blunderbuss_ClawShot_Attack scopes="UpperBody+Weapon"/>
+		<Interact_Cauldron scopes="FullBody"/>
+		<Interact_Cauldron_Exit scopes="FullBody"/>
+		<Ability_Blunderbuss_NetShot scopes="FullBody+Weapon+WeaponTransition"/>
+		<Ability_Blunderbuss_NetShot_Early_Out scopes="FullBody+UpperBody+Weapon+WeaponTransition"/>
+		<Interact_Feed_Bird scopes="FullBody"/>
+		<Ability_Greatsword_DashAttack scopes="FullBody+Weapon"/>
+		<Ability_Greatsword_DefenseBreak scopes="FullBody+Weapon"/>
+		<Ability_Greatsword_Counter scopes="FullBody+Weapon"/>
+		<Ability_Greatsword_Burst scopes="FullBody+Weapon"/>
+		<Ability_Greatsword_DrainAttack scopes="FullBody+Weapon"/>
+		<Ability_Greatsword_Combo scopes="FullBody+Weapon"/>
+		<Ability_Blunderbuss_ClawShot_Hit_Confirm scopes="FullBody"/>
+		<Emote_Shiver scopes="FullBody"/>
+		<Emote_BellyLaugh scopes="FullBody"/>
+		<Emote_GivePresent scopes="FullBody"/>
+		<Interact_Pet_Deer scopes="FullBody"/>
+		<Interact_Pet_Exit_Deer scopes="FullBody"/>
+		<Emote_RoyalWave scopes="FullBody"/>
+		<Inventory_UpperBody scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Inventory_UpperBody_Exit scopes="UpperBody" flags="AutoReinstall"/>
+		<Ability_Greatsword_DefenseBreak_Followup scopes="FullBody+Weapon"/>
+		<Ability_Greatsword_Counter_Followup scopes="FullBody+Weapon"/>
+		<Emote_SnowAngel scopes="FullBody"/>
+		<Emote_Autograph scopes="FullBody"/>
+		<Ability_Blunderbuss_ClawShot_End_InAir scopes="FullBody"/>
+		<Emote_Coconut_Horse scopes="FullBody"/>
+		<Ability_Blunderbuss_NetShot_UB scopes="UpperBody"/>
+		<Emote_GiveFlower scopes="FullBody"/>
+		<Emote_Swoon scopes="FullBody"/>
+		<Emote_Yoga_TreePose scopes="FullBody"/>
+		<Emote_Curtsy scopes="FullBody"/>
+		<Emote_Disco scopes="FullBody"/>
+		<Ability_Musket_StoppingPower scopes="FullBody+Weapon"/>
+		<Firearm_Shoot_Primary_Upperbody_StoppingPower scopes="UpperBody+Weapon"/>
+		<Ability_Sword_Leap_Jump scopes="FullBody+Offhand"/>
+		<Ability_Sword_Leap_Land scopes="FullBody+Offhand+Weapon"/>
+		<Emote_RoastMarshmallow scopes="FullBody"/>
+		<Emote_HotFan scopes="FullBody"/>
+		<Emote_RightBackAtYa scopes="FullBody"/>
+		<Interact_Pet_Pig scopes="FullBody"/>
+		<Interact_Pet_Exit_Pig scopes="FullBody"/>
+		<Carry_CannonBall scopes="UpperBody"/>
+		<Emote_ImmatureTaunt scopes="FullBody"/>
+		<Emote_Ballerina scopes="FullBody"/>
+		<Emote_MimeInBox scopes="FullBody"/>
+		<Emote_Pondering scopes="FullBody"/>
+		<Emote_PutUpDukes scopes="FullBody"/>
+		<Emote_Frustrated scopes="FullBody"/>
+		<Emote_Umpire scopes="FullBody"/>
+		<Emote_BreakItUp scopes="FullBody"/>
+		<Emote_TalkToHand scopes="FullBody"/>
+		<Interact_Pet_Wolf scopes="FullBody"/>
+		<Interact_Pet_Exit_Wolf scopes="FullBody"/>
+		<Interact_Touch_Mimic scopes="FullBody"/>
+		<Emote_Panic scopes="FullBody"/>
+		<Emote_BaladiDance scopes="FullBody"/>
+		<Instrument_Guitar_Equip scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_AzothFlute_Equip scopes="FullBody+Offhand+Oils+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Mandolin_Equip scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_UprightBass_Equip scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Drums_Equip scopes="FullBody+Offhand+SlaveChar"/>
+		<Instrument_AzothFlute_Unequip scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Drums_Unequip scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Guitar_Unequip scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Mandolin_Unequip scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_UprightBass_Unequip scopes="FullBody+Offhand+SlaveChar"/>
+		<Emote_RobotDance scopes="FullBody"/>
+		<Emote_Plotting scopes="FullBody"/>
+		<Emote_Headbang scopes="FullBody"/>
+		<Emote_SparklerDance scopes="FullBody"/>
+		<Emote_TugOfWar scopes="FullBody"/>
+		<Emote_PinCount scopes="FullBody"/>
+		<Emote_FingerGun scopes="FullBody"/>
+		<Instrument_Guitar_Idle scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Mandolin_Idle scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_AzothFlute_Idle scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_UprightBass_Idle scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Drums_Idle scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Emote_AirGuitar scopes="FullBody"/>
+		<Emote_AirViolin scopes="FullBody"/>
+		<Instrument_AzothFlute_AmazingResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_AzothFlute_GreatResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_AzothFlute_OkayResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_AzothFlute_BadResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Guitar_AmazingResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Guitar_GreatResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Guitar_OkayResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Guitar_BadResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Mandolin_AmazingResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Mandolin_BadResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Mandolin_GreatResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Mandolin_OkayResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_UprightBass_OkayResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_UprightBass_GreatResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_UprightBass_BadResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument__UprightBass_AmazingResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Drums_OkayResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Drums_GreatResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Drums_BadResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_Drums_AmazingResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Instrument_UprightBass_AmazingResult scopes="FullBody+Offhand+SlaveChar" flags="AutoReinstall"/>
+		<Emote_WiggleArms scopes="FullBody"/>
+		<Emote_RunningMan scopes="FullBody"/>
+		<Emote_Stab scopes="FullBody"/>
+		<Emote_MicDrop scopes="FullBody"/>
+		<Emote_DrinkCheer scopes="FullBody"/>
+		<Emote_ChaplinWalk scopes="FullBody"/>
+		<Interact_Pet_Bird scopes="FullBody"/>
+		<Interact_Pet_Exit_Bird scopes="FullBody"/>
+		<Emote_TableFlip scopes="FullBody"/>
+		<Emote_Vanity scopes="FullBody"/>
+		<Emote_KnightThee scopes="FullBody"/>
+		<Emote_CrazyTapDance scopes="FullBody"/>
+		<Emote_DigGrave scopes="FullBody"/>
+		<Throw_Item_ReadyWeapon_UpperBody scopes="UpperBody"/>
+		<Throw_Item_Aim_UpperBody scopes="UpperBody"/>
+		<Throw_Item_UpperBody scopes="UpperBody"/>
+		<Ability_Rune_GraspingVines scopes="FullBody"/>
+		<Ability_Rune_BileBomb scopes="UpperBody"/>
+		<Ability_Rune_HereticFall scopes="FullBody"/>
+		<Ability_Rune_CannonBlast scopes="FullBody"/>
+		<Ability_Rune_HereticFall_Land scopes="FullBody"/>
+		<Emote_SeeNoEvil scopes="FullBody"/>
+		<Emote_SpeakNoEvil scopes="FullBody"/>
+		<Emote_HearNoEvil scopes="FullBody"/>
+		<Interact_AppleBobbing scopes="FullBody"/>
+		<Interact_Play_Flute scopes="FullBody"/>
+		<Interact_Play_Mandolin scopes="FullBody"/>
+		<Interact_Play_URBass scopes="FullBody"/>
+		<Interact_Play_Guitar scopes="FullBody"/>
+		<Interact_PlayFlute_WindsofAutumn scopes="FullBody"/>
+		<Interact_Stomp scopes="FullBody"/>
+		<Interact_Watering scopes="FullBody"/>
+		<Interact_Watering_Exit scopes="FullBody"/>
+		<Interact_Whisper_Headgrab scopes="FullBody"/>
+		<Interact_Box_FTUE scopes="FullBody"/>
+		<Interact_Pet_Spider scopes="FullBody"/>
+		<Interact_Pet_Exit_Spider scopes="FullBody"/>
+		<Ability_Rune_HereticFall_Fall scopes="FullBody"/>
+		<Interact_SpookyBook scopes="FullBody"/>
+		<Interact_SpookyBook_Exit scopes="FullBody"/>
+		<Inventory_UpperBody_Turn scopes="UpperBody" flags="AutoReinstall+TimewarpAutoReinstall"/>
+		<Water_Deep_Upperbody scopes="UpperBody"/>
+		<Emote_TwirlDance scopes="FullBody"/>
+		<Interact_Pet_Cat scopes="FullBody"/>
+		<Interact_Pet_Exit_Cat scopes="FullBody"/>
+		<Emote_Alas scopes="FullBody"/>
+		<Emote_WarHorn scopes="FullBody"/>
+		<Emote_FingerHeart scopes="FullBody"/>
+		<Emote_Walk_FrankenMummy scopes="FullBody"/>
+		<Emote_MilitarySalute scopes="FullBody"/>
+		<Emote_Pout scopes="FullBody"/>
+		<Emote_DevilHornRock scopes="FullBody"/>
+		<Emote_Walk_Skip scopes="FullBody"/>
+		<Emote_Walk_TipToe scopes="FullBody"/>
+		<Interact_Cheer_Yeti scopes="FullBody"/>
+		<Ability_Musket_LoadChargeShot_UB scopes="UpperBody"/>
+		<r_R4_Upyr_Consumed scopes="FullBody+Weapon"/>
+		<Emote_FootballJuggle scopes="FullBody"/>
+		<Emote_KneeSlide scopes="FullBody"/>
+		<Emote_DramaticDeath scopes="FullBody"/>
+		<Emote_ShruggyDance scopes="FullBody"/>
+		<Emote_SnowPileThrow scopes="FullBody"/>
+		<Emote_GleamiteSkip scopes="FullBody"/>
+		<Ability_Spear_Throw_Upperbody scopes="UpperBody+Weapon"/>
+		<Emote_GleamiteJuggle scopes="FullBody"/>
+		<Emote_GleamiteThrow scopes="FullBody"/>
+	</FragmentDefs>
+	<ScopeContextDefs>
+		<Char3P/>
+		<WeaponContext/>
+		<SlaveChar/>
+	</ScopeContextDefs>
+	<ScopeDefs>
+		<FullBody layer="0" numLayers="4" context="Char3P"/>
+		<UpperBody layer="4" numLayers="2" context="Char3P"/>
+		<AimBlend layer="6" numLayers="2" context="Char3P"/>
+		<Offhand layer="8" numLayers="1" context="Char3P" Tags="Offhand"/>
+		<OffhandTransition layer="9" numLayers="1" context="Char3P" Tags="Offhand"/>
+		<UpperBody_Addit layer="10" numLayers="1" context="Char3P"/>
+		<Weapon layer="0" numLayers="2" context="WeaponContext"/>
+		<WeaponTransition layer="4" numLayers="1" context="WeaponContext"/>
+		<Oils layer="2" numLayers="1" context="WeaponContext" Tags="Oil"/>
+		<SlaveChar layer="0" numLayers="4" context="SlaveChar"/>
+	</ScopeDefs>
+</ControllerDef>
+
