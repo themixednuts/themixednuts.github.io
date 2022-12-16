@@ -477,6 +477,12 @@ body {
     max-width: 250px;
 }
 
+.tippy-box[data-theme~='maxHeight']{
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 
 .appended_ability_div_tooltip_extra {
     position: relative;

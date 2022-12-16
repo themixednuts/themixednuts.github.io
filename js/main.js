@@ -638,8 +638,9 @@ function itemScaling(itemperk, container) {
 
     let getGearScore = []
     container.querySelectorAll(".perks").forEach(perk => {
-        if (itemperk.PerkID == perk.value)
+        if (itemperk.PerkID == perk.value) {
             getGearScore.push(perk.parentNode.parentNode.querySelector(".gearscore").value)
+        }
     })
     getGearScore = getGearScore.reduce((acc, c) => Math.max(acc, c))
     const scaled = 1 + (itemperk.ScalingPerGearScore) * (Number(getGearScore) + Number(weptrue()) - 100)
@@ -759,61 +760,61 @@ async function loadWeaponData() {
         if (ability.TreeId != null && ability.DisplayName) {
 
             if (ability.TreeId == 0)
-                abilityTreeID_0.appendChild(createItem("div", "", { class: "appended_ability_div", for: `${ability.AbilityID.toUpperCase()}_div`, id: `${ability.AbilityID.toUpperCase()}_appended` }))
+                abilityTreeID_0.appendChild(createItem("div", "", { class: "appended_ability_div", for: `${ability.AbilityID}_div`, id: `${ability.AbilityID}_appended` }))
             if (ability.TreeId == 1)
-                abilityTreeID_1.appendChild(createItem("div", "", { class: "appended_ability_div", for: `${ability.AbilityID.toUpperCase()}_div`, id: `${ability.AbilityID.toUpperCase()}_appended` }))
+                abilityTreeID_1.appendChild(createItem("div", "", { class: "appended_ability_div", for: `${ability.AbilityID}_div`, id: `${ability.AbilityID}_appended` }))
 
 
-            document.querySelectorAll(`#${ability.AbilityID.toUpperCase()}_appended`).forEach(div => {
+            document.querySelectorAll(`#${ability.AbilityID}_appended`).forEach(div => {
 
-                div.appendChild(createItem("span", "", { class: "icon__button", id: `${ability.AbilityID.toUpperCase()}_icon__button`, width: "24", height: "24" }))
-                div.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablebg.png", class: "icon__button__bg", width: "24", height: "24", id: `${ability.AbilityID.toUpperCase()}_icon__button__bg` }))
-                div.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablering1.png", class: "icon__button__border", width: "24", height: "24", id: `${ability.AbilityID.toUpperCase()}_icon__button__border` }))
+                div.appendChild(createItem("span", "", { class: "icon__button", id: `${ability.AbilityID}_icon__button`, width: "24", height: "24" }))
+                div.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablebg.png", class: "icon__button__bg", width: "24", height: "24", id: `${ability.AbilityID}_icon__button__bg` }))
+                div.appendChild(createItem("img", "", { src: "lyshineui/images/skills/mastery/masterypointsavailablering1.png", class: "icon__button__border", width: "24", height: "24", id: `${ability.AbilityID}_icon__button__border` }))
 
-                if (div.getAttribute("for") == `${ability.AbilityID.toUpperCase()}_div`) {
-                    //div.appendChild(createItem("label", "", "for", `${ability.AbilityID}_checkbox`, class: "abilitytablebutton_label hover ability"))
-                    div.appendChild(createItem("input", "", { type: "checkbox", id: `${ability.AbilityID.toUpperCase()}_checkbox`, class: "abilitytablecheckbox" }))
+                if (div.getAttribute("for") == `${ability.AbilityID}_div`) {
+
+                    div.appendChild(createItem("input", "", { type: "checkbox", id: `${ability.AbilityID}_checkbox`, class: "abilitytablecheckbox" }))
                     div.style.cssText += `grid-column: ${ability.TreeColumnPosition + 1}/ ${ability.TreeColumnPosition + 2};
                     grid-row: ${ability.TreeRowPosition + 1}/ ${ability.TreeRowPosition + 2};`
 
 
                     if (ability.IsActiveAbility) {
-                        div.appendChild(createItem("img", "", { src: ability.Icon.toLowerCase(), width: "68", height: "68", class: "icon_ability hover ability icon", id: `${ability.AbilityID.toUpperCase()}_icon` }))
-                        div.appendChild(createItem("img", "", { src: `${iconAbility}/abilities_bg${categoryIdMap[ability.UICategory]}.png`, width: "72", height: "72", class: "bg_ability hover ability bg", id: `${ability.AbilityID.toUpperCase()}_bg` }))
-                        div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodeactiveborder.png`, width: "72", height: "72", class: "border_ability hover ability border", id: `${ability.AbilityID.toUpperCase()}_border` }))
-                        div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodeactiverune.png`, width: "84", height: "84", class: "rune_ability ability rune", id: `${ability.AbilityID.toUpperCase()}_rune` }))
+                        div.appendChild(createItem("img", "", { src: ability.Icon.toLowerCase(), width: "68", height: "68", class: "icon_ability hover active purchased ability icon", id: `${ability.AbilityID}_icon` }))
+                        div.appendChild(createItem("img", "", { src: `${iconAbility}/abilities_bg${categoryIdMap[ability.UICategory]}.png`, width: "72", height: "72", class: "bg_ability active hover purchased ability bg", id: `${ability.AbilityID}_bg` }))
+                        div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodeactiveborder.png`, width: "72", height: "72", class: "border_ability active hover purchased ability border", id: `${ability.AbilityID}_border` }))
+                        div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodeactiverune.png`, width: "84", height: "84", class: "rune_ability active purchased ability rune", id: `${ability.AbilityID}_rune` }))
                     }
                     else {
                         if (ability.TreeRowPosition != 5 && !ability.UnlockDefault) {
                             if (categoryIdMap[ability.UICategory])
-                                div.appendChild(createItem("img", "", { src: `${iconAbility}/abilities_bg_passive${categoryIdMap[ability.UICategory]}.png`, width: "56", height: "56", class: "bg_ability_passive hover ability bg", id: `${ability.AbilityID.toUpperCase()}_bg` }))
+                                div.appendChild(createItem("img", "", { src: `${iconAbility}/abilities_bg_passive${categoryIdMap[ability.UICategory]}.png`, width: "56", height: "56", class: "bg_ability_passive hover ability bg", id: `${ability.AbilityID}_bg` }))
                             else
-                                div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodepassivebg.png`, width: "56", height: "56", class: "bg_ability_passive hover ability bg", id: `${ability.AbilityID.toUpperCase()}_bg` }))
+                                div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodepassivebg.png`, width: "56", height: "56", class: "bg_ability_passive hover ability bg", id: `${ability.AbilityID}_bg` }))
 
-                            div.appendChild(createItem("img", "", { src: ability.Icon.toLowerCase(), width: "45", height: "45", class: "icon_ability_passive hover ability icon", id: `${ability.AbilityID.toUpperCase()}_icon` }))
-                            div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodepassiveborder.png`, width: "56", height: "56", class: "mastery_border_passive hover ability border", id: `${ability.AbilityID.toUpperCase()}_border` }))
-                            div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodepassiverune.png`, width: "72", height: "72", class: "mastery_rune_passive ability rune", id: `${ability.AbilityID.toUpperCase()}_rune` }))
+                            div.appendChild(createItem("img", "", { src: ability.Icon.toLowerCase(), width: "45", height: "45", class: "icon_ability_passive hover ability icon", id: `${ability.AbilityID}_icon` }))
+                            div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodepassiveborder.png`, width: "56", height: "56", class: "mastery_border_passive hover ability border", id: `${ability.AbilityID}_border` }))
+                            div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodepassiverune.png`, width: "72", height: "72", class: "mastery_rune_passive ability rune", id: `${ability.AbilityID}_rune` }))
                         }
 
                         //ulimate
                         if (ability.TreeRowPosition == 5) {
                             if (categoryIdMap[ability.UICategory])
-                                div.appendChild(createItem("img", "", { src: `${iconAbility}/abilities_bg_passive${categoryIdMap[ability.UICategory]}.png`, width: "84", height: "84", class: "bg_ability_ultimate hover ability bg", id: `${ability.AbilityID.toUpperCase()}_bg` }))
+                                div.appendChild(createItem("img", "", { src: `${iconAbility}/abilities_bg_passive${categoryIdMap[ability.UICategory]}.png`, width: "84", height: "84", class: "bg_ability_ultimate hover ability bg", id: `${ability.AbilityID}_bg` }))
                             else
-                                div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodepassivebg.png`, width: "84", height: "84", class: "bg_ability_ultimate hover ability bg", id: `${ability.AbilityID.toUpperCase()}_bg` }))
+                                div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodepassivebg.png`, width: "84", height: "84", class: "bg_ability_ultimate hover ability bg", id: `${ability.AbilityID}_bg` }))
 
-                            div.appendChild(createItem("img", "", { src: ability.Icon.toLowerCase(), width: "67.5", height: "67.5", class: "icon_ability_ultimate hover ability icon", id: `${ability.AbilityID.toUpperCase()}_icon` }))
-                            div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodepassiveborder.png`, width: "84", height: "84", class: "mastery_border_ultimate hover ability border", id: `${ability.AbilityID.toUpperCase()}_border` }))
-                            div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodepassiverune.png`, width: "108", height: "108", class: "mastery_rune_ultimate ability rune", id: `${ability.AbilityID.toUpperCase()}_rune` }))
+                            div.appendChild(createItem("img", "", { src: ability.Icon.toLowerCase(), width: "67.5", height: "67.5", class: "icon_ability_ultimate hover ability icon", id: `${ability.AbilityID}_icon` }))
+                            div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodepassiveborder.png`, width: "84", height: "84", class: "mastery_border_ultimate hover ability border", id: `${ability.AbilityID}_border` }))
+                            div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodepassiverune.png`, width: "108", height: "108", class: "mastery_rune_ultimate ability rune", id: `${ability.AbilityID}_rune` }))
 
                         }
 
                         //unlockdefualts
                         if (ability.UnlockDefault) {
-                            div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodeinfobg.png`, width: "56", height: "56", class: "bg_ability_unlockdefault ability bg", id: `${ability.AbilityID.toUpperCase()}_bg` }))
-                            div.appendChild(createItem("img", "", { src: ability.Icon.toLowerCase(), width: "45", height: "45", class: "icon_ability_unlockdefault ability icon", id: `${ability.AbilityID.toUpperCase()}_icon` }))
+                            div.appendChild(createItem("img", "", { src: `lyshineui/images/skills/mastery/masterynodeinfobg.png`, width: "56", height: "56", class: "bg_ability_unlockdefault ability bg", id: `${ability.AbilityID}_bg` }))
+                            div.appendChild(createItem("img", "", { src: ability.Icon.toLowerCase(), width: "45", height: "45", class: "icon_ability_unlockdefault ability icon", id: `${ability.AbilityID}_icon` }))
                             // div.appendChild(createItem("img", "", src: `lyshineui/images/skills/mastery/masterynodeinfoborder.png`, width: "56", height: "56", class: "mastery_border_unlockdefault border", id: `${ability.AbilityID}_border`))
-                            div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodeinforune.png`, width: "72", height: "72", class: "mastery_rune_unlockdefault ability rune", id: `${ability.AbilityID.toUpperCase()}_rune` }))
+                            div.appendChild(createItem("img", "", { src: `${masteryIcon}/masterynodeinforune.png`, width: "72", height: "72", class: "mastery_rune_unlockdefault ability rune", id: `${ability.AbilityID}_rune` }))
                         }
 
                     }
@@ -827,11 +828,14 @@ async function loadWeaponData() {
     }
 
     document.querySelectorAll(".abilitytablecheckbox").forEach(checkbox => {
+
         checkbox.style.scale = checkbox.parentNode.querySelector('.icon').offsetWidth / 11
-        checkbox.addEventListener("change", (e) => {
-            equipWepAbility()
-            getFinalDamage()
-        })
+        if (!checkbox.parentNode.querySelector(".active")) {
+            checkbox.addEventListener("change", (e) => {
+                equipWepAbility()
+                getFinalDamage()
+            })
+        }
     })
 
 
@@ -1019,11 +1023,11 @@ const setDescription = () => {
         let token
 
         if (!shiftACTIVE && !ctrlACTIVE)
-            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "")]).normal
-        if (shiftACTIVE && !ctrlACTIVE)
-            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "")]).extra
+            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).normal
+        if ((shiftACTIVE && !ctrlACTIVE) || (!shiftACTIVE && ctrlACTIVE))
+            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).extra
         if (shiftACTIVE && ctrlACTIVE)
-            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "")]).ctrl
+            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).ctrl
 
         instance.setContent(
             token
@@ -1112,6 +1116,144 @@ const setBarDescription = () => {
     })
 }
 
+let perkTippy = []
+equipContainers.forEach(container => perkTippy.push(tippy(container.querySelectorAll(".perks"))))
+for (const tippy of Object.values(perkTippy)) {
+    tippy.forEach(instance => {
+        instance.reference.addEventListener("input", (e) => {
+            if (!instance.reference.getAttribute("value") || instance.reference.getAttribute("value") == "PerkID_Gem_EmptyGemSlot") {
+                instance.disable()
+                return
+            }
+            instance.enable()
+            instance.setContent(() => {
+
+                const perk = itemPerkMAP[instance.reference.getAttribute("value")?.toUpperCase()]
+                let ability
+                let affix
+                let status
+                if (globalAbilityMAP[perk.EquipAbility?.toUpperCase()]) {
+                    ability = globalAbilityMAP[perk.EquipAbility?.toUpperCase()]
+                }
+                if (affixDataMAP[perk.Affix?.toUpperCase()]) {
+                    affix = affixDataMAP[perk.Affix?.toUpperCase()]
+                }
+
+
+                let keys
+                let startIndexTrigger
+                let startIndexAbility
+                let content = ""
+                const startTrigger = "OnEventPassiveConditionsPass"
+                const startProp = "BaseDamage"
+
+
+                if (ability) {
+
+                    keys = Object.keys(ability)
+                    startIndexTrigger = keys.indexOf(startTrigger)
+                    startIndexAbility = keys.indexOf(startProp)
+                    content += changeTextColor(`<br>Ability Info: <br>`)
+
+                    for (let i = 0; i < keys.length; i++) {
+
+                        if (i == startIndexTrigger) {
+                            content += changeTextColor("Triggers: <br>")
+                        }
+                        if (i == startIndexAbility) {
+                            content += changeTextColor("If Triggers Met: <br>")
+                        }
+                        if (ability[keys[i]] || keys[i] == "IsStackableAbility") {
+
+                            if (String(ability[keys[i]]).includes(",")) {
+                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${ability[keys[i]].replace(/,/g, "<br>")} <br>`
+                            }
+                            else
+                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${ability[keys[i]]} <br>`
+                        }
+
+                    }
+                }
+
+                if (affix) {
+
+                    keys = Object.keys(affix)
+                    startIndexTrigger = keys.indexOf(startTrigger)
+                    startIndexAbility = keys.indexOf(startProp)
+                    content += changeTextColor(`<br>Affix Info: <br>`)
+
+                    for (let i = 0; i < keys.length; i++) {
+
+                        if (i == startIndexTrigger) {
+                            content += changeTextColor("Triggers: <br>")
+                        }
+                        if (i == startIndexAbility) {
+                            content += changeTextColor("If Triggers Met: <br>")
+                        }
+                        if (affix[keys[i]] || keys[i] == "IsStackableAbility") {
+                            if (String(affix[keys[i]]).includes(",")) {
+                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${affix[keys[i]].replace(/,/g, "<br>")} <br>`
+                            }
+                            else
+                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${affix[keys[i]]} <br>`
+                        }
+
+                    }
+                }
+
+                if (ability.SelfApplyStatusEffect) {
+
+                    status = ability.SelfApplyStatusEffect.split(",")
+
+                    status.forEach(status => {
+                        let statusTable = perkStatusEffectMAP[status.toUpperCase()]
+                        keys = Object.keys(statusTable)
+                        startIndexTrigger = keys.indexOf(startTrigger)
+                        startIndexAbility = keys.indexOf(startProp)
+                        content += changeTextColor(`<br>StatusEffect Info: <br>`)
+
+                        for (let i = 0; i < keys.length; i++) {
+
+                            if (i == startIndexTrigger) {
+                                content += changeTextColor("Triggers: <br>")
+                            }
+                            if (i == startIndexAbility) {
+                                content += changeTextColor("If Triggers Met: <br>")
+                            }
+                            if (statusTable[keys[i]] || keys[i] == "IsStackableAbility") {
+
+                                if (String(status[keys[i]]).includes(",")) {
+                                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, "<br>")} <br>`
+                                }
+                                else
+                                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${statusTable[keys[i]]} <br>`
+                            }
+
+                        }
+                    })
+
+                }
+
+                return (
+                    `${changeTextColor("Perk Name:", colorYellow)} ${perk.DisplayName} <br>`
+                    + content
+                )
+
+            })
+
+
+        })
+        instance.disable()
+        instance.setProps({
+            placement: "bottom",
+            allowHTML: true,
+            delay: [200, 200],
+            interactive: true,
+            hideOnClick: true,
+            theme: "maxHeight"
+        })
+    })
+}
 
 const conditionalChecks = (damageID, ability, reference) => {
 
@@ -1141,32 +1283,32 @@ const equipWepAbility = () => {
     checkedSelfAbility = []
     for (const ability of Object.values(weaponAbilityTable)) {
 
-        if (ability.TreeId != null && ability.DisplayName && !ability.UnlockDefault) {
+        if (ability.TreeId != null && ability.DisplayName && !ability.UnlockDefault && !ability.IsActiveAbility) {
 
-            checked = document.querySelector(`#${ability.AbilityID.toUpperCase()}_checkbox`).checked
+            checked = document.querySelector(`#${ability.AbilityID}_checkbox`).checked
 
             if (checked) {
                 checkedSelfAbility.push(ability)
 
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon`).classList.add("show", "purchased", "hover_purchased")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_bg`).classList.add("show", "purchased", "hover_purchased")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_border`).classList.add("show", "purchased", "border_purchased", "hover_purchased")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_rune`).classList.add("show", "purchased", "hover_purchased")
-                if (document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).getAttribute("value") >= 1) {
-                    document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).classList.add("show", "maxStack")
-                    document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button__bg`).classList.add("show")
-                    document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button__border`).classList.add("show")
+                document.querySelector(`#${ability.AbilityID}_icon`).classList.add("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID}_bg`).classList.add("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID}_border`).classList.add("show", "purchased", "border_purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID}_rune`).classList.add("show", "purchased", "hover_purchased")
+                if (document.querySelector(`#${ability.AbilityID}_icon__button`).getAttribute("value") >= 1) {
+                    document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                    document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                    document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
                 }
             }
             else {
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon`).classList.remove("show", "purchased", "hover_purchased")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_bg`).classList.remove("show", "purchased", "hover_purchased")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_border`).classList.remove("show", "purchased", "border_purchased", "hover_purchased")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_rune`).classList.remove("show", "purchased", "hover_purchased")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).classList.remove("show", "maxStack")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button__bg`).classList.remove("show")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button__border`).classList.remove("show")
-                document.querySelector(`#${ability.AbilityID.toUpperCase()}_icon__button`).textContent = 1
+                document.querySelector(`#${ability.AbilityID}_icon`).classList.remove("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID}_bg`).classList.remove("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID}_border`).classList.remove("show", "purchased", "border_purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID}_rune`).classList.remove("show", "purchased", "hover_purchased")
+                document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
+                document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
+                document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
             }
 
             checkedSelfAbility.forEach(item => {
@@ -1184,13 +1326,13 @@ const equipWepAbility = () => {
 
     let uniqueOptions = [...new Set(options)]
     uniqueOptions.forEach(status => {
-        if (!playerAttr.querySelector(`#${status.StatusID.toUpperCase()}_option`))
-            playerAttr.querySelector(".player_statuseffects_select").appendChild(createItem("option", `${status.StatusID}`, { class: "added_statuseffect", id: `${status.StatusID.toUpperCase()}_option`, value: `${status.StatusID.toUpperCase()}` }))
+        if (!playerAttr.querySelector(`#${status.StatusID}_option`))
+            playerAttr.querySelector(".player_statuseffects_select").appendChild(createItem("option", `${status.StatusID}`, { class: "added_statuseffect", id: `${status.StatusID}_option`, value: `${status.StatusID}` }))
 
     })
 
     if (playerAttr.querySelector(".player_statuseffects_select").value != "") {
-        checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value.toUpperCase()])
+        checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value])
     }
     setWeaponDamageInfo()
     return checkedSelfAbility
@@ -1201,12 +1343,6 @@ const equipWepAbility = () => {
 
 const checkCondition = (abilityID, damageIDREFERENCE) => {
 
-    if (abilityID) {
-        if (abilityID.StatusID)
-            abilityID.StatusID = abilityID.StatusID.toUpperCase()
-        if (abilityID.AbilityID)
-            abilityID.AbilityID = abilityID.AbilityID.toUpperCase()
-    }
 
     let totalSelfProps = {}
     let abilitytrue = {}
@@ -1257,22 +1393,15 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
         selectedAffix[damageID] = []
         abilitytrue[damageID] = []
 
-        abilityID.forEach(ability => {
+        for (const ability of abilityID) {
 
-            if (ability) {
-                if (ability.StatusID)
-                    ability.StatusID = ability.StatusID.toUpperCase()
-                if (ability.AbilityID)
-                    ability.AbilityID = ability.AbilityID.toUpperCase()
-                if (ability.SelfApplyStatusEffect) {
-                    ability.SelfApplyStatusEffect = ability.SelfApplyStatusEffect.toUpperCase()
-                    abilitySelfApplyMAP[ability.SelfApplyStatusEffect] = ability
-                }
-                if (ability.OtherApplyStatusEffect) {
-                    ability.OtherApplyStatusEffect = ability.OtherApplyStatusEffect.toUpperCase()
-                    abilityOtherApplyMAP[ability.OtherApplyStatusEffect] = ability
-                }
+            if (ability?.SelfApplyStatusEffect) {
+                abilitySelfApplyMAP[ability.SelfApplyStatusEffect.toUpperCase()] = ability
             }
+            if (ability?.OtherApplyStatusEffect) {
+                abilityOtherApplyMAP[ability.OtherApplyStatusEffect.toUpperCase()] = ability
+            }
+
 
             _container = isPlayer
             // if (isPlayer == playerEquip && !playerEquip)
@@ -1284,7 +1413,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
 
                 if (ability.StatusID) { //check if ability that passed conditions is a StatusEffect or Affix
-                    if (affixDataMAP[ability.StatusID]) { //check if StatusID is an Affix
+                    if (affixDataMAP[ability.StatusID.toUpperCase()]) { //check if StatusID is an Affix
                         selectedAffix[damageID].push(ability)
                     }
                     else
@@ -1292,86 +1421,75 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                 }
 
-                if (document.querySelector(`#${ability.AbilityID}_icon__button`)) {
-                    if (ability.PerStatusEffectOnTarget || ability.PerStatusEffectOnSelf) {
-                        if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
-                            document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                        if (ability.PerStatusEffectOnTarget)
-                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnTargetMax}`)
-                        if (ability.PerStatusEffectOnSelf)
-                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnSelfMax}`)
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+
+
+                if (ability.PerStatusEffectOnTarget || ability.PerStatusEffectOnSelf) {
+                    if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
+                        document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
+                    if (ability.PerStatusEffectOnTarget)
+                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnTargetMax}`)
+                    if (ability.PerStatusEffectOnSelf)
+                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnSelfMax}`)
+                }
+
+
+                ability?.SelfApplyStatusEffect?.split(",").forEach(status => {
+
+                    if (wepStatusEffectMAP[status.toUpperCase()]) {
+
+                        if (wepStatusEffectMAP[status.toUpperCase()].StackMax > 1) {
+                            if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
+                                document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[status.toUpperCase()].StackMax}`)
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+                        }
+                        else {
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                        }
+                        selectedWeaponSelfApplyStatusEffect.push(wepStatusEffectMAP[status.toUpperCase()])
                     }
-                    else {
-                        document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
-                        document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+
+                    if (perkStatusEffectMAP[status.toUpperCase()]) {
+                        selectedPerkSelfApplyStatusEffect.push(perkStatusEffectMAP[status.toUpperCase()])
                     }
+                })
+
+                ability?.OtherApplyStatusEffect?.split(",").forEach(status => {
+                    if (wepStatusEffectMAP[status.toUpperCase()]) {
+                        if (wepStatusEffectMAP[status.toUpperCase()].StackMax > 1) {
+                            if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
+                                document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[status.toUpperCase()].StackMax}`)
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
+                        }
+                        else {
+                            document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
+                            document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
+                        }
+                        selectedWeaponOtherApplyStatusEffect.push(wepStatusEffectMAP[status.toUpperCase()])
+                    }
+                    if (perkStatusEffectMAP[status.toUpperCase()]) {
+                        selectedPerkOtherApplyStatusEffect.push(perkStatusEffectMAP[status.toUpperCase()])
+                    }
+                })
+
+
+
+                if (selectedWeaponSelfApplyStatusEffect.length > 0) {
+                    if (wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect?.toUpperCase()])
+                        selectedWeaponOnEndStatusEffect.push(wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect?.toUpperCase()])
                 }
-
-
-                if (ability.SelfApplyStatusEffect) {
-
-                    ability.SelfApplyStatusEffect.split(",").forEach(status => {
-                        if (wepStatusEffectMAP[status]) {
-                            if (wepStatusEffectMAP[status].StackMax > 1) {
-                                if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
-                                    document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                                document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[status].StackMax}`)
-                                document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
-                                document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
-                                document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
-                            }
-                            else {
-                                document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
-                                document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
-                                document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
-                            }
-                            selectedWeaponSelfApplyStatusEffect.push(wepStatusEffectMAP[status])
-                        }
-
-                        if (perkStatusEffectMAP[status]) {
-                            selectedPerkSelfApplyStatusEffect.push(perkStatusEffectMAP[status])
-                        }
-                    })
-
-                }
-
-                if (ability.OtherApplyStatusEffect) {
-
-                    ability.OtherApplyStatusEffect.split(",").forEach(status => {
-                        if (wepStatusEffectMAP[status]) {
-                            if (wepStatusEffectMAP[status].StackMax > 1) {
-                                if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
-                                    document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                                document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${wepStatusEffectMAP[status].StackMax}`)
-                                document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
-                                document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
-                                document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
-                            }
-                            else {
-                                document.querySelector(`#${ability.AbilityID}_icon__button`).classList.remove("show", "maxStack")
-                                document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.remove("show")
-                                document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.remove("show")
-                            }
-                            selectedWeaponOtherApplyStatusEffect.push(wepStatusEffectMAP[status])
-                        }
-                        if (perkStatusEffectMAP[status]) {
-                            selectedPerkOtherApplyStatusEffect.push(perkStatusEffectMAP[status])
-                        }
-                    })
-
-                }
-
-                if (selectedWeaponSelfApplyStatusEffect)
-                    if (wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect])
-                        selectedWeaponOnEndStatusEffect.push(wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect.toUpperCase()])
 
             }
 
-        })
+        }
 
     }
 
@@ -1443,14 +1561,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
             //console.log(abilitytruevalue)
             abilitytruevalue.forEach(x => {
 
-
-
                 let maxStack = 1
-                if (x.StatusID)
-                    x.StatusID = x.StatusID.toUpperCase()
-                if (x.AbilityID)
-                    x.AbilityID = x.AbilityID.toUpperCase()
-
 
                 if (x.PerStatusEffectOnTarget) {
 
@@ -1471,22 +1582,22 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                 if (typeof x[prop] === "number") {
 
-                    if (!itemEquipAbilityMAP[x.AbilityID])
+                    if (!itemEquipAbilityMAP[x.AbilityID.toUpperCase()])
                         totalSelfProps[prop].push(x[prop] * maxStack)
                     else {
-                        if (itemEquipAbilityMAP[x.AbilityID]) {
+                        if (itemEquipAbilityMAP[x.AbilityID.toUpperCase()]) {
 
-                            totalSelfProps[prop].push(x[prop] * itemScaling(itemEquipAbilityMAP[x.AbilityID], isPlayer) * maxStack)
+                            totalSelfProps[prop].push(x[prop] * itemScaling(itemEquipAbilityMAP[x.AbilityID.toUpperCase()], isPlayer) * maxStack)
                         }
                     }
                 }
                 else {
 
-                    if (!itemEquipAbilityMAP[x.AbilityID])
+                    if (!itemEquipAbilityMAP[x.AbilityID.toUpperCase()])
                         totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g))
                     else {
-                        if (itemEquipAbilityMAP[x.AbilityID])
-                            totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemEquipAbilityMAP[x.AbilityID], isPlayer))
+                        if (itemEquipAbilityMAP[x.AbilityID.toUpperCase()])
+                            totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemEquipAbilityMAP[x.AbilityID.toUpperCase()], isPlayer))
                     }
                 }
 
@@ -1496,9 +1607,6 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
             cappedSelfStatusEffects.forEach(status => {
 
                 if (status) {
-                    if (status.StatusID)
-                        status.StatusID = status.StatusID.toUpperCase()
-
 
                     const ifcapped = () => {
                         if ((new RegExp(/Empower|Weaken/).test(status.EffectCategories) && new RegExp(/^DMG/).test(prop)) || (new RegExp(/Fortify|Rend/).test(status.EffectCategories) && new RegExp(/^ABS/).test(prop)))
@@ -1510,44 +1618,36 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                     maxStack = 1
                     abilityID.forEach(item => {
 
-                        if (item) {
-                            if (item.StatusID)
-                                item.StatusID = item.StatusID.toUpperCase()
-                            if (item.AbilityID)
-                                item.AbilityID = item.AbilityID.toUpperCase()
-                            if (item.SelfApplyStatusEffect)
-                                item.SelfApplyStatusEffect = item.SelfApplyStatusEffect.toUpperCase()
+                        item?.SelfApplyStatusEffect?.split(",").forEach(split => {
+                            if (split == status.StatusID) {
+                                if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                    maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                                }
+                                if (itemEquipAbilityMAP[item.AbilityID.toUpperCase()]) {
 
-                            item.SelfApplyStatusEffect.split(",").forEach(split => {
-                                if (split == status.StatusID) {
-                                    if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                                        maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-                                    }
-                                    if (itemEquipAbilityMAP[item.AbilityID]) {
+                                    if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID.toUpperCase()].PerkID}]`)) {
 
-                                        if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
+                                        for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID.toUpperCase()].PerkID}]`)))
+                                            maxStack = Math.max(nodes.textContent, maxStack)
 
-                                            for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
-                                                maxStack = Math.max(nodes.textContent, maxStack)
-
-                                        }
                                     }
                                 }
-                            })
+                            }
+                        })
 
-                        }
+
                     })
 
 
                     if (!status[prop] || ((prop == 'DMGVitalsCategory' || prop == 'ABSVitalsCategory') && typeof status[prop] === "number"))
                         ifcapped()[prop].push(0)
                     else {
-                        if (itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID]?.AbilityID]) {
-                            if (!itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID].ScalingPerGearScore) {
+                        if (itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID.toUpperCase()]?.AbilityID.toUpperCase()]) {
+                            if (!itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()].ScalingPerGearScore) {
                                 ifcapped()[prop].push(status[prop] * maxStack)
                             }
                             else {
-                                ifcapped()[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID], isPlayer) * maxStack)
+                                ifcapped()[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()], isPlayer) * maxStack)
                             }
                         }
                         else {
@@ -1562,49 +1662,37 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
             uncappedSelfStatusEffects.forEach(status => {
                 if (status) {
 
-                    if (status.StatusID)
-                        status.StatusID = status.StatusID.toUpperCase()
-
                     maxStack = 1
                     abilityID.forEach(item => {
-                        if (item) {
 
-                            if (item.StatusID)
-                                item.StatusID = item.StatusID.toUpperCase()
-                            if (item.AbilityID)
-                                item.AbilityID = item.AbilityID.toUpperCase()
+                        item?.SelfApplyStatusEffect.split(",").forEach(split => {
+                            if (split == status.StatusID) {
+                                if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                    maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                                }
+                                if (itemEquipAbilityMAP[item.AbilityID.toUpperCase()]) {
 
-                            if (item.SelfApplyStatusEffect)
-                                item.SelfApplyStatusEffect = item.SelfApplyStatusEffect.toUpperCase()
+                                    if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID.toUpperCase()].PerkID}]`)) {
 
-                            item.SelfApplyStatusEffect.split(",").forEach(split => {
-                                if (split == status.StatusID) {
-                                    if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                                        maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-                                    }
-                                    if (itemEquipAbilityMAP[item.AbilityID]) {
+                                        for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID.toUpperCase()].PerkID}]`)))
+                                            maxStack = Math.max(nodes.textContent, maxStack)
 
-                                        if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
-
-                                            for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
-                                                maxStack = Math.max(nodes.textContent, maxStack)
-
-                                        }
                                     }
                                 }
-                            })
-                        }
+                            }
+                        })
+
                     })
 
 
                     if (!status[prop] || ((prop == 'DMGVitalsCategory' || prop == 'ABSVitalsCategory') && typeof status[prop] === "number"))
                         uncappedSelfStatusProps[prop].push(0)
                     else {
-                        if (itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID]) {
-                            if (!itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID].ScalingPerGearScore)
+                        if (itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()]) {
+                            if (!itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()].ScalingPerGearScore)
                                 uncappedSelfStatusProps[prop].push(status[prop] * maxStack)
                             else
-                                uncappedSelfStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID].AbilityID], isPlayer) * maxStack)
+                                uncappedSelfStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilitySelfApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()], isPlayer) * maxStack)
                         }
                         else {
                             uncappedSelfStatusProps[prop].push((status[prop] * maxStack) || 0)
@@ -1616,9 +1704,6 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
             cappedOtherStatusEffects.forEach(status => {
                 if (status) {
-                    if (status.StatusID)
-                        status.StatusID = status.StatusID.toUpperCase()
-
 
                     const ifcapped = () => {
                         if ((new RegExp(/Empower|Weaken/).test(status.EffectCategories) && new RegExp(/^DMG/).test(prop)) || (new RegExp(/Fortify|Rend/).test(status.EffectCategories) && new RegExp(/^ABS/).test(prop)))
@@ -1629,34 +1714,26 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                     maxStack = 1
                     abilityID.forEach(item => {
-                        if (item) {
-                            if (item.StatusID)
-                                item.StatusID = item.StatusID.toUpperCase()
-                            if (item.AbilityID)
-                                item.AbilityID = item.AbilityID.toUpperCase()
-                            if (item.OtherApplyStatusEffect)
-                                item.OtherApplyStatusEffect = item.OtherApplyStatusEffect.toUpperCase()
 
-                            item.OtherApplyStatusEffect.split(",").forEach(split => {
-                                if (split == status.StatusID) {
+                        item?.OtherApplyStatusEffect?.split(",").forEach(split => {
+                            if (split == status.StatusID) {
 
-                                    if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                                        maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                                if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                    maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
 
-                                    }
-                                    if (itemEquipAbilityMAP[item.AbilityID]) {
+                                }
+                                if (itemEquipAbilityMAP[item.AbilityID.toUpperCase()]) {
 
-                                        if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
+                                    if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID.toUpperCase()].PerkID}]`)) {
 
-                                            for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
-                                                maxStack = Math.max(nodes.textContent, maxStack)
+                                        for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID.toUpperCase()].PerkID}]`)))
+                                            maxStack = Math.max(nodes.textContent, maxStack)
 
-                                        }
                                     }
                                 }
-                            })
+                            }
+                        })
 
-                        }
                     })
 
 
@@ -1664,12 +1741,12 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                         ifcapped()[prop].push(0)
                     else {
 
-                        if (itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID])
-                            if (!itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID].ScalingPerGearScore) {
+                        if (itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID.toUpperCase()].AbilityID])
+                            if (!itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()].ScalingPerGearScore) {
                                 ifcapped()[prop].push(status[prop] * maxStack)
                             }
                             else {
-                                ifcapped()[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID], isPlayer) * maxStack)
+                                ifcapped()[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()], isPlayer) * maxStack)
                             }
 
                         else {
@@ -1685,49 +1762,37 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
             uncappedOtherStatusEffects.forEach(status => {
                 if (status) {
 
-                    if (status.StatusID)
-                        status.StatusID = status.StatusID.toUpperCase()
-
                     maxStack = 1
                     abilityID.forEach(item => {
-                        if (item) {
 
-                            if (item.StatusID)
-                                item.StatusID = item.StatusID.toUpperCase()
-                            if (item.AbilityID)
-                                item.AbilityID = item.AbilityID.toUpperCase()
-                            if (item.OtherApplyStatusEffect)
-                                item.OtherApplyStatusEffect = item.OtherApplyStatusEffect.toUpperCase()
+                        item?.OtherApplyStatusEffect?.split(",").forEach(split => {
+                            if (split == status.StatusID) {
+                                if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
+                                    maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
+                                }
+                                if (itemEquipAbilityMAP[item.AbilityID.toUpperCase()]) {
 
-                            item.OtherApplyStatusEffect.split(",").forEach(split => {
-                                if (split == status.StatusID) {
-                                    if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
-                                        maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
-                                    }
-                                    if (itemEquipAbilityMAP[item.AbilityID]) {
+                                    if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID.toUpperCase()].PerkID}]`)) {
 
-                                        if (isPlayer.querySelector(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)) {
+                                        for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID.toUpperCase()].PerkID}]`)))
+                                            maxStack = Math.max(nodes.textContent, maxStack)
 
-                                            for (const nodes of Object.values(isPlayer.querySelectorAll(`[for=${itemEquipAbilityMAP[item.AbilityID].PerkID}]`)))
-                                                maxStack = Math.max(nodes.textContent, maxStack)
-
-                                        }
                                     }
                                 }
-                            })
+                            }
+                        })
 
-                        }
                     })
 
 
                     if (!status[prop] || ((prop == 'DMGVitalsCategory' || prop == 'ABSVitalsCategory') && typeof status[prop] === "number"))
                         uncappedOtherStatusProps[prop].push(0)
                     else {
-                        if (itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID]) {
-                            if (!itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID].ScalingPerGearScore)
+                        if (itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID.toUpperCase()].AbilityID]) {
+                            if (!itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()].ScalingPerGearScore)
                                 uncappedOtherStatusProps[prop].push(status[prop] * maxStack)
                             else
-                                uncappedOtherStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID].AbilityID], isPlayer) * maxStack)
+                                uncappedOtherStatusProps[prop].push(status[prop] * itemScaling(itemEquipAbilityMAP[abilityOtherApplyMAP[status.StatusID.toUpperCase()].AbilityID.toUpperCase()], isPlayer) * maxStack)
                         }
                         else {
                             uncappedOtherStatusProps[prop].push((status[prop] * maxStack) || 0)
@@ -1917,8 +1982,6 @@ const getItemEqiup = () => {
 
             if (itemPerkMAP[item.value?.toUpperCase()]) {
 
-
-
                 if (itemPerkMAP[item.value.toUpperCase()].EquipAbility) {
 
                     itemPerkMAP[item.value.toUpperCase()].EquipAbility.split(",").forEach(ability => {
@@ -1930,6 +1993,7 @@ const getItemEqiup = () => {
                         else whichtargetItemPerks.push(globalAbilityMAP[ability.toUpperCase()])
 
                         if (globalAbilityMAP[ability.toUpperCase()].PerStatusEffectOnSelf) {
+
                             hasStacks = true
                             stackMax = globalAbilityMAP[ability.toUpperCase()].PerStatusEffectOnSelfMax
 
@@ -1938,7 +2002,9 @@ const getItemEqiup = () => {
                         if (globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect) {
 
                             globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect.split(",").forEach(status => {
+                                console.log(status)
                                 if (perkStatusEffectMAP[status.toUpperCase()]?.StackMax > 1) {
+
                                     hasStacks = true
                                     stackMax = perkStatusEffectMAP[status.toUpperCase()].StackMax
                                 }
@@ -1956,7 +2022,9 @@ const getItemEqiup = () => {
 
                 let perkIcon = container.querySelectorAll(`[for=${itemPerkMAP[item.value.toUpperCase()].PerkID}]`)
                 if (perkIcon[0]) {
+
                     if (hasStacks) {
+
                         for (const btn of Object.values(perkIcon)) {
                             if (!btn.textContent)
                                 btn.textContent = 1
@@ -2072,14 +2140,14 @@ fetch('player/player_greatsword.adb')
 
 
         // Assuming xmlObject is the object you created in the previous example
-/*         const jsonString = JSON.stringify(xmlObject);
-
-        // Save the JSON string to a file
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'file.json';
-        link.click(); */
+        /*         const jsonString = JSON.stringify(xmlObject);
+        
+                // Save the JSON string to a file
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'file.json';
+                link.click(); */
         // Now xmlObject contains the entire XML document as an object
     });
 
@@ -2880,15 +2948,14 @@ new Array("mousedown").forEach(type => {
         if (isDropdownListItem) {
 
             let parentDiv = e.target.parentNode.parentNode.parentNode
-            let whichPerk = parentDiv.querySelector(".perks") ? ".perks" : parentDiv.querySelector(".armorperks") ? ".armorperks" : ".targetperks"
 
-            parentDiv.querySelector(whichPerk).value = itemPerkNameMAP[e.target.textContent].PerkID
-            parentDiv.querySelector(whichPerk).setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
+            parentDiv.querySelector(".perks").value = itemPerkNameMAP[e.target.textContent].PerkID
+            parentDiv.querySelector(".perks").setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
             parentDiv.querySelector(".removebttn")?.classList.add("show")
             parentDiv.querySelector(".icon__button")?.setAttribute("for", itemPerkNameMAP[e.target.textContent].PerkID)
             parentDiv.querySelector(".icon__button__bg")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
             parentDiv.querySelector(".icon__button__border")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
-            parentDiv.querySelector(whichPerk).dispatchEvent(new Event('input'))
+            parentDiv.querySelector(".perks").dispatchEvent(new Event('input'))
             parentDiv.querySelector(".list_container").classList.remove("active_list")
 
         }
@@ -2901,6 +2968,7 @@ new Array("mousedown").forEach(type => {
             e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("value", "")
             e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_perkbackground.png")
             e.target.classList.remove("show")
+            e.target.parentNode.querySelector(".perks").dispatchEvent(new Event('input'))
             getItemEqiup()
             getFinalDamage()
         }
