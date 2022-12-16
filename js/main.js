@@ -639,9 +639,11 @@ function itemScaling(itemperk, container) {
     let getGearScore = []
     container.querySelectorAll(".perks").forEach(perk => {
         if (itemperk.PerkID == perk.value) {
-            getGearScore.push(perk.parentNode.parentNode.querySelector(".gearscore").value)
+
+            getGearScore.push(perk.parentNode.parentNode.querySelector(".gearscore")?.value)
         }
     })
+
     getGearScore = getGearScore.reduce((acc, c) => Math.max(acc, c))
     const scaled = 1 + (itemperk.ScalingPerGearScore) * (Number(getGearScore) + Number(weptrue()) - 100)
     return scaled
@@ -1121,17 +1123,19 @@ equipContainers.forEach(container => perkTippy.push(tippy(container.querySelecto
 for (const tippy of Object.values(perkTippy)) {
     tippy.forEach(instance => {
         instance.reference.addEventListener("input", (e) => {
+
             if (!instance.reference.getAttribute("value") || instance.reference.getAttribute("value") == "PerkID_Gem_EmptyGemSlot") {
                 instance.disable()
                 return
             }
+
             instance.enable()
             instance.setContent(() => {
 
                 const perk = itemPerkMAP[instance.reference.getAttribute("value")?.toUpperCase()]
                 let ability
                 let affix
-                let status
+
                 if (globalAbilityMAP[perk.EquipAbility?.toUpperCase()]) {
                     ability = globalAbilityMAP[perk.EquipAbility?.toUpperCase()]
                 }
@@ -1139,10 +1143,6 @@ for (const tippy of Object.values(perkTippy)) {
                     affix = affixDataMAP[perk.Affix?.toUpperCase()]
                 }
 
-
-                let keys
-                let startIndexTrigger
-                let startIndexAbility
                 let content = ""
                 const startTrigger = "OnEventPassiveConditionsPass"
                 const startProp = "BaseDamage"
@@ -1150,9 +1150,9 @@ for (const tippy of Object.values(perkTippy)) {
 
                 if (ability) {
 
-                    keys = Object.keys(ability)
-                    startIndexTrigger = keys.indexOf(startTrigger)
-                    startIndexAbility = keys.indexOf(startProp)
+                    let keys = Object.keys(ability)
+                    let startIndexTrigger = keys.indexOf(startTrigger)
+                    let startIndexAbility = keys.indexOf(startProp)
                     content += changeTextColor(`<br>Ability Info: <br>`)
 
                     for (let i = 0; i < keys.length; i++) {
@@ -1166,7 +1166,7 @@ for (const tippy of Object.values(perkTippy)) {
                         if (ability[keys[i]] || keys[i] == "IsStackableAbility") {
 
                             if (String(ability[keys[i]]).includes(",")) {
-                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${ability[keys[i]].replace(/,/g, "<br>")} <br>`
+                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${ability[keys[i]].replace(/,/g, ",<br>")} <br>`
                             }
                             else
                                 content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${ability[keys[i]]} <br>`
@@ -1177,22 +1177,16 @@ for (const tippy of Object.values(perkTippy)) {
 
                 if (affix) {
 
-                    keys = Object.keys(affix)
-                    startIndexTrigger = keys.indexOf(startTrigger)
-                    startIndexAbility = keys.indexOf(startProp)
+                    let keys = Object.keys(affix)
+
                     content += changeTextColor(`<br>Affix Info: <br>`)
 
                     for (let i = 0; i < keys.length; i++) {
 
-                        if (i == startIndexTrigger) {
-                            content += changeTextColor("Triggers: <br>")
-                        }
-                        if (i == startIndexAbility) {
-                            content += changeTextColor("If Triggers Met: <br>")
-                        }
-                        if (affix[keys[i]] || keys[i] == "IsStackableAbility") {
+                        if (affix[keys[i]]) {
+
                             if (String(affix[keys[i]]).includes(",")) {
-                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${affix[keys[i]].replace(/,/g, "<br>")} <br>`
+                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${affix[keys[i]].replace(/,/g, ", <br>")} <br>`
                             }
                             else
                                 content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${affix[keys[i]]} <br>`
@@ -1201,37 +1195,50 @@ for (const tippy of Object.values(perkTippy)) {
                     }
                 }
 
-                if (ability.SelfApplyStatusEffect) {
+                if (ability?.SelfApplyStatusEffect) {
 
-                    status = ability.SelfApplyStatusEffect.split(",")
+                    ability.SelfApplyStatusEffect.split(",")
+                        .forEach(status => {
+                            let statusTable = perkStatusEffectMAP[status.toUpperCase()]
+                            let keys = Object.keys(statusTable)
 
-                    status.forEach(status => {
-                        let statusTable = perkStatusEffectMAP[status.toUpperCase()]
-                        keys = Object.keys(statusTable)
-                        startIndexTrigger = keys.indexOf(startTrigger)
-                        startIndexAbility = keys.indexOf(startProp)
-                        content += changeTextColor(`<br>StatusEffect Info: <br>`)
+                            content += changeTextColor(`<br>StatusEffect Info: <br>`)
 
-                        for (let i = 0; i < keys.length; i++) {
+                            for (let i = 0; i < keys.length; i++) {
 
-                            if (i == startIndexTrigger) {
-                                content += changeTextColor("Triggers: <br>")
-                            }
-                            if (i == startIndexAbility) {
-                                content += changeTextColor("If Triggers Met: <br>")
-                            }
-                            if (statusTable[keys[i]] || keys[i] == "IsStackableAbility") {
+                                if (statusTable[keys[i]]) {
 
-                                if (String(status[keys[i]]).includes(",")) {
-                                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, "<br>")} <br>`
+                                    if (String(status[keys[i]]).includes(",")) {
+                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, ",<br>")} <br>`
+                                    }
+                                    else
+                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${statusTable[keys[i]]} <br>`
                                 }
-                                else
-                                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${statusTable[keys[i]]} <br>`
                             }
+                        })
+                }
 
-                        }
-                    })
+                if (ability?.OtherApplyStatusEffect) {
 
+                    ability.OtherApplyStatusEffect.split(",")
+                        .forEach(status => {
+                            let statusTable = perkStatusEffectMAP[status.toUpperCase()]
+                            let keys = Object.keys(statusTable)
+
+                            content += changeTextColor(`<br>StatusEffect Info: <br>`)
+
+                            for (let i = 0; i < keys.length; i++) {
+
+                                if (statusTable[keys[i]]) {
+
+                                    if (String(status[keys[i]]).includes(",")) {
+                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, ",<br>")} <br>`
+                                    }
+                                    else
+                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${statusTable[keys[i]]} <br>`
+                                }
+                            }
+                        })
                 }
 
                 return (
@@ -1558,7 +1565,6 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
             let maxStack = 1
 
-            //console.log(abilitytruevalue)
             abilitytruevalue.forEach(x => {
 
                 let maxStack = 1
@@ -1586,8 +1592,10 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                         totalSelfProps[prop].push(x[prop] * maxStack)
                     else {
                         if (itemEquipAbilityMAP[x.AbilityID.toUpperCase()]) {
-
-                            totalSelfProps[prop].push(x[prop] * itemScaling(itemEquipAbilityMAP[x.AbilityID.toUpperCase()], isPlayer) * maxStack)
+                            if (itemEquipAbilityMAP[x.AbilityID.toUpperCase()].ScalingPerGearScore)
+                                totalSelfProps[prop].push(x[prop] * itemScaling(itemEquipAbilityMAP[x.AbilityID.toUpperCase()], isPlayer) * maxStack)
+                            else
+                                totalSelfProps[prop].push(x[prop] * maxStack)
                         }
                     }
                 }
@@ -1596,8 +1604,12 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                     if (!itemEquipAbilityMAP[x.AbilityID.toUpperCase()])
                         totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g))
                     else {
-                        if (itemEquipAbilityMAP[x.AbilityID.toUpperCase()])
-                            totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemEquipAbilityMAP[x.AbilityID.toUpperCase()], isPlayer))
+                        if (itemEquipAbilityMAP[x.AbilityID.toUpperCase()]) {
+                            if (itemEquipAbilityMAP[x.AbilityID.toUpperCase()].ScalingPerGearScore)
+                                totalSelfProps[prop].push(x[prop].match(/(\d\.\d+)|(\d+)/g) * itemScaling(itemEquipAbilityMAP[x.AbilityID.toUpperCase()], isPlayer))
+                            else
+                                totalSelfProps[prop].push(x[prop] * maxStack)
+                        }
                     }
                 }
 
@@ -2002,7 +2014,6 @@ const getItemEqiup = () => {
                         if (globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect) {
 
                             globalAbilityMAP[ability.toUpperCase()].SelfApplyStatusEffect.split(",").forEach(status => {
-                                console.log(status)
                                 if (perkStatusEffectMAP[status.toUpperCase()]?.StackMax > 1) {
 
                                     hasStacks = true
@@ -2106,7 +2117,7 @@ const getItemEqiup = () => {
 
 
 
-fetch('player/player_greatsword.adb')
+/* fetch('player/player_greatsword.adb')
     .then(response => response.text())
     .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
     .then(data => {
@@ -2140,19 +2151,19 @@ fetch('player/player_greatsword.adb')
 
 
         // Assuming xmlObject is the object you created in the previous example
-        /*         const jsonString = JSON.stringify(xmlObject);
+                 const jsonString = JSON.stringify(xmlObject);
         
                 // Save the JSON string to a file
                 const blob = new Blob([jsonString], { type: 'application/json' });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = 'file.json';
-                link.click(); */
+                link.click();
         // Now xmlObject contains the entire XML document as an object
-    });
+    }); */
 
 
-fetch('playerdata/cage/playeractions_ability_icemagic.actionlist')
+/* fetch('playerdata/cage/playeractions_ability_icemagic.actionlist')
     .then(response => response.text())
     .then(xml => {
         // parse the XML string into a DOM document
@@ -2178,7 +2189,7 @@ fetch('playerdata/cage/playeractions_ability_icemagic.actionlist')
         }
         // the object is now populated with the parsed data
         console.log(obj);
-    });
+    }); */
 
 
 /* const parseXML = xml => {
@@ -2481,13 +2492,12 @@ const getFinalDamage = () => {
     target = {}
     armorMitigation()
     getWeaponDamage()
-    console.log(selfDamageIDMap)
+    //console.log(selfDamageIDMap)
     self = checkCondition(checkedSelfAbility.concat(activeSelfItemPerks, activeSelfAttributeAbility), selfDamageIDMap)
     target = checkCondition(activeTargetItemPerks, targetDamageIDMap)
     setBarDescription()
     let findmaxDIV
     let maxDIV = {}
-    console.log()
 
     for (let [key, damageID] of Object.entries(selfDamageIDMap)) {
 
@@ -2598,10 +2608,10 @@ const getFinalDamage = () => {
 
     //console.log(activeAttributeAbility)
     //console.log(activeItemPerks)
-    console.log(self.modsSelf)
-    console.log(self.modsOther)
-    console.log(target.modsSelf)
-    console.log(target.modsOther)
+    //console.log(self.modsSelf)
+    //console.log(self.modsOther)
+    //console.log(target.modsSelf)
+    //console.log(target.modsOther)
 
 
 }
