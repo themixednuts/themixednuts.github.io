@@ -262,6 +262,7 @@ const categoryIdMap = {
 const playerEquip = document.querySelector(".playerequip_container")
 const targetEquip = document.querySelector(".targetequip_container")
 
+let equipload_divs = []
 
 const equipContainers = [playerEquip, targetEquip]
 
@@ -286,6 +287,7 @@ equipContainers.forEach(container => {
 
         }
         else {
+
             container.querySelector(".tempslot").setAttribute("src", `../lyshineui/images/equipment/icon${slot.replace("hands", "hand").replace("earring", "token")}.png`)
         }
 
@@ -311,12 +313,96 @@ equipContainers.forEach(container => {
         })
 
         container.querySelectorAll(".tempperk_list_div").forEach(item => item.classList.replace("tempperk_list_div", `${slot}perk_list_div`))
-
+        if (slot == "head" || slot == "chest" || slot == "hands" || slot == "legs" || slot == "feet") {
+            equipload_divs.push(container.querySelector(`.${slot}slot`))
+        }
     })
 
 
 })
 
+
+let equipload_tippy = []
+
+for (const equip of Object.values(equipload_divs)) {
+    equipload_tippy.push(tippy(equip))
+}
+
+equipload_tippy.forEach(instance => {
+
+    instance.setContent((e) => {
+
+        const equipLoad_template = document.getElementById("equipload").cloneNode(true).content
+        equipmentSlots.forEach(slot => {
+
+            if (e.classList.contains(`${slot}slot`)) {
+                const loads = [equipLoad_template.querySelector(".lightload"), equipLoad_template.querySelector(".mediumload"), equipLoad_template.querySelector(".heavyload")]
+                loads.forEach(load => {
+                    load.setAttribute("src", `../lyshineui/images/icons/drawing/${load.getAttribute("value")}${slot}a.png`)
+                    load.addEventListener("mousedown", (ev) => {
+                        e.setAttribute("value", ev.target.getAttribute("value"))
+                        e.setAttribute("src", ev.target.getAttribute("src"))
+                        e.setAttribute("title", ev.target.getAttribute("title"))
+                        getEquipLoad(e.parentNode.parentNode.parentNode)
+                        getFinalDamage()
+                        instance.hide()
+                    })
+                })
+
+
+            }
+        })
+
+
+        return equipLoad_template
+    })
+    instance.setProps({
+        placement: "bottom",
+        interactive: true,
+        trigger: "click"
+    })
+})
+
+let equipLoadWeight
+
+const getEquipLoad = (container) => {
+
+    const weights = {
+        "light": {
+            "head": 1.5,
+            "chest": 3.5,
+            "hands": 1.5,
+            "legs": 2.0,
+            "feet": 1.5
+        },
+        "medium": {
+            "head": 2.6,
+            "chest": 6.2,
+            "hands": 2.6,
+            "legs": 2.0,
+            "feet": 2.6
+        },
+        "heavy": {
+            "head": 4.7,
+            "chest": 11.0,
+            "hands": 4.7,
+            "legs": 6.3,
+            "feet": 4.7
+        }
+    }
+
+    const equipload = []
+
+    equipmentSlots.forEach(slot => {
+        if (slot == "head" || slot == "chest" || slot == "hands" || slot == "legs" || slot == "feet") {
+            if(container.querySelector(`.${slot}slot`).getAttribute("value"))
+            equipload.push(weights[container.querySelector(`.${slot}slot`).getAttribute("value")][slot])
+        }
+    })
+
+    equipLoadWeight = equipload.reduce((a,c) => a + c,0)
+
+}
 
 let firstTargetDmgID
 
@@ -364,6 +450,7 @@ target_tippyweptemp.querySelectorAll('.weaponsmall').forEach(item => {
         }
     })
 })
+
 
 
 
@@ -929,10 +1016,9 @@ const setItemPerkList = (container) => {
 }
 
 let dmgBarTippy
+
 const setWeaponDamageInfo = () => {
     let equippedDamageKey = []
-
-
 
     while (document.querySelector(".standard_damage_bars").firstChild)
         document.querySelector(".standard_damage_bars").removeChild(document.querySelector(".standard_damage_bars").lastChild)
@@ -952,6 +1038,7 @@ const setWeaponDamageInfo = () => {
             equippedDamageKey = Object.keys(activeSelfWeaponAbilities[key])[0]
 
             for (const ability of Object.keys(abilitydmgMap)) {
+
                 checkedSelfAbility.forEach(checkedability => {
 
                     if (!checkedability?.AbilityID)
@@ -1070,6 +1157,18 @@ const setBarDescription = () => {
         let stunbreakout = ""
         let threatmulti = ""
         let attkrunecharge = ""
+        let equipLoad
+
+        if(equipLoadWeight<13 || !equipLoad){
+            equipLoad = 0.2
+        }
+        if(equipLoadWeight >= 13 && equipLoadWeight < 23){
+            equipLoad = 0.1
+        }
+        if(equipLoadWeight >= 23){
+            equipLoad = 0
+        }
+
         if (affixDataMAP[itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix.toUpperCase()]?.DamagePercentage && damageTableMAP[instance.reference.getAttribute("value")?.toUpperCase()]) {
             gem = `${changeTextColor("Gem Split:", colorYellow)} ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normalGEM)}` + "\n"
         }
@@ -1107,7 +1206,7 @@ const setBarDescription = () => {
             `${stunbreakout}` +
             `${threatmulti}` +
             `${attkrunecharge}` +
-            `${changeTextColor("BaseDamage:", colorYellow)} ${roundNumber(self.modsSelf[instance.reference.getAttribute("value")].BaseDamage * 100)}%` + "\n" +
+            `${changeTextColor("BaseDamage:", colorYellow)} ${roundNumber((self.modsSelf[instance.reference.getAttribute("value")].BaseDamage + equipLoad) * 100)}%` + "\n" +
             `${changeTextColor("DMG:", colorYellow)} ${roundNumber((DMG(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)) + self.modsSelf[instance.reference.getAttribute("value")].DMGVitalsCategory) * 100)}%` + "\n" +
             `${changeTextColor("ABS:", colorYellow)} ${roundNumber((ABS(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)) + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%`
         )
@@ -1126,25 +1225,25 @@ for (const tippy of Object.values(perkTippy)) {
         instance.reference.addEventListener("input", (e) => {
 
             if (!instance.reference.getAttribute("value") || instance.reference.getAttribute("value") == "PerkID_Gem_EmptyGemSlot") {
-                
+
                 instance.disable()
                 return
             }
-           
+
             instance.enable()
             instance.setContent(() => {
 
                 const perk = itemPerkMAP[instance.reference.getAttribute("value")?.toUpperCase()]
                 let ability
                 let affix
-                
+
                 if (globalAbilityMAP[perk.EquipAbility?.toUpperCase()]) {
                     ability = globalAbilityMAP[perk.EquipAbility?.toUpperCase()]
                 }
                 if (affixDataMAP[perk.Affix?.toUpperCase()]) {
                     affix = affixDataMAP[perk.Affix?.toUpperCase()]
                 }
-                
+
                 let content = ""
                 const startTrigger = "OnEventPassiveConditionsPass"
                 const startProp = "BaseDamage"
@@ -1180,7 +1279,7 @@ for (const tippy of Object.values(perkTippy)) {
                 if (affix) {
 
                     let keys = Object.keys(affix)
-                    
+
                     content += changeTextColor(`<br>Affix Info: <br>`)
 
                     for (let i = 0; i < keys.length; i++) {
@@ -1242,9 +1341,9 @@ for (const tippy of Object.values(perkTippy)) {
                             }
                         })
                 }
-                
+
                 return (
-                   `${changeTextColor("Perk Name:", colorYellow)} ${perk.DisplayName} <br>`
+                    `${changeTextColor("Perk Name:", colorYellow)} ${perk.DisplayName} <br>`
                     + content
                 )
 
@@ -1267,7 +1366,7 @@ for (const tippy of Object.values(perkTippy)) {
 const conditionalChecks = (damageID, ability, reference) => {
 
     let whichDamageMap = reference == "self" ? currentSelfWeaponDamageMAP[damageID] : damageTableMAP[damageID.toUpperCase()]
-    console.log(ability)
+
     if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageID))
@@ -1330,6 +1429,10 @@ const equipWepAbility = () => {
         }
         if (ability.StatusEffect) {
             options.push(wepStatusEffectMAP[ability.StatusEffect.toUpperCase()])
+        }
+        if (ability.IsActiveAbility) {
+            document.querySelector(`#${ability.AbilityID}_checkbox`).checked = true
+            checkedSelfAbility.push(ability)
         }
     }
 
@@ -2417,6 +2520,19 @@ function damageFormula(damageID) {
     let findGem = null
     let arrDMG = []
     let affixSplit = 0
+    
+    let equipLoad
+
+    if(equipLoadWeight<13 || !equipLoad){
+        equipLoad = 0.2
+    }
+    if(equipLoadWeight >= 13 && equipLoadWeight < 23){
+        equipLoad = 0.1
+    }
+    if(equipLoadWeight >= 23){
+        equipLoad = 0
+    }
+    
 
     if (itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix && damageTableMAP[damageID?.toUpperCase()]) {
         affixSplit = affixDataMAP[itemPerkMAP[playerEquip.querySelector(".gemslot").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
@@ -2430,13 +2546,13 @@ function damageFormula(damageID) {
 
     noGEM = wepdmg
         * dmgcoeforhealtmod(damageID)
-        * (1 + self.modsSelf[damageID].BaseDamage)
+        * (1 + self.modsSelf[damageID].BaseDamage + equipLoad)
         * (1 - ABS(damageID, currentSelfWeaponDamageMAP[damageID].DamageType))
         * (1 - affixSplit)
 
     GEM = wepdmgsplit
         * dmgcoeforhealtmod(damageID)
-        * (1 + self.modsSelf[damageID].BaseDamage)
+        * (1 + self.modsSelf[damageID].BaseDamage + equipLoad)
         * (1 - ABS(damageID, findGem?.DamageType))
         * affixSplit
 

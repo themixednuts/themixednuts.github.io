@@ -620,7 +620,31 @@ body {
     flex: 1 0 auto;
 }
 
+.equipload_container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
 
+}
+
+.lightload,
+.mediumload,
+.heavyload,
+.lightload_bg,
+.mediumload_bg,
+.heavyload_bg,
+.lightload_container,
+.mediumload_container,
+.heavyload_container {
+    display: flex;
+    position: relative;
+    width: 42px;
+    height: 42px;
+}
 
 .weapon_icon {
     width: 280px;
@@ -979,7 +1003,7 @@ option {
 
 .imgslot {
     height: auto;
-    width: 38px;
+    width: 32px;
 }
 
 .targetequip_container {
@@ -1028,6 +1052,8 @@ option {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 .search {
