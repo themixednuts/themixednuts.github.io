@@ -262,6 +262,7 @@ const categoryIdMap = {
 const playerEquip = document.querySelector(".playerequip_container")
 const targetEquip = document.querySelector(".targetequip_container")
 
+
 const equipContainers = [playerEquip, targetEquip]
 
 const equipmentSlots = ["weapon", "head", "chest", "hands", "legs", "feet", "amulet", "ring", "earring"]
@@ -1125,24 +1126,25 @@ for (const tippy of Object.values(perkTippy)) {
         instance.reference.addEventListener("input", (e) => {
 
             if (!instance.reference.getAttribute("value") || instance.reference.getAttribute("value") == "PerkID_Gem_EmptyGemSlot") {
+                
                 instance.disable()
                 return
             }
-
+           
             instance.enable()
             instance.setContent(() => {
 
                 const perk = itemPerkMAP[instance.reference.getAttribute("value")?.toUpperCase()]
                 let ability
                 let affix
-
+                
                 if (globalAbilityMAP[perk.EquipAbility?.toUpperCase()]) {
                     ability = globalAbilityMAP[perk.EquipAbility?.toUpperCase()]
                 }
                 if (affixDataMAP[perk.Affix?.toUpperCase()]) {
                     affix = affixDataMAP[perk.Affix?.toUpperCase()]
                 }
-
+                
                 let content = ""
                 const startTrigger = "OnEventPassiveConditionsPass"
                 const startProp = "BaseDamage"
@@ -1178,7 +1180,7 @@ for (const tippy of Object.values(perkTippy)) {
                 if (affix) {
 
                     let keys = Object.keys(affix)
-
+                    
                     content += changeTextColor(`<br>Affix Info: <br>`)
 
                     for (let i = 0; i < keys.length; i++) {
@@ -1240,9 +1242,9 @@ for (const tippy of Object.values(perkTippy)) {
                             }
                         })
                 }
-
+                
                 return (
-                    `${changeTextColor("Perk Name:", colorYellow)} ${perk.DisplayName} <br>`
+                   `${changeTextColor("Perk Name:", colorYellow)} ${perk.DisplayName} <br>`
                     + content
                 )
 
@@ -1265,7 +1267,7 @@ for (const tippy of Object.values(perkTippy)) {
 const conditionalChecks = (damageID, ability, reference) => {
 
     let whichDamageMap = reference == "self" ? currentSelfWeaponDamageMAP[damageID] : damageTableMAP[damageID.toUpperCase()]
-
+    console.log(ability)
     if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageID))
@@ -1276,7 +1278,7 @@ const conditionalChecks = (damageID, ability, reference) => {
         && (!ability.TargetHealthPercent || _is[ability.TargetComparisonType](targetHP.value, ability.TargetHealthPercent))
         && (!ability.DamageCategory || ability.DamageCategory == findDamageCategory(damageID))
         && (!ability.DMGVitalsCategory || new RegExp(ability.DMGVitalsCategory.split("=")[0]).test(selectedVitals.VitalsCategories))
-        && (!ability.StatusEffect || ability.StatusEffect == document.querySelector(".player_statuseffects_select").value)
+        && (!ability.StatusEffect || ability.StatusEffect == playerAttr.querySelector(".player_statuseffects_select").value)
         && (!ability.RequireReaction || ability.RequireReaction != whichDamageMap.NoReaction))
         return true
     else
@@ -1339,7 +1341,8 @@ const equipWepAbility = () => {
     })
 
     if (playerAttr.querySelector(".player_statuseffects_select").value != "") {
-        checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value])
+
+        checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value.toUpperCase()])
     }
     setWeaponDamageInfo()
     return checkedSelfAbility
@@ -1677,7 +1680,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                     maxStack = 1
                     abilityID.forEach(item => {
 
-                        item?.SelfApplyStatusEffect.split(",").forEach(split => {
+                        item?.SelfApplyStatusEffect?.split(",").forEach(split => {
                             if (split == status.StatusID) {
                                 if (document.querySelector(`#${item.AbilityID}_icon__button`)) {
                                     maxStack = document.querySelector(`#${item.AbilityID}_icon__button`).textContent
