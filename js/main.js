@@ -312,6 +312,8 @@ equipContainers.forEach(container => {
             item.setAttribute("for", item.getAttribute("for").replace("temp", slot))
         })
 
+
+
         container.querySelectorAll(".tempperk_list_div").forEach(item => item.classList.replace("tempperk_list_div", `${slot}perk_list_div`))
         if (slot == "head" || slot == "chest" || slot == "hands" || slot == "legs" || slot == "feet") {
             equipload_divs.push(container.querySelector(`.${slot}slot`))
@@ -1219,21 +1221,51 @@ const setBarDescription = () => {
 }
 
 let perkTippy = []
-equipContainers.forEach(container => perkTippy.push(tippy(container.querySelectorAll(".perks"))))
+
+equipContainers.forEach(container => {
+    perkTippy.push(tippy(container.querySelectorAll(".info")))
+})
+
 for (const tippy of Object.values(perkTippy)) {
     tippy.forEach(instance => {
-        instance.reference.addEventListener("input", (e) => {
-
-            if (!instance.reference.getAttribute("value") || instance.reference.getAttribute("value") == "PerkID_Gem_EmptyGemSlot") {
-
+        instance.setProps({
+            placement: "bottom",
+            allowHTML: true,
+            delay: [200, 200],
+            interactive: true,
+            hideOnClick: true,
+            theme: "maxHeight",
+            popperOptions: {
+                modifiers: [{
+                    name: 'preventOverflow',
+                    options: {
+                        boundary: instance.reference.parentNode.parentNode
+                    }
+                }]
+            }
+        })
+        if(instance.reference.classList.contains("gemslot")){
+            instance.setProps({
+                appendTo: () => instance.reference.parentNode.parentNode,
+                popperOptions: {
+                    modifiers: [{
+                        name: 'preventOverflow',
+                        options: {
+                            boundary: instance.reference.parentNode.parentNode.parentNode
+                        }
+                    }]
+                }
+            })
+        }
+        instance.reference.parentNode.querySelector(".perks").addEventListener("input", (e) => {
+            if (!instance.reference.parentNode.querySelector(".perks").getAttribute("value") || instance.reference.parentNode.querySelector(".perks").getAttribute("value") == "PerkID_Gem_EmptyGemSlot") {
                 instance.disable()
                 return
             }
-
             instance.enable()
             instance.setContent(() => {
 
-                const perk = itemPerkMAP[instance.reference.getAttribute("value")?.toUpperCase()]
+                const perk = itemPerkMAP[instance.reference.parentNode.querySelector(".perks").getAttribute("value")?.toUpperCase()]
                 let ability
                 let affix
 
@@ -1351,17 +1383,12 @@ for (const tippy of Object.values(perkTippy)) {
 
 
         })
+        
         instance.disable()
-        instance.setProps({
-            placement: "bottom",
-            allowHTML: true,
-            delay: [200, 200],
-            interactive: true,
-            hideOnClick: true,
-            theme: "maxHeight"
-        })
+
     })
 }
+
 
 const conditionalChecks = (damageID, ability, reference) => {
 
@@ -2126,6 +2153,23 @@ const getItemEqiup = () => {
                                     stackMax = perkStatusEffectMAP[status.toUpperCase()].StackMax
                                 }
                             })
+
+                        }
+
+                        if (globalAbilityMAP[ability.toUpperCase()].OtherApplyStatusEffect) {
+
+                            globalAbilityMAP[ability.toUpperCase()].OtherApplyStatusEffect.split(",").forEach(status => {
+                                if (perkStatusEffectMAP[status.toUpperCase()]?.StackMax > 1) {
+
+                                    hasStacks = true
+                                    stackMax = perkStatusEffectMAP[status.toUpperCase()].StackMax
+                                }
+
+                                
+
+                            })
+
+
 
                         }
 
@@ -2925,6 +2969,8 @@ new Array("keydown").forEach(type => {
                 parentDiv.querySelector(`.perks`).dispatchEvent(new Event('input'))
                 parentDiv.querySelector(`.perks`).setAttribute('src', `../${itemPerkNameMAP[target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[target.textContent].PerkID}`)
                 parentDiv.querySelector(".removebttn").classList.add("show")
+                parentDiv.querySelector(".info").setAttribute("id", `${itemPerkNameMAP[target.textContent].PerkID}`)
+                parentDiv.querySelector(".info").classList.add("show")
                 parentDiv.querySelector(".icon__button").setAttribute("for", itemPerkNameMAP[target.textContent].PerkID)
                 parentDiv.querySelector(".icon__button__bg").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_bg`)
                 parentDiv.querySelector(".icon__button__border").setAttribute("for", `${itemPerkNameMAP[target.textContent].PerkID}_border`)
@@ -3081,6 +3127,8 @@ new Array("mousedown").forEach(type => {
             parentDiv.querySelector(".perks").value = itemPerkNameMAP[e.target.textContent].PerkID
             parentDiv.querySelector(".perks").setAttribute('src', `../${itemPerkNameMAP[e.target.textContent].IconPath.toLowerCase()}`, "id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
             parentDiv.querySelector(".removebttn")?.classList.add("show")
+            parentDiv.querySelector(".info").setAttribute("id", `${itemPerkNameMAP[e.target.textContent].PerkID}`)
+            parentDiv.querySelector(".info").classList.add("show")
             parentDiv.querySelector(".icon__button")?.setAttribute("for", itemPerkNameMAP[e.target.textContent].PerkID)
             parentDiv.querySelector(".icon__button__bg")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_bg`)
             parentDiv.querySelector(".icon__button__border")?.setAttribute("for", `${itemPerkNameMAP[e.target.textContent].PerkID}_border`)
@@ -3091,6 +3139,7 @@ new Array("mousedown").forEach(type => {
 
         if (e.target.matches(".removebttn")) {
             e.target.parentNode.querySelector(".icon__button").classList.remove("show")
+            e.target.parentNode.querySelector(".info").classList.remove("show")
             e.target.parentNode.querySelector(".icon__button").setAttribute("for", "")
             e.target.parentNode.querySelector(".icon__button__bg").classList.remove("show")
             e.target.parentNode.querySelector(".icon__button__border").classList.remove("show")
