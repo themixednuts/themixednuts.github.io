@@ -20,6 +20,7 @@ const loadWeaponAbilityTable = async (weapon) => (await fetch(`json/AbilityData/
 const loadAffixDataTable = async () => (await fetch('json/AffixStatData/AffixStatDataTable.json')).json()
 const loadWepStatusEffectTable = async (statuseffect) => (await fetch(`json/StatusEffectData/${statuseffect}.json`)).json()
 const loadPerkStatusEffectTable = async () => (await fetch('json/StatusEffectData/StatusEffects_Perks.json')).json()
+const loadStatusEffect_Common = async () => (await fetch('json/StatusEffectData/StatusEffects_Common.json')).json()
 const loadAttributeAbilityTable = async () => (await fetch('json/AbilityData/AttributeThresholdAbilityTable.json')).json()
 const loadMasterItemDefinition = async () => (await fetch('json/MasterItemDefinitions/MasterItemDefinitions_Loot.json')).json()
 const loadDamageTypes = async () => (await fetch('json/DamageTypeData/DamageTypes.json')).json()
@@ -28,7 +29,8 @@ const loadStaminaData = async () => (await fetch(`json/unknown/StaminaCosts_Play
 const loadManaData = async () => (await fetch(`json/unknown/ManaCosts_Player.json`)).json()
 const loadCooldowns = async () => (await fetch(`json/unknown/Cooldowns_Player.json`)).json()
 const loadVitals = async () => (await fetch(`json/VitalsData/Vitals.json`)).json()
-const playeradb = async () => (await fetch('player/player.adb'))
+const loadSpellData_Global = async () => (await fetch('json/SpellData/SpellDataTable_Global.json')).json()
+const playeradb = async () => (await fetch('player/player.adb')).text()
 //load json files end
 
 
@@ -200,7 +202,43 @@ const STATUSEFFECTS = {
     "2hGreatSwordT5": "StatusEffects_Greatsword"
 }
 
-
+const ADB = [
+    "/player/player_greataxe.adb",
+    "/player/player_warhammer.adb",
+    "/player/player_rifle.adb",
+    "/player/player_bow.adb",
+    "/player/player_rapier.adb",
+    "/player/player_axe.adb",
+    "/player/player_spear.adb",
+    "/player/player_magicgauntlet_ice.adb",
+    "/player/player_magicstaff_fire.adb",
+    "/player/player_magicgauntlet_void.adb",
+    "/player/player_magicstaff_heal.adb",
+    "/player/player_sword.adb",
+    "/player/player_blunderbuss.adb",
+    "/player/player_greatsword.adb",
+    "/player/playermaleanims_1h_meleeattach.adb",
+    "/player/playermaleanims_1h_rangedattach.adb",
+    "/player/playermaleanims_2h_meleeattach.adb",
+    "/player/playermaleanims_2h_rangedattach.adb",
+    "/player/playermaleanims_bowattach.adb",
+    "/player/player_1h_melee.adb",
+    "/player/player_1h_ranged.adb",
+    "/player/player_2h_melee.adb",
+    "/player/player_2h_ranged.adb",
+    "/player/player_club.adb",
+    "/player/player_demohammer.adb",
+    "/player/player_fishingpole.adb",
+    "/player/player_knife.adb",
+    "/player/player_magicgauntlet.adb",
+    "/player/player_magicstaff.adb",
+    "/player/player_offhand.adb",
+    "/player/player_pick.adb",
+    "/player/player.adb",
+    "/player/playermaleactions.xml",
+    "/player/playermalecontrollerdefs.xml",
+    "/player/playermaletags.xml",
+]
 
 const masterItemDefinition = await loadMasterItemDefinition()
 let masterItemMAP = {}
@@ -222,11 +260,31 @@ const ITEMCLASS = {
     "SwordT5": masterItemMAP["1hLongswordDropT5"].ItemClass,
     "BlunderbussT5": masterItemMAP["2hBlunderbussDropT5"].ItemClass,
     "2hGreatSwordT5": masterItemMAP["2hGreatSwordDropT5"].ItemClass,
-    "head": "EquippableHead+Armor+Light+Medium+Heavy",
-    "chest": "EquippableChest+Armor+Light+Medium+Heavy",
-    "hands": "EquippableHands+Armor+Light+Medium+Heavy",
-    "legs": "EquippableLegs+Armor+Light+Medium+Heavy",
-    "feet": "EquippableFeet+Armor+Light+Medium+Heavy",
+    "head": {
+        "light": "EquippableHead+Armor+Light",
+        "medium": "EquippableHead+Armor+Medium",
+        "heavy": "EquippableHead+Armor+Heavy"
+    },
+    "chest": {
+        "light": "EquippableChest+Armor+Light",
+        "medium": "EquippableChest+Armor+Medium",
+        "heavy": "EquippableChest+Armor+Heavy"
+    },
+    "hands": {
+        "light": "EquippableHands+Armor+Light",
+        "medium": "EquippableHands+Armor+Medium",
+        "heavy": "EquippableHands+Armor+Heavy"
+    },
+    "legs": {
+        "light": "EquippableLegs+Armor+Light",
+        "medium": "EquippableLegs+Armor+Medium",
+        "heavy": "EquippableLegs+Armor+Heavy"
+    },
+    "feet": {
+        "light": "EquippableFeet+Armor+Light",
+        "medium": "EquippableFeet+Armor+Medium",
+        "heavy": "EquippableFeet+Armor+Heavy"
+    },
     "amulet": "EquippableAmulet+Jewelry",
     "ring": "EquippableRing+Jewelry",
     "earring": "EquippableToken+Jewelry"
@@ -346,6 +404,7 @@ equipload_tippy.forEach(instance => {
                         e.setAttribute("src", ev.target.getAttribute("src"))
                         e.setAttribute("title", ev.target.getAttribute("title"))
                         getEquipLoad(e.parentNode.parentNode.parentNode)
+                        setItemPerkList(ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode)
                         getFinalDamage()
                         instance.hide()
                     })
@@ -397,12 +456,12 @@ const getEquipLoad = (container) => {
 
     equipmentSlots.forEach(slot => {
         if (slot == "head" || slot == "chest" || slot == "hands" || slot == "legs" || slot == "feet") {
-            if(container.querySelector(`.${slot}slot`).getAttribute("value"))
-            equipload.push(weights[container.querySelector(`.${slot}slot`).getAttribute("value")][slot])
+            if (container.querySelector(`.${slot}slot`).getAttribute("value"))
+                equipload.push(weights[container.querySelector(`.${slot}slot`).getAttribute("value")][slot])
         }
     })
 
-    equipLoadWeight = equipload.reduce((a,c) => a + c,0)
+    equipLoadWeight = equipload.reduce((a, c) => a + c, 0)
 
 }
 
@@ -447,7 +506,7 @@ target_tippyweptemp.querySelectorAll('.weaponsmall').forEach(item => {
             weprow.querySelector("img").setAttribute("alt", e.target.getAttribute("alt"))
             setItemPerkList(targetEquip)
             targetDmgID()
-            getItemEqiup()
+            getItemEquip()
             getFinalDamage()
         }
     })
@@ -554,7 +613,17 @@ for (const def of Object.values(weaponItemDefinition))
     wepItemDefMAP[def.WeaponID.toLowerCase()] = def
 
 
+const globalSpellDataMAP = {}
+const globalSpellData = await loadSpellData_Global()
+for (const spell of Object.values(globalSpellData)) {
+    globalSpellDataMAP[spell.SpellID] = spell
+}
 
+const commonStatusEffectMAP = {}
+const commonStatusEffect = await loadStatusEffect_Common()
+for (const status of Object.values(commonStatusEffect)) {
+    commonStatusEffectMAP[status.StatusID] = status
+}
 
 const damageTable = await loadDamageTable()
 let damageTableMAP = {}
@@ -786,11 +855,17 @@ let abilityTippyCTRL
 
 
 //load properties for selected weapon
-async function loadWeaponData() {
+async function loadWeaponData(selectedWeapon) {
 
-
+    //set default weapon location
+    if (!selectedWeapon) {
+        selectedWeapon = playerEquip.querySelector(".weaponslot").getAttribute("value")
+    }
+    //clear any weapon StatusEffect map
     wepStatusEffectMAP = {}
+    //clear any weapon AbilityTable map
     wepAbilityMAP = {}
+    //clear any weapon SpellData map
     wepSpellDataMAP = {}
     selfDamageIDMap = {}
     currentSelfWeaponDamageMAP = {}
@@ -798,7 +873,7 @@ async function loadWeaponData() {
     const abilityTreeID_1 = document.querySelector(".abilitytreeid_1")
 
 
-    selectedWeapon = playerEquip.querySelector(".weaponslot").getAttribute("value")
+
 
     weaponData = wepItemDefMAP[selectedWeapon.toLowerCase()]
     activeSelfWeaponAbilities = attkToDamageID.find(item => item.WeaponID === selectedWeapon)
@@ -814,8 +889,17 @@ async function loadWeaponData() {
 
 
     weaponAbilityTable = await loadWeaponAbilityTable(selectedWeaponText)
-    weaponSpellDataTable = await loadSpellData(selectedWeaponText)
+    for (let ability of Object.values(weaponAbilityTable))
+        wepAbilityMAP[ability.AbilityID.toUpperCase()] = ability
 
+    weaponSpellDataTable = await loadSpellData(selectedWeaponText)
+    for (let spell of Object.values(weaponSpellDataTable))
+        wepSpellDataMAP[spell.SpellID.toUpperCase()] = spell
+
+
+
+
+    //REWRITE OUT OF LOADWEP FUNCTION!
     if (!targetCondition.querySelector(".target_level_container").value) {
         for (let vital of Object.values(vitals)) {
             if (vital.DisplayName == targetCondition.querySelector("#targetvitals").value) {
@@ -827,11 +911,9 @@ async function loadWeaponData() {
     }
 
 
-    for (let ability of Object.values(weaponAbilityTable))
-        wepAbilityMAP[ability.AbilityID.toUpperCase()] = ability
 
-    for (let spell of Object.values(weaponSpellDataTable))
-        wepSpellDataMAP[spell.SpellID.toUpperCase()] = spell
+
+
 
     while (abilityTreeID_0.firstChild)
         abilityTreeID_0.removeChild(abilityTreeID_0.lastChild)
@@ -951,7 +1033,7 @@ async function loadWeaponData() {
     abilityTippy = null
     setItemPerkList(playerEquip)
     targetDmgID()
-    getItemEqiup()
+    getItemEquip()
     equipWepAbility()
     setDescription()
     getFinalDamage()
@@ -986,11 +1068,16 @@ const setItemPerkList = (container) => {
         itemPerks.forEach(x => {
 
             if (slot != "weapon") {
-                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot]))) {
+
+                let value = ITEMCLASS[slot]
+                if (new Array("head", "chest", "hands", "legs", "feet").includes(slot)) {
+                    value = ITEMCLASS[slot][container.querySelector(`.${slot}row`).querySelector(".imgslot").getAttribute("value")]
+                }
+                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(value)) && x.PerkType == "Generated" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(value))) {
                     container.querySelectorAll(`.${slot}perk_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorperk" })))
                 }
 
-                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(ITEMCLASS[slot])) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(ITEMCLASS[slot])))
+                if ((!x.ItemClass || new RegExp("(\\b" + x.ItemClass.replace(/\+/g, "\\b)|(\\b") + "\\b)", "gi").test(value)) && x.PerkType == "Gem" && (!x.ExcludeItemClass || new RegExp(x.ItemClass.replace(/\+/g, "|"), "gi").test(value)))
                     container.querySelectorAll(`.${slot}gem_list_div`).forEach(div => div.appendChild(createItem("div", x.DisplayName, { value: x.PerkID, class: "addedperk armorgem" })))
             }
             else {
@@ -1064,7 +1151,7 @@ const setWeaponDamageInfo = () => {
 
             currentSelfWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()]
 
-            let findDamageType = currentSelfWeaponDamageMAP[selfDamageIDMap[key]].DamageType
+            let findDamageType = currentSelfWeaponDamageMAP[selfDamageIDMap[key]]?.DamageType
 
             let appendBars = [
                 createItem("div", "", { id: `${key}_normal`, class: "normal bar" }),
@@ -1161,13 +1248,13 @@ const setBarDescription = () => {
         let attkrunecharge = ""
         let equipLoad
 
-        if(equipLoadWeight<13 || !equipLoad){
+        if (equipLoadWeight < 13 || !equipLoad) {
             equipLoad = 0.2
         }
-        if(equipLoadWeight >= 13 && equipLoadWeight < 23){
+        if (equipLoadWeight >= 13 && equipLoadWeight < 23) {
             equipLoad = 0.1
         }
-        if(equipLoadWeight >= 23){
+        if (equipLoadWeight >= 23) {
             equipLoad = 0
         }
 
@@ -1244,7 +1331,7 @@ for (const tippy of Object.values(perkTippy)) {
                 }]
             }
         })
-        if(instance.reference.classList.contains("gemslot")){
+        if (instance.reference.classList.contains("gemslot")) {
             instance.setProps({
                 appendTo: () => instance.reference.parentNode.parentNode,
                 popperOptions: {
@@ -1268,6 +1355,10 @@ for (const tippy of Object.values(perkTippy)) {
                 const perk = itemPerkMAP[instance.reference.parentNode.querySelector(".perks").getAttribute("value")?.toUpperCase()]
                 let ability
                 let affix
+                let id
+                let ref
+
+
 
                 if (globalAbilityMAP[perk.EquipAbility?.toUpperCase()]) {
                     ability = globalAbilityMAP[perk.EquipAbility?.toUpperCase()]
@@ -1275,6 +1366,7 @@ for (const tippy of Object.values(perkTippy)) {
                 if (affixDataMAP[perk.Affix?.toUpperCase()]) {
                     affix = affixDataMAP[perk.Affix?.toUpperCase()]
                 }
+
 
                 let content = ""
                 const startTrigger = "OnEventPassiveConditionsPass"
@@ -1298,12 +1390,17 @@ for (const tippy of Object.values(perkTippy)) {
                         }
                         if (ability[keys[i]] || keys[i] == "IsStackableAbility") {
 
+                            //uncomment once NWDB has GlobablAbility urls
+                            //if (keys[i] == "AbilityID") {
+                            //    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/ability/${ability[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${ability[keys[i]]}</a> <br>`
+                            //} 
                             if (String(ability[keys[i]]).includes(",")) {
                                 content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${ability[keys[i]].replace(/,/g, ",<br>")} <br>`
                             }
                             else
                                 content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${ability[keys[i]]} <br>`
                         }
+
 
                     }
                 }
@@ -1318,11 +1415,16 @@ for (const tippy of Object.values(perkTippy)) {
 
                         if (affix[keys[i]]) {
 
-                            if (String(affix[keys[i]]).includes(",")) {
+
+                            if (keys[i] == "StatusID") {
+                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${affix[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${affix[keys[i]]}</a> <br>`
+                            }
+                            else if (String(affix[keys[i]]).includes(",")) {
                                 content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${affix[keys[i]].replace(/,/g, ", <br>")} <br>`
                             }
                             else
                                 content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${affix[keys[i]]} <br>`
+
                         }
 
                     }
@@ -1340,8 +1442,10 @@ for (const tippy of Object.values(perkTippy)) {
                             for (let i = 0; i < keys.length; i++) {
 
                                 if (statusTable[keys[i]]) {
-
-                                    if (String(status[keys[i]]).includes(",")) {
+                                    if (keys[i] == "StatusID") {
+                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${statusTable[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${statusTable[keys[i]]}</a> <br>`
+                                    }
+                                    else if (String(status[keys[i]]).includes(",")) {
                                         content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, ",<br>")} <br>`
                                     }
                                     else
@@ -1362,9 +1466,13 @@ for (const tippy of Object.values(perkTippy)) {
 
                             for (let i = 0; i < keys.length; i++) {
 
-                                if (statusTable[keys[i]]) {
 
-                                    if (String(status[keys[i]]).includes(",")) {
+
+                                if (statusTable[keys[i]]) {
+                                    if (keys[i] == "StatusID") {
+                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${statusTable[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${statusTable[keys[i]]}</a> <br>`
+                                    }
+                                    else if (String(status[keys[i]]).includes(",")) {
                                         content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, ",<br>")} <br>`
                                     }
                                     else
@@ -1375,7 +1483,7 @@ for (const tippy of Object.values(perkTippy)) {
                 }
 
                 return (
-                    `${changeTextColor("Perk Name:", colorYellow)} ${perk.DisplayName} <br>`
+                    `${changeTextColor("Perk Name:", colorYellow)} <a href="https://nwdb.info/db/perk/${perk.PerkID}" target="_blank" rel="noopener noreferrer" class="nwdb">${perk.DisplayName}</a> <br>`
                     + content
                 )
 
@@ -1383,7 +1491,7 @@ for (const tippy of Object.values(perkTippy)) {
 
 
         })
-        
+
         instance.disable()
 
     })
@@ -1392,11 +1500,18 @@ for (const tippy of Object.values(perkTippy)) {
 
 const conditionalChecks = (damageID, ability, reference) => {
 
-    let whichDamageMap = reference == "self" ? currentSelfWeaponDamageMAP[damageID] : damageTableMAP[damageID.toUpperCase()]
+    let whichDamageMap = currentSelfWeaponDamageMAP[damageID] ? currentSelfWeaponDamageMAP[damageID] : damageTableMAP[damageID.toUpperCase()] ? damageTableMAP[damageID.toUpperCase()] : perkStatusEffectMAP[damageID.toUpperCase()]
+
+
+    let whichID
+    if (currentSelfWeaponDamageMAP[damageID]?.DamageID || damageTableMAP[damageID.toUpperCase()]?.DamageID)
+        whichID = "DamageID"
+    if (perkStatusEffectMAP[damageID.toUpperCase()]?.StatusID)
+        whichID = "StatusID"
 
     if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(whichDamageMap.IsRanged))
-        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageID))
+        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap[whichID]))
         && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageID))
         && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(whichDamageMap.AttackType))
         && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageType))
@@ -1475,6 +1590,11 @@ const equipWepAbility = () => {
         checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value.toUpperCase()])
     }
     setWeaponDamageInfo()
+    checkedSelfAbility.forEach(ability => {
+        console.log(ability)
+        getDamageInfo(ability.AbilityID)
+    })
+
     return checkedSelfAbility
 }
 
@@ -1561,8 +1681,6 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                 }
 
-
-
                 if (ability.PerStatusEffectOnTarget || ability.PerStatusEffectOnSelf) {
                     if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
                         document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
@@ -1619,8 +1737,6 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
                         selectedPerkOtherApplyStatusEffect.push(perkStatusEffectMAP[status.toUpperCase()])
                     }
                 })
-
-
 
                 if (selectedWeaponSelfApplyStatusEffect.length > 0) {
                     if (wepStatusEffectMAP[selectedWeaponSelfApplyStatusEffect.OnEndStatusEffect?.toUpperCase()])
@@ -2109,7 +2225,7 @@ const getWeaponDamage = (damageID) => {
 
 
 
-const getItemEqiup = () => {
+const getItemEquip = () => {
     activeTargetItemPerks = []
     activeSelfItemPerks = []
     let notstackableTarget = []
@@ -2164,8 +2280,8 @@ const getItemEqiup = () => {
                                     hasStacks = true
                                     stackMax = perkStatusEffectMAP[status.toUpperCase()].StackMax
                                 }
-
-                                
+                                //let castSpell = perkStatusEffectMAP[globalSpellDataMAP[perkStatusEffectMAP[status.toUpperCase()].CastSpell].StatusEffects.toUpperCase()]
+                                //selfDamageIDMap[`perk_${castSpell.StatusID}`] = castSpell.StatusID
 
                             })
 
@@ -2227,43 +2343,6 @@ const getItemEqiup = () => {
 
 
 
-/* fetch('playerdata/cage/playeractions_ability_greatsword.actionlist')
-    .then(response => response.text())
-    .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-    .then(data => {
-        const xmlObject = {};
-
-        // Get the root element of the XML document
-        const root = data.children[0];
-
-        // Recursively get all child elements and their attributes
-        function getChildren(node, object) {
-            for (let i = 0; i < node.children.length; i++) {
-                const child = node.children[i];
-                object[child.nodeName] = {};
-
-                // Add all attributes as properties of the object
-                for (let j = 0; j < child.attributes.length; j++) {
-                    object[child.nodeName][child.attributes[j].nodeName] = child.attributes[j].nodeValue;
-                }
-
-                // Recursively get all children of this child
-                getChildren(child, object[child.nodeName]);
-            }
-        }
-
-        getChildren(root, xmlObject);
-        // Assuming xmlObject is the object you created in the previous example
-        const jsonString = JSON.stringify(xmlObject);
-
-        // Save the JSON string to a file
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'file.json';
-        link.click();
-        // Now xmlObject contains the entire XML document as an object
-    }); */
 
 
 
@@ -2312,74 +2391,301 @@ const getItemEqiup = () => {
         // Now xmlObject contains the entire XML document as an object
     }); */
 
+const createAnimation = () => {
+    const ANIMATION = {}
+    for (const key of Object.keys(ADB)) {
+        fetch(ADB[key])
+            .then(response => response.text())
+            .then(str => new DOMParser().parseFromString(str, "text/xml"))
+            .then(xml => {
 
-/* fetch('playerdata/cage/playeractions_ability_icemagic.actionlist')
-    .then(response => response.text())
-    .then(xml => {
-        // parse the XML string into a DOM document
-        const doc = new DOMParser().parseFromString(xml, 'text/xml');
+                // Recursively get all child elements and their attributes
+                function getChildren(node, object) {
 
-        // create the object to store the parsed data
-        const obj = {};
 
-        // find all the "Action" elements in the document
-        const actions = doc.getElementsByTagName('Action');
-        for (const action of actions) {
-            // get the "Name" attribute value of the current "Action" element
-            const name = action.getAttribute('Name');
+                    for (let i = 0; i < node.children.length; i++) {
+                        const child = node.children[i];
 
-            // find all the "IfActiveAbilityMoveName" elements in the current "Action" element
-            const abilities = action.getElementsByTagName('IfActiveAbilityMoveName');
-            for (const ability of abilities) {
-                // get the "AbilityName" attribute value of the current "IfActiveAbilityMoveName" element
-                const abilityName = ability.getAttribute('AbilityName');
-                // set the corresponding key and value in the object
-                obj[name] = abilityName;
+
+                        // Check if this node has already been added to the object
+                        if (!object[child.nodeName]) {
+                            object[child.nodeName] = {};
+                        }
+
+                        // Add all attributes as properties of the object
+                        for (let j = 0; j < child.attributes.length; j++) {
+                            object[child.nodeName] = child.attributes[j].nodeValue;
+                        }
+
+                        // Recursively get all children of this child
+                        getChildren(child, object[child.nodeName]);
+                    }
+                }
+
+                const fragmentList = xml.querySelector('FragmentList')
+                if (fragmentList)
+                    for (const anim of Object.values(fragmentList.children)) {
+                        for (let i = 0; i < anim.children.length; i++) {
+                            const child = anim.children[i]
+                            const cageDamage = child.querySelector("[type=CAGE-Damage]")
+                            const cageRangedAttack = child.querySelector("[type=CAGE-RangedAttack]")
+                            const homing = child.querySelector("[type=Homing]")
+                            const cageCastSpell = child.querySelector("[type=CAGE-CastSpell]")
+                            const tags = child.attributes.Tags
+                            const procLayers = child.querySelectorAll("ProcLayer")
+
+
+                            if (procLayers.length > 0) {
+                                if (!ANIMATION[tags?.nodeValue]) {
+                                    ANIMATION[tags?.nodeValue] = {}
+                                }
+
+                                if (!ANIMATION[tags?.nodeValue][anim?.nodeName]) {
+                                    ANIMATION[tags?.nodeValue][anim?.nodeName] = {}
+                                }
+
+                                for (const procLayer of Object.values(procLayers)) {
+
+                                    const blends = procLayer.querySelectorAll("Blend")
+
+                                    for (const blend of Object.values(blends)) {
+
+                                        if (!ANIMATION[tags.nodeValue][anim?.nodeName][blend?.attributes?.ExitTime?.nodeName]) {
+                                            ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName] = {}
+                                        }
+                                        if (!ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue]) {
+                                            ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue] = []
+                                        }
+
+                                        if (blend.nextElementSibling.nodeName == "Procedural") {
+                                            const procParams = blend.nextElementSibling.querySelector("ProceduralParams")
+
+
+                                            if (procParams) {
+                                                const procObject = {}
+                                                if (!procObject[blend.nextElementSibling.attributes.type.nodeValue])
+                                                    procObject[blend.nextElementSibling.attributes.type.nodeValue] = {}
+                                                for (const params of Object.values(procParams?.children)) {
+
+                                                    for (let j = 0; j < params.attributes.length; j++) {
+
+                                                        procObject[blend.nextElementSibling.attributes.type.nodeValue][params.nodeName] = params.attributes[j].nodeValue
+
+                                                    }
+                                                }
+
+
+                                                ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue].push(procObject)
+                                            }
+
+
+                                        }
+
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+
+            });
+
+
+    }
+
+    return ANIMATION
+}
+
+//console.log(ANIMATION)
+
+function toJSON(object) {
+    console.log(object)
+    const jsonString = JSON.stringify(object);
+    //console.log(jsonString)
+    // Save the JSON string to a file
+    /*     const blob = new Blob([jsonString], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'animation.json';
+            link.click();  */
+}
+
+toJSON(createAnimation())
+
+const ACTIONLIST = [
+    'playerdata/cage/playerreactiontableharness.actionlist',
+    'playerdata/cage/playeractions_ability_blunderbuss.actionlist',
+    'playerdata/cage/playeractions_ability_bow.actionlist',
+    'playerdata/cage/playeractions_ability_firemagic.actionlist',
+    'playerdata/cage/playeractions_ability_greataxe.actionlist',
+    'playerdata/cage/playeractions_ability_greatsword.actionlist',
+    'playerdata/cage/playeractions_ability_hatchet.actionlist',
+    'playerdata/cage/playeractions_ability_icemagic.actionlist',
+    'playerdata/cage/playeractions_ability_lifemagic.actionlist',
+    'playerdata/cage/playeractions_ability_musket.actionlist',
+    'playerdata/cage/playeractions_ability_rapier.actionlist',
+    'playerdata/cage/playeractions_ability_runes.actionlist',
+    'playerdata/cage/playeractions_ability_spear.actionlist',
+    'playerdata/cage/playeractions_ability_sword.actionlist',
+    'playerdata/cage/playeractions_ability_voidgauntlet.actionlist',
+    'playerdata/cage/playeractions_ability_warhammer.actionlist',
+    'playerdata/cage/playeractions_aim.actionlist',
+    'playerdata/cage/playeractions_archery.actionlist',
+    'playerdata/cage/playeractions_attack.actionlist',
+    'playerdata/cage/playeractions_block.actionlist',
+    'playerdata/cage/playeractions_build.actionlist',
+    'playerdata/cage/playeractions_camera.actionlist',
+    'playerdata/cage/playeractions_cheat.actionlist',
+    'playerdata/cage/playeractions_craft.actionlist',
+    'playerdata/cage/playeractions_death.actionlist',
+    'playerdata/cage/playeractions_debug.actionlist',
+    'playerdata/cage/playeractions_dodge.actionlist',
+    'playerdata/cage/playeractions_fall.actionlist',
+    'playerdata/cage/playeractions_firearms.actionlist',
+    'playerdata/cage/playeractions_fishing.actionlist',
+    'playerdata/cage/playeractions_freecam.actionlist',
+    'playerdata/cage/playeractions_gather.actionlist',
+    'playerdata/cage/playeractions_global.actionlist',
+    'playerdata/cage/playeractions_idle.actionlist',
+    'playerdata/cage/playeractions_idleposetransition.actionlist',
+    'playerdata/cage/playeractions_interact.actionlist',
+    'playerdata/cage/playeractions_intro.actionlist',
+    'playerdata/cage/playeractions_inventory.actionlist',
+    'playerdata/cage/playeractions_musicalperformance.actionlist',
+    'playerdata/cage/playeractions_nav.actionlist',
+    'playerdata/cage/playeractions_offline.actionlist',
+    'playerdata/cage/playeractions_postureinput.actionlist',
+    'playerdata/cage/playeractions_reaction.actionlist',
+    'playerdata/cage/playeractions_sheathe.actionlist',
+    'playerdata/cage/playeractions_social.actionlist',
+    'playerdata/cage/playeractions_spectatormode.actionlist',
+    'playerdata/cage/playeractions_sprint.actionlist',
+    'playerdata/cage/playeractions_sprintposetransition.actionlist',
+    'playerdata/cage/playeractions_throw.actionlist',
+    'playerdata/cage/playeractions_traversal.actionlist',
+    'playerdata/cage/playeractions_use.actionlist',
+    'playerdata/cage/playerdeathreactiontableharness.actionlist',
+    'playerdata/cage/playerinput_combat.actionlist',
+    'playerdata/cage/playerinput_craft.actionlist',
+    'playerdata/cage/playerinput_gather.actionlist',
+    'playerdata/cage/playerinput_interact.actionlist',
+    'playerdata/cage/playerinput_navigation.actionlist',
+    'playerdata/cage/playerinput_uiaction.actionlist'
+]
+const ACTIONS = {}
+const CONDITIONS = {}
+
+for (const key of Object.keys(ACTIONLIST)) {
+    fetch(ACTIONLIST[key])
+        .then(response => response.text())
+        .then(str => new DOMParser().parseFromString(str, "text/xml"))
+        .then(xml => {
+
+            // Recursively get all child elements and their attributes
+            function getChildren(node, object) {
+
+
+
+                for (let i = 0; i < node.children.length; i++) {
+                    const child = node.children[i]
+
+                    // Check if this node has already been added to the object
+                    if (!object[child.nodeName]) {
+                        object[child.nodeName] = []
+                    }
+
+
+                    // Add all attributes as properties of the object
+                    for (let j = 0; j < child.attributes.length; j++) {
+                        object[child.nodeName].push({ [child.attributes[j].nodeName]: child.attributes[j].nodeValue })
+                    }
+
+
+                    // Recursively get all children of this child
+                    getChildren(child, object[child.nodeName])
+                }
+
             }
-        }
-        // the object is now populated with the parsed data
-        console.log(obj);
-    }); */
+
+            const actions = xml.querySelector("Actions")
+            const conditions = xml.querySelector("Conditions")
+
+            if (actions) {
+
+                for (const action of Object.values(actions.children)) {
+                    const activationCondition = action.querySelector("ActivationCondition")
+                    const ifActiveAbilityName = activationCondition.querySelector("IfActiveAbilityMoveName")
+                    const activity = action.querySelector("Activities")
+                    const performActiveAbility = activity?.querySelector("PerformActiveAbility")
+                    const ifAbilityActive = activity?.querySelectorAll("IfAbilityActive")
 
 
-/* const parseXML = xml => {
-    // Create a new parser object
-    const parser = new DOMParser();
+                    ACTIONS[performActiveAbility?.children[0].attributes.AbilityName.nodeValue] = {
+                        [action.attributes.FragmentName?.nodeName]: action.attributes.FragmentName?.nodeValue
+                    }
+                    // ACTIONS[performActiveAbility?.children[0].attributes.AbilityName.nodeValue][action.attributes.FragmentName?.nodeName] = {}
+                    // ACTIONS[action.attributes.FragmentName?.nodeValue][ifActiveAbilityName?.nodeName][ifActiveAbilityName?.attributes.AbilityName.nodeName] =
 
-    // Parse the XML string
-    const xmlDoc = parser.parseFromString(xml, "text/xml");
 
-    // Create an empty object to store the parsed data
-    const data = {};
+                    if (ifAbilityActive?.length > 0) {
+                        ifAbilityActive.forEach(ability => {
+                            let DEFAULT = null
 
-    // Recursively parse the XML document
-    const parseNode = node => {
-        // If the node is an element, add it to the object
-        if (node.nodeType === 1) {
-            // Create an empty object to store the element's data
-            data[node.nodeName] = {};
+                            if (ability.parentNode.parentNode.querySelector("Default")) {
+                                DEFAULT = ability.parentNode.parentNode.querySelector("Default").attributes.SpellName ?
+                                    ability.parentNode.parentNode.querySelector("Default").attributes.SpellName :
+                                    ability.parentNode.parentNode.querySelector("Default").attributes.FragmentName
+                            }
+                            if (ability.parentNode.parentNode.parentNode.querySelector("Default")) {
+                                DEFAULT = ability.parentNode.parentNode.parentNode.querySelector("Default").attributes?.SpellName ?
+                                    ability.parentNode.parentNode.parentNode.querySelector("Default").attributes.SpellName :
+                                    ability.parentNode.parentNode.parentNode.querySelector("Default").attributes.FragmentName
+                            }
 
-            // Add all of the element's attributes to the data object
-            for (let i = 0; i < node.attributes.length; i++) {
-                const attr = node.attributes[i];
-                data[node.nodeName][attr.nodeName] = attr.nodeValue;
+
+                            ACTIONS[ability?.attributes?.AbilityName?.nodeValue] = {
+                                [DEFAULT?.nodeName]: DEFAULT?.nodeValue
+                            }
+                            // if (ability?.parentNode?.parentNode?.parentNode?.querySelector("Default")?.attributes?.SpellName)
+                            //    ACTIONS[action.attributes.FragmentName?.nodeValue][ability.nodeName][ability?.attributes?.AbilityName?.nodeValue] = ability?.parentNode?.parentNode?.parentNode?.querySelector("Default")?.attributes?.SpellName?.nodeValue
+
+                        })
+                    }
+
+                }
             }
 
-            // If the element has any child nodes, parse them as well
-            for (let i = 0; i < node.childNodes.length; i++) {
-                parseNode(node.childNodes[i]);
+            if (conditions) {
+
+                for (const condition of Object.values(conditions.children)) {
+                    CONDITIONS[condition.attributes.Name?.nodeValue] = {
+                        [condition.nodeName]: {}
+                    }
+                    for (let j = 0; j < condition.attributes.length; j++) {
+                        if (condition.attributes[j].nodeName != "Name")
+                            CONDITIONS[condition.attributes.Name?.nodeValue][condition.nodeName] = { [condition.attributes[j].nodeName]: condition.attributes[j].nodeValue }
+                    }
+
+                    getChildren(condition, CONDITIONS[condition.attributes.Name?.nodeValue][condition.nodeName])
+
+
+                }
             }
-        }
-    };
 
-    // Start parsing the XML document at the root element
-    parseNode(xmlDoc.documentElement);
 
-    // Return the parsed data
-    return data;
-};
 
-// Use the fetch API to fetch the XML file
+        });
+
+
+}
+console.log(ACTIONS)
+console.log(CONDITIONS)
+
+
+
+
+/* // Use the fetch API to fetch the XML file
 fetch('playerdata/cage/playeractions_ability_greatsword.actionlist')
     .then(response => response.text())
     .then(xml => parseXML(xml))
@@ -2390,14 +2696,20 @@ fetch('playerdata/cage/playeractions_ability_greatsword.actionlist')
         const jsonString = JSON.stringify(data);
 
         // Save the JSON string to a file
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'file.json';
-        link.click();
+        //const blob = new Blob([jsonString], { type: 'application/json' });
+        //const link = document.createElement('a');
+        //link.href = URL.createObjectURL(blob);
+        //link.download = 'file.json';
+        //link.click();
         // Now xmlObject contains the entire XML document as an object
     }); */
 
+
+const getDamageInfo = (AbilityID) => {
+
+    console.log(ACTIONS[AbilityID])
+
+}
 
 
 const replaceToken = (ability) => {
@@ -2564,19 +2876,19 @@ function damageFormula(damageID) {
     let findGem = null
     let arrDMG = []
     let affixSplit = 0
-    
+
     let equipLoad
 
-    if(equipLoadWeight<13 || !equipLoad){
+    if (equipLoadWeight < 13 || !equipLoad) {
         equipLoad = 0.2
     }
-    if(equipLoadWeight >= 13 && equipLoadWeight < 23){
+    if (equipLoadWeight >= 13 && equipLoadWeight < 23) {
         equipLoad = 0.1
     }
-    if(equipLoadWeight >= 23){
+    if (equipLoadWeight >= 23) {
         equipLoad = 0
     }
-    
+
 
     if (itemPerkMAP[playerEquip.querySelector(".gemslot").getAttribute("value")?.toUpperCase()]?.Affix && damageTableMAP[damageID?.toUpperCase()]) {
         affixSplit = affixDataMAP[itemPerkMAP[playerEquip.querySelector(".gemslot").value.toUpperCase()].Affix.toUpperCase()].DamagePercentage
@@ -3011,7 +3323,7 @@ new Array("input").forEach(type => {
     })
 
     document.querySelectorAll(".perks").forEach(x => x.addEventListener(type, () => {
-        getItemEqiup()
+        getItemEquip()
         getFinalDamage()
 
     }))
@@ -3020,7 +3332,7 @@ new Array("input").forEach(type => {
 
         container.querySelectorAll(".perks").forEach(perk => {
             perk.addEventListener(type, () => {
-                getItemEqiup()
+                getItemEquip()
                 getFinalDamage()
             })
         })
@@ -3147,7 +3459,7 @@ new Array("mousedown").forEach(type => {
             e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_perkbackground.png")
             e.target.classList.remove("show")
             e.target.parentNode.querySelector(".perks").dispatchEvent(new Event('input'))
-            getItemEqiup()
+            getItemEquip()
             getFinalDamage()
         }
 

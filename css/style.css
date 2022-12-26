@@ -194,6 +194,7 @@ body {
     bottom: -15px;
     width: 20px;
     height: 24px;
+    z-index: 5;
 }
 
 #str {
@@ -1032,8 +1033,8 @@ option {
     height: 16px;
     width: 16px;
     position: absolute;
-    top: -5%;
-    left: -15%;
+    top: -10%;
+    left: -20%;
     background-image: url("../lyshineui/images/button_close_a.png");
     background-size: cover;
     background-repeat: no-repeat;
@@ -1120,6 +1121,11 @@ option {
     position: relative;
     width: 150px;
 
+}
+
+.nwdb{
+    all:unset;
+    cursor: pointer;
 }
 
 .span {
