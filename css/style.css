@@ -150,6 +150,7 @@ body {
 
 .attributerow {
     display: flex;
+    position: relative;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
@@ -197,18 +198,39 @@ body {
     z-index: 5;
 }
 
-#str {
-    height: 100%;
+.attributerow::before,
+.input::before {
+    position: absolute;
+    color: white;
+    top: -20px;
 }
 
-#str::before {
-    position: absolute;
-    content: "Strength";
-    flex: 1;
-    top: -10%;
-    height: 100%;
-    color: white;
-    width: 100%;
+#level_container::before {
+    content: "LEVEL";
+}
+
+#str_container::before {
+    content: "STRENGTH";
+}
+
+#dex_container::before {
+    content: "DEXTERITY";
+}
+
+#int_container::before {
+    content: "INTELLIGENCE";
+}
+
+#foc_container::before {
+    content: "FOCUS";
+}
+
+#con_container::before {
+    content: "CONSTITUTION";
+}
+
+#targethp::before {
+    content: "TARGET HP";
 }
 
 .target_container {
@@ -327,8 +349,7 @@ body {
 
 .attribute,
 .level {
-    height: 35px;
-    line-height: 40px;
+    vertical-align: middle;
     font-weight: 10;
 }
 
@@ -487,7 +508,7 @@ body {
     max-width: 250px;
 }
 
-.tippy-box[data-theme~='maxHeight']{
+.tippy-box[data-theme~='maxHeight'] {
     max-height: 400px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -630,7 +651,7 @@ body {
     flex: 1 0 auto;
 }
 
-.equipload_container{
+.equipload_container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -980,6 +1001,8 @@ option {
     position: absolute;
     color: black;
     height: fit-content;
+
+    width: fit-content;
     justify-items: center;
     top: 50%;
     transform: translateY(-50%);
@@ -994,6 +1017,7 @@ option {
     position: absolute;
     color: black;
     height: fit-content;
+    width: fit-content;
     justify-items: center;
     top: 50%;
     transform: translateY(-50%);
@@ -1125,21 +1149,17 @@ option {
 
 }
 
-.nwdb{
-    all:unset;
+.nwdb {
+    all: unset;
     cursor: pointer;
 }
 
 .span {
-    container-type: inline-size;
-    top: 50%;
-    transform: translateY(-50%);
     height: auto;
     position: absolute;
-    left: -10px;
-    text-align: right;
+    right: 5px;
     white-space: nowrap;
-    flex: 0;
+    width: max-content;
 }
 
 .normal {
@@ -1234,7 +1254,7 @@ option {
 }
 
 .translate50 {
-   transform: translateX(9%) translateY(-9%); 
+    transform: translateX(9%) translateY(-9%);
 }
 
 
@@ -1331,7 +1351,6 @@ option {
         border-radius: 10%;
         left: 360px;
         color: black;
-        display: block;
     }
 
     .backstab_span {
@@ -1350,7 +1369,7 @@ option {
         border-radius: 10%;
         left: 420px;
         color: black;
-        display: block;
+
     }
 
     .headshot_span {
@@ -1370,7 +1389,7 @@ option {
         border-radius: 10%;
         left: 480px;
         color: black;
-        display: block;
+
     }
 }
 

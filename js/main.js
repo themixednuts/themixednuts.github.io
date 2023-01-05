@@ -1039,6 +1039,9 @@ async function loadWeaponData(selectedWeapon) {
     let a = 1
 
     document.querySelectorAll(`.icon__button`).forEach(button => button.addEventListener("click", (e) => {
+        if(e.target.textContent == 1){
+            a = 1
+        }
         a++
         if (a > e.target.getAttribute("value"))
             a = 1
@@ -1123,6 +1126,9 @@ const setItemPerkList = (container) => {
     })
 
     container.querySelectorAll(`.icon__button`).forEach(button => button.addEventListener("click", (e) => {
+        if(e.target.textContent == 1)[
+            a = 1
+        ]
         a++
         if (a > e.target.getAttribute("value"))
             a = 1
@@ -1186,10 +1192,6 @@ const setWeaponDamageInfo = () => {
                 createItem("div", "", { id: `${key}_backstab`, class: "backstab bar" }),
                 createItem("div", "", { id: `${key}_headshot`, class: "headshot bar" }),
                 createItem("img", "", { src: `../lyshineui/images/icons/tooltip/icon_tooltip_${findDamageType.toLowerCase()}_opaque.png`, class: "damagetype_icon" }),
-                createItem("span", "", { class: "normal_span span", id: `${key}_normal_span` }),
-                createItem("span", "", { class: "crit_span span", id: `${key}_crit_span` }),
-                createItem("span", "", { class: "backstab_span span", id: `${key}_backstab_span` }),
-                createItem("span", "", { class: "headshot_span span", id: `${key}_headshot_span` }),
                 createItem("span", "", { class: "normal_span_after after span", id: `${key}_normal_span_after` }),
                 createItem("span", "", { class: "crit_span_after after span", id: `${key}_crit_span_after` }),
                 createItem("span", "", { class: "backstab_after after span", id: `${key}_backstab_span_after` }),
@@ -1210,6 +1212,10 @@ const setWeaponDamageInfo = () => {
             }
             appendBars.forEach(x => document.querySelector(`#${key}`).appendChild(x))
             document.querySelector(`#${key}_normal`).appendChild(createItem("div", equippedDamageKey, { class: `${key}_label label` }))
+            document.querySelector(`#${key}_normal`).appendChild(createItem("span", "", { class: "normal_span span", id: `${key}_normal_span` }))
+            document.querySelector(`#${key}_crit`).appendChild(createItem("span", "", { class: "crit_span span", id: `${key}_crit_span` }))
+            document.querySelector(`#${key}_backstab`).appendChild(createItem("span", "", { class: "backstab_span span", id: `${key}_backstab_span` }))
+            document.querySelector(`#${key}_headshot`).appendChild(createItem("span", "", { class: "headshot_span span", id: `${key}_headshot_span` }))
             document.querySelector(`#${key}`).appendChild(createItem("div", equippedDamageKey, { class: `${key}_label_after label after` }))
             document.querySelector(`#${key}_normal`).appendChild(createItem("div", "", { id: `${key}_normal_gem`, class: "normal gem_bar" }),)
 
@@ -3045,16 +3051,16 @@ function damageFormula(damageID) {
 
 
     if (findGem?.DamagePercentage) {
-        arrDMG[5] = (1 + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+        arrDMG[4] = (1 + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
             * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration)))
 
-        arrDMG[6] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+        arrDMG[5] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
             * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].CritArmorPenetration)))
 
-        arrDMG[7] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+        arrDMG[6] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].CritDamage + self.modsSelf[damageID].HitFromBehindDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
             * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HitFromBehindArmorPenetration)))
 
-        arrDMG[8] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
+        arrDMG[7] = (1 * (weaponData.CritDamageMultiplier + self.modsSelf[damageID].HeadshotDamage - Object.values(target.modsSelf)[0].CritDamageReduction) + DMG(damageID, findGem.DamageType) + self.modsSelf[damageID].DMGVitalsCategory)
             * (1 - (armorMit[findDamageCategory(damageID)] * (1 - self.modsSelf[damageID].ArmorPenetration - self.modsSelf[damageID].HeadshotArmorPenetration)))
 
     }
@@ -3065,15 +3071,24 @@ function damageFormula(damageID) {
     if (!GEM || !findGem)
         GEM = 0
 
+    function _can (check,passed){
+
+        if(currentSelfWeaponDamageMAP[damageID].hasOwnProperty(check)){
+            
+            return passed
+        }
+        else
+        return 0
+    }
     return {
         normal: noGEM * arrDMG[0],
-        crit: noGEM * arrDMG[1],
-        backstab: noGEM * arrDMG[2],
-        headshot: noGEM * arrDMG[3],
-        normalGEM: GEM * arrDMG[5],
-        critGEM: GEM * arrDMG[6],
-        backstabGEM: GEM * arrDMG[7],
-        headshotGEM: GEM * arrDMG[8]
+        crit:_can("CanCrit",noGEM * arrDMG[1]) ,
+        backstab: _can("NoBackstab",noGEM * arrDMG[2]),
+        headshot: _can("NoHeadshot",noGEM * arrDMG[3]) ,
+        normalGEM: GEM * arrDMG[4],
+        critGEM:_can("CanCrit",GEM * arrDMG[5]),
+        backstabGEM: _can("NoBackstab",GEM * arrDMG[6]) ,
+        headshotGEM: _can("NoHeadshot",GEM * arrDMG[7])
     }
 
 }
@@ -3096,7 +3111,7 @@ const getFinalDamage = () => {
 
         if (!damageID)
             continue
-
+        console.log(damageID,damageFormula(damageID).normal)
         document.querySelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal)
         document.querySelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal)
         if (damageFormula(damageID).normalGEM) {
@@ -3105,7 +3120,7 @@ const getFinalDamage = () => {
             /* qSelector(`#${key}_normalGEM_span`).textContent = damageFormula(attack).normalGEM */
         }
 
-        if (currentSelfWeaponDamageMAP[damageID].CanCrit != false) {
+        if (currentSelfWeaponDamageMAP[damageID].hasOwnProperty("CanCrit") && currentSelfWeaponDamageMAP[damageID].CanCrit != false) {
             document.querySelector(`#${key}_crit_span`).textContent = roundNumber(damageFormula(damageID).crit)
             document.querySelector(`#${key}_crit_span_after`).textContent = roundNumber(damageFormula(damageID).crit)
             document.querySelector(`#${key}_crit`).classList.add("show")
@@ -3122,7 +3137,7 @@ const getFinalDamage = () => {
             document.querySelector(`#${key}_crit_span_after`).classList.add("hide")
         }
 
-        if (currentSelfWeaponDamageMAP[damageID].NoBackstab != true) {
+        if (currentSelfWeaponDamageMAP[damageID].hasOwnProperty("NoBackstab") && currentSelfWeaponDamageMAP[damageID].NoBackstab != true) {
             document.querySelector(`#${key}_backstab_span`).textContent = roundNumber(damageFormula(damageID).backstab)
             document.querySelector(`#${key}_backstab_span_after`).textContent = roundNumber(damageFormula(damageID).backstab)
             document.querySelector(`#${key}_backstab`).classList.add("show")
@@ -3139,7 +3154,7 @@ const getFinalDamage = () => {
             document.querySelector(`#${key}_backstab_span_after`).classList.add("hide")
         }
 
-        if (currentSelfWeaponDamageMAP[damageID].NoHeadshot != true) {
+        if (currentSelfWeaponDamageMAP[damageID].hasOwnProperty("NoHeadshot") && currentSelfWeaponDamageMAP[damageID].NoHeadshot != true) {
             document.querySelector(`#${key}_headshot_span`).textContent = roundNumber(damageFormula(damageID).headshot)
             document.querySelector(`#${key}_headshot_span_after`).textContent = roundNumber(damageFormula(damageID).headshot)
             document.querySelector(`#${key}_headshot`).classList.add("show")
@@ -3171,13 +3186,23 @@ const getFinalDamage = () => {
         }
 
         document.querySelector(`#${key}_normal`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
-        document.querySelector(`#${key}_crit`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
-        document.querySelector(`#${key}_backstab`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
-        document.querySelector(`#${key}_headshot`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
-        document.querySelector(`#${key}_normal_span`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
-        document.querySelector(`#${key}_crit_span`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
-        document.querySelector(`#${key}_backstab_span`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
-        document.querySelector(`#${key}_headshot_span`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        //document.querySelector(`#${key}_normal_span`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
+
+        if(!document.querySelector(`#${key}_crit`).classList.contains("hide")){
+            document.querySelector(`#${key}_crit`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
+            //document.querySelector(`#${key}_crit_span`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
+        }
+        
+        if(!document.querySelector(`#${key}_backstab`).classList.contains("hide")){
+            document.querySelector(`#${key}_backstab`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+            //document.querySelector(`#${key}_backstab_span`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
+        }
+
+        if(!document.querySelector(`#${key}_headshot`).classList.contains("hide")){
+            document.querySelector(`#${key}_headshot`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+            //document.querySelector(`#${key}_headshot_span`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
+        }
+        
         document.querySelector(`#${key}_normal_gem`).style.width = 0 + "%"
         if (isGEM("normalGEM"))
             document.querySelector(`#${key}_normal_gem`).style.width = damageFormula(damageID).normalGEM / (damageFormula(damageID).normal + damageFormula(damageID).normalGEM) * 100 + "% "
