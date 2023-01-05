@@ -1030,8 +1030,10 @@ option {
 }
 
 .removebttn {
-    height: 16px;
-    width: 16px;
+    max-height: 16px;
+    max-width: 16px;
+    min-width: 16px;
+    min-height: 16px;
     position: absolute;
     top: -10%;
     left: -20%;

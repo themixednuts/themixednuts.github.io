@@ -766,6 +766,11 @@ targetCondition.querySelectorAll(".armor_rating").forEach(select => {
     select.value = 0
 })
 
+let tags
+
+let abilityTippy
+let abilityTippyEXTRA
+let abilityTippyCTRL
 
 //custom functions
 const _is = {
@@ -789,7 +794,7 @@ function roundNumber(number) {
 function itemScaling(itemperk, container) {
     const weptrue = () => {
         const weaponperk = container.querySelector(".weaponrow")
-        if (itemperk.PerkID == weaponperk.querySelector("#bttn_weapon_armorperk_1").value || itemperk.PerkID == document.querySelector("#bttn_weapon_armorperk_2").value || itemperk.PerkID == document.querySelector("#bttn_weapon_armorperk_3").value)
+        if (itemperk.PerkID == weaponperk.querySelector("#bttn_weapon_armorperk_1").value || itemperk.PerkID == weaponperk.querySelector("#bttn_weapon_armorperk_2").value || itemperk.PerkID == weaponperk.querySelector("#bttn_weapon_armorperk_3").value)
             if (itemperk.ItemClassGSBonus)
                 return itemperk.ItemClassGSBonus.split(":")[1]
         return 0
@@ -847,12 +852,30 @@ function appendChildren(parent, children) {
         parent.appendChild(child)
     })
 }
-let abilityTippy
-let abilityTippyEXTRA
-let abilityTippyCTRL
+
+const _if = {
+    And: ((a, b) => {
+        if (a && b) {
+            return true
+        }
+        else return false
+    }),
+    Not: ((a, b) => a != b),
+    Or: ((a, b) => {
+
+        if (a || b) {
+            return true
+        }
+        else return false
+    }),
+    IfMannequinTag: ((a,b)=> {
+        console.log(a,b)
+        return new RegExp(a.TagName.replace("+", ".*")).test(b)
+    })
+}
 //end custom functions
 
-
+let currentAnimations
 
 //load properties for selected weapon
 async function loadWeaponData(selectedWeapon) {
@@ -1030,6 +1053,9 @@ async function loadWeaponData(selectedWeapon) {
     }
 
 
+    tags = ""
+    setMannequinTag(wepItemDefMAP[selectedWeapon.toLowerCase()].MannequinTag, "set")
+    currentAnimations = await printAnim(tags)
     abilityTippy = null
     setItemPerkList(playerEquip)
     targetDmgID()
@@ -1039,6 +1065,7 @@ async function loadWeaponData(selectedWeapon) {
     getFinalDamage()
 
 }
+
 
 
 const setItemPerkList = (container) => {
@@ -1590,10 +1617,10 @@ const equipWepAbility = () => {
         checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value.toUpperCase()])
     }
     setWeaponDamageInfo()
-    checkedSelfAbility.forEach(ability => {
+/*     checkedSelfAbility.forEach(ability => {
         console.log(ability)
         getDamageInfo(ability.AbilityID)
-    })
+    }) */
 
     return checkedSelfAbility
 }
@@ -2391,111 +2418,109 @@ const getItemEquip = () => {
         // Now xmlObject contains the entire XML document as an object
     }); */
 
-const createAnimation = () => {
-    const ANIMATION = {}
-    for (const key of Object.keys(ADB)) {
-        fetch(ADB[key])
-            .then(response => response.text())
-            .then(str => new DOMParser().parseFromString(str, "text/xml"))
-            .then(xml => {
 
-                // Recursively get all child elements and their attributes
-                function getChildren(node, object) {
+const ANIMATION = {}
+for (const key of Object.keys(ADB)) {
+    fetch(ADB[key])
+        .then(response => response.text())
+        .then(str => new DOMParser().parseFromString(str, "text/xml"))
+        .then(xml => {
 
-
-                    for (let i = 0; i < node.children.length; i++) {
-                        const child = node.children[i];
+            // Recursively get all child elements and their attributes
+            function getChildren(node, object) {
 
 
-                        // Check if this node has already been added to the object
-                        if (!object[child.nodeName]) {
-                            object[child.nodeName] = {};
-                        }
+                for (let i = 0; i < node.children.length; i++) {
+                    const child = node.children[i];
 
-                        // Add all attributes as properties of the object
-                        for (let j = 0; j < child.attributes.length; j++) {
-                            object[child.nodeName] = child.attributes[j].nodeValue;
-                        }
 
-                        // Recursively get all children of this child
-                        getChildren(child, object[child.nodeName]);
+                    // Check if this node has already been added to the object
+                    if (!object[child.nodeName]) {
+                        object[child.nodeName] = {};
                     }
+
+                    // Add all attributes as properties of the object
+                    for (let j = 0; j < child.attributes.length; j++) {
+                        object[child.nodeName] = child.attributes[j].nodeValue;
+                    }
+
+                    // Recursively get all children of this child
+                    getChildren(child, object[child.nodeName]);
                 }
+            }
 
-                const fragmentList = xml.querySelector('FragmentList')
-                if (fragmentList)
-                    for (const anim of Object.values(fragmentList.children)) {
-                        for (let i = 0; i < anim.children.length; i++) {
-                            const child = anim.children[i]
-                            const cageDamage = child.querySelector("[type=CAGE-Damage]")
-                            const cageRangedAttack = child.querySelector("[type=CAGE-RangedAttack]")
-                            const homing = child.querySelector("[type=Homing]")
-                            const cageCastSpell = child.querySelector("[type=CAGE-CastSpell]")
-                            const tags = child.attributes.Tags
-                            const procLayers = child.querySelectorAll("ProcLayer")
-
-
-                            if (procLayers.length > 0) {
-                                if (!ANIMATION[tags?.nodeValue]) {
-                                    ANIMATION[tags?.nodeValue] = {}
-                                }
-
-                                if (!ANIMATION[tags?.nodeValue][anim?.nodeName]) {
-                                    ANIMATION[tags?.nodeValue][anim?.nodeName] = {}
-                                }
-
-                                for (const procLayer of Object.values(procLayers)) {
-
-                                    const blends = procLayer.querySelectorAll("Blend")
-
-                                    for (const blend of Object.values(blends)) {
-
-                                        if (!ANIMATION[tags.nodeValue][anim?.nodeName][blend?.attributes?.ExitTime?.nodeName]) {
-                                            ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName] = {}
-                                        }
-                                        if (!ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue]) {
-                                            ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue] = []
-                                        }
-
-                                        if (blend.nextElementSibling.nodeName == "Procedural") {
-                                            const procParams = blend.nextElementSibling.querySelector("ProceduralParams")
+            const fragmentList = xml.querySelector('FragmentList')
+            if (fragmentList)
+                for (const anim of Object.values(fragmentList.children)) {
+                    for (let i = 0; i < anim.children.length; i++) {
+                        const child = anim.children[i]
+                        const cageDamage = child.querySelector("[type=CAGE-Damage]")
+                        const cageRangedAttack = child.querySelector("[type=CAGE-RangedAttack]")
+                        const homing = child.querySelector("[type=Homing]")
+                        const cageCastSpell = child.querySelector("[type=CAGE-CastSpell]")
+                        const tags = child.attributes.Tags
+                        const procLayers = child.querySelectorAll("ProcLayer")
 
 
-                                            if (procParams) {
-                                                const procObject = {}
-                                                if (!procObject[blend.nextElementSibling.attributes.type.nodeValue])
-                                                    procObject[blend.nextElementSibling.attributes.type.nodeValue] = {}
-                                                for (const params of Object.values(procParams?.children)) {
+                        if (procLayers.length > 0) {
+                            if (!ANIMATION[tags?.nodeValue]) {
+                                ANIMATION[tags?.nodeValue] = {}
+                            }
 
-                                                    for (let j = 0; j < params.attributes.length; j++) {
+                            if (!ANIMATION[tags?.nodeValue][anim?.nodeName]) {
+                                ANIMATION[tags?.nodeValue][anim?.nodeName] = {}
+                            }
 
-                                                        procObject[blend.nextElementSibling.attributes.type.nodeValue][params.nodeName] = params.attributes[j].nodeValue
+                            for (const procLayer of Object.values(procLayers)) {
 
-                                                    }
+                                const blends = procLayer.querySelectorAll("Blend")
+
+                                for (const blend of Object.values(blends)) {
+
+                                    if (!ANIMATION[tags.nodeValue][anim?.nodeName][blend?.attributes?.ExitTime?.nodeName]) {
+                                        ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName] = {}
+                                    }
+                                    if (!ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue]) {
+                                        ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue] = []
+                                    }
+
+                                    if (blend.nextElementSibling.nodeName == "Procedural") {
+                                        const procParams = blend.nextElementSibling.querySelector("ProceduralParams")
+
+
+                                        if (procParams) {
+                                            const procObject = {}
+                                            if (!procObject[blend.nextElementSibling.attributes.type.nodeValue])
+                                                procObject[blend.nextElementSibling.attributes.type.nodeValue] = {}
+                                            for (const params of Object.values(procParams?.children)) {
+
+                                                for (let j = 0; j < params.attributes.length; j++) {
+
+                                                    procObject[blend.nextElementSibling.attributes.type.nodeValue][params.nodeName] = params.attributes[j].nodeValue
+
                                                 }
-
-
-                                                ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue].push(procObject)
                                             }
 
 
+                                            ANIMATION[tags.nodeValue][anim.nodeName][blend.attributes.ExitTime.nodeName][blend.attributes.ExitTime.nodeValue].push(procObject)
                                         }
 
+
                                     }
+
                                 }
-
                             }
-                        }
 
+                        }
                     }
 
-            });
+                }
+
+        });
 
 
-    }
-
-    return ANIMATION
 }
+
 
 //console.log(ANIMATION)
 
@@ -2511,7 +2536,35 @@ function toJSON(object) {
             link.click();  */
 }
 
-toJSON(createAnimation())
+//toJSON(createAnimation())
+//console.log(ANIMATION)
+
+const setMannequinTag = (tag, set) => {
+    if (set === "set") {
+        tags += tag
+    }
+    if (set === "unset") {
+        tags.replace(tag, "")
+    }
+
+}
+
+const printAnim = async (tag) => {
+
+    const obj = {}
+
+    for (const animTags of Object.keys(ANIMATION)) {
+        if (new RegExp(animTags.replace("+", ".*"),"i").test(tag) && animTags) {
+            obj[animTags] = ANIMATION[animTags]
+        }
+
+    }
+
+    console.log(tag)
+    return obj
+}
+
+
 
 const ACTIONLIST = [
     'playerdata/cage/playerreactiontableharness.actionlist',
@@ -2583,30 +2636,31 @@ for (const key of Object.keys(ACTIONLIST)) {
         .then(xml => {
 
             // Recursively get all child elements and their attributes
-            function getChildren(node, object) {
-
-
-
+            function getChildren(node, array) {
                 for (let i = 0; i < node.children.length; i++) {
-                    const child = node.children[i]
+                    const child = node.children[i];
+                    const childObject = { [child.nodeName]: [] }
 
-                    // Check if this node has already been added to the object
-                    if (!object[child.nodeName]) {
-                        object[child.nodeName] = []
+                    if (child.attributes.length > 0) {
+                        const childAttributes = {}
+                        // Add all attributes as properties of the object
+                        for (let j = 0; j < child.attributes.length; j++) {
+                            childAttributes[child.attributes[j].nodeName] = child.attributes[j].nodeValue
+                        }
+                        childObject[child.nodeName] = childAttributes
                     }
 
-
-                    // Add all attributes as properties of the object
-                    for (let j = 0; j < child.attributes.length; j++) {
-                        object[child.nodeName].push({ [child.attributes[j].nodeName]: child.attributes[j].nodeValue })
-                    }
-
+                    // Add the child node to the array
+                    array.push(childObject)
 
                     // Recursively get all children of this child
-                    getChildren(child, object[child.nodeName])
+                    if (child.children.length > 0) {
+                        childObject[child.nodeName] = []
+                        getChildren(child, childObject[child.nodeName])
+                    }
                 }
-
             }
+
 
             const actions = xml.querySelector("Actions")
             const conditions = xml.querySelector("Conditions")
@@ -2618,15 +2672,32 @@ for (const key of Object.keys(ACTIONLIST)) {
                     const ifActiveAbilityName = activationCondition.querySelector("IfActiveAbilityMoveName")
                     const activity = action.querySelector("Activities")
                     const performActiveAbility = activity?.querySelector("PerformActiveAbility")
+                    const cooldownTimer = activity?.querySelector("SetCooldownTimer")
                     const ifAbilityActive = activity?.querySelectorAll("IfAbilityActive")
+                    const fragmentName = action.attributes.FragmentName
 
-
-                    ACTIONS[performActiveAbility?.children[0].attributes.AbilityName.nodeValue] = {
-                        [action.attributes.FragmentName?.nodeName]: action.attributes.FragmentName?.nodeValue
+                    if (!ACTIONS[action.attributes.Name.nodeValue]) {
+                        ACTIONS[action.attributes.Name.nodeValue] = {}
                     }
-                    // ACTIONS[performActiveAbility?.children[0].attributes.AbilityName.nodeValue][action.attributes.FragmentName?.nodeName] = {}
-                    // ACTIONS[action.attributes.FragmentName?.nodeValue][ifActiveAbilityName?.nodeName][ifActiveAbilityName?.attributes.AbilityName.nodeName] =
 
+                    ACTIONS[action.attributes.Name.nodeValue]["FragmentName"] = fragmentName?.nodeValue
+
+                    if (!ACTIONS[action.attributes.Name.nodeValue]["ActivationCondition"]) {
+                        ACTIONS[action.attributes.Name.nodeValue]["ActivationCondition"] = {}
+                    }
+
+                    ACTIONS[action.attributes.Name.nodeValue]["ActivationCondition"]["IfActiveAbilityName"] = ifActiveAbilityName?.attributes.AbilityName.nodeValue
+
+                    if (!ACTIONS[action.attributes.Name.nodeValue][activity?.nodeName]) {
+                        ACTIONS[action.attributes.Name.nodeValue][activity?.nodeName] = {}
+                    }
+
+                    ACTIONS[action.attributes.Name.nodeValue][activity?.nodeName]["SetCooldownTimer"] = cooldownTimer?.querySelector("Default").attributes.AbilityID.nodeValue
+                    ACTIONS[action.attributes.Name.nodeValue][activity?.nodeName]["PerformActiveAbility"] = performActiveAbility?.querySelector("Default").attributes.AbilityName.nodeValue
+
+                    if (!ACTIONS[action.attributes.Name.nodeValue][activity?.nodeName]["IfAbilityActive"]) {
+                        ACTIONS[action.attributes.Name.nodeValue][activity?.nodeName]["IfAbilityActive"] = {}
+                    }
 
                     if (ifAbilityActive?.length > 0) {
                         ifAbilityActive.forEach(ability => {
@@ -2637,22 +2708,16 @@ for (const key of Object.keys(ACTIONLIST)) {
                                     ability.parentNode.parentNode.querySelector("Default").attributes.SpellName :
                                     ability.parentNode.parentNode.querySelector("Default").attributes.FragmentName
                             }
-                            if (ability.parentNode.parentNode.parentNode.querySelector("Default")) {
+                            else if (ability.parentNode.parentNode.parentNode.querySelector("Default")) {
                                 DEFAULT = ability.parentNode.parentNode.parentNode.querySelector("Default").attributes?.SpellName ?
                                     ability.parentNode.parentNode.parentNode.querySelector("Default").attributes.SpellName :
                                     ability.parentNode.parentNode.parentNode.querySelector("Default").attributes.FragmentName
                             }
 
-
-                            ACTIONS[ability?.attributes?.AbilityName?.nodeValue] = {
-                                [DEFAULT?.nodeName]: DEFAULT?.nodeValue
-                            }
-                            // if (ability?.parentNode?.parentNode?.parentNode?.querySelector("Default")?.attributes?.SpellName)
-                            //    ACTIONS[action.attributes.FragmentName?.nodeValue][ability.nodeName][ability?.attributes?.AbilityName?.nodeValue] = ability?.parentNode?.parentNode?.parentNode?.querySelector("Default")?.attributes?.SpellName?.nodeValue
-
+                            ACTIONS[action.attributes.Name.nodeValue][activity?.nodeName]["IfAbilityActive"][ability.attributes.AbilityName.nodeValue] = {}
+                            ACTIONS[action.attributes.Name.nodeValue][activity?.nodeName]["IfAbilityActive"][ability.attributes.AbilityName.nodeValue][DEFAULT?.nodeName] = DEFAULT?.nodeValue
                         })
                     }
-
                 }
             }
 
@@ -2660,11 +2725,7 @@ for (const key of Object.keys(ACTIONLIST)) {
 
                 for (const condition of Object.values(conditions.children)) {
                     CONDITIONS[condition.attributes.Name?.nodeValue] = {
-                        [condition.nodeName]: {}
-                    }
-                    for (let j = 0; j < condition.attributes.length; j++) {
-                        if (condition.attributes[j].nodeName != "Name")
-                            CONDITIONS[condition.attributes.Name?.nodeValue][condition.nodeName] = { [condition.attributes[j].nodeName]: condition.attributes[j].nodeValue }
+                        [condition.nodeName]: []
                     }
 
                     getChildren(condition, CONDITIONS[condition.attributes.Name?.nodeValue][condition.nodeName])
@@ -2679,11 +2740,35 @@ for (const key of Object.keys(ACTIONLIST)) {
 
 
 }
-console.log(ACTIONS)
-console.log(CONDITIONS)
+//console.log(ACTIONS)
+//console.log(CONDITIONS)
+
+/* setTimeout(() => {
+    for (const name of Object.keys(CONDITIONS)) {
+        for (const conditionOne of Object.keys(CONDITIONS[name])) {
+            if (_if[conditionOne]) {
+                let a
+                let b
+                console.log(conditionOne)
+               // if(conditionOne == "IfMannequinTag"){
+               //     console.log(tags)
+               //     console.log(CONDITIONS[name][conditionOne])
+               //     a = CONDITIONS[name][conditionOne]?.TagName
+               //     b = tags
+               //     console.log(_if[conditionOne](a,b))
+               // }
+                
+                
+            }
+        }
+
+    }
+}, 500) */
 
 
-
+const getConditions = (test) => {
+    return _if[test]
+}
 
 /* // Use the fetch API to fetch the XML file
 fetch('playerdata/cage/playeractions_ability_greatsword.actionlist')
@@ -2704,12 +2789,46 @@ fetch('playerdata/cage/playeractions_ability_greatsword.actionlist')
         // Now xmlObject contains the entire XML document as an object
     }); */
 
+/* const getCAGE = (attk) => {
 
-const getDamageInfo = (AbilityID) => {
+    const array = []
+    if (attk?.ExitTime)
+        for (const times of Object.keys(attk?.ExitTime)) {
+            for (const time of Object.keys(attk.ExitTime[times])) {
+                if (attk.ExitTime[times][time]["CAGE-Damage"]) {
+                    array.push(attk.ExitTime[times][time]["CAGE-Damage"])
+                }
+                if (attk.ExitTime[times][time]["CAGE-CastSpell"]) {
+                    array.push(attk.ExitTime[times][time]["CAGE-CastSpell"])
+                }
+                if (attk.ExitTime[times][time]["CAGE-RangedAttack"]) {
+                    array.push(attk.ExitTime[times][time]["CAGE-RangedAttack"])
+                }
+            }
+        }
 
-    console.log(ACTIONS[AbilityID])
+    return array
 
-}
+} */
+
+/* const getDamageInfo = (AbilityID) => {
+    console.log(currentAnimations)
+    for (const action of Object.keys(ACTIONS)) {
+        if (ACTIONS[action]?.ActivationCondition?.IfActiveAbilityName == AbilityID) {
+            for (const anim of Object.keys(currentAnimations)) {
+                console.log(getCAGE(currentAnimations[anim][ACTIONS[action].FragmentName]), ACTIONS[action].FragmentName)
+            }
+
+        }
+        if (ACTIONS[action]?.Activities?.IfAbilityActive.hasOwnProperty(AbilityID)) {
+            for (const anim of Object.keys(currentAnimations)) {
+                console.log(getCAGE(currentAnimations[anim][ACTIONS[action].Activities.IfAbilityActive[AbilityID].FragmentName]),ACTIONS[action].Activities.IfAbilityActive[AbilityID].FragmentName)
+            }
+
+        }
+    }
+
+} */
 
 
 const replaceToken = (ability) => {
@@ -2807,7 +2926,6 @@ const replaceToken = (ability) => {
 
 
 const DMG = (damageID, damageType) => {
-
 
     return (Math.min(Math.max(
         self.modsSelfCapped[damageID]["DMG" + damageType]

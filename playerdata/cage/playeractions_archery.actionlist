@@ -1427,7 +1427,6 @@
 					<IfCondition>
 						<IfMannequinMarker MarkerName="CanTransition_UpperBody"/>
 					</IfCondition>
-					<ThenActivity>
 						<ClearMannequinTagGroup ResetWhenReinstalled="false">
 							<Default TagGroupName="Aiming" OnEnter="Clear" OnExit="Clear"/>
 						</ClearMannequinTagGroup>

@@ -8,7 +8,6 @@
 				<IfInput InputName="Dummy"/>
 			</DeactivationCondition>
 			<Activities>
-				<ActivateCamera>
 					<Default CameraName="NormalCamera" SmoothTime="0.00"/>
 					<Conditional Name="UI_ArmorDyeing" CameraName="UI_ArmorDyeing" SmoothTime="0.50"/>
 					<Conditional Name="UI_ArmorDyeingInventory" CameraName="UI_ArmorDyeingInventory" SmoothTime="0.50"/>
