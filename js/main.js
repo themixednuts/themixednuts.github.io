@@ -1188,10 +1188,8 @@ const setWeaponDamageInfo = () => {
             if (!selfDamageIDMap[key])
                 continue
 
-            let scaledPerk
+            let scaledPerk = { ...perkStatusEffectMAP[selfDamageIDMap[key].toUpperCase()] }
             if (itemPerkMAP[key?.replace("perk_", "").toUpperCase()]?.ScalingPerGearScore) {
-
-                scaledPerk = { ...perkStatusEffectMAP[selfDamageIDMap[key].toUpperCase()] }
                 scaledPerk.HealthModifierDamageBased = scaledPerk.HealthModifierDamageBased * (1 + itemPerkMAP[key?.replace("perk_", "").toUpperCase()]?.ScalingPerGearScore
                     * (document.querySelector(`[value=${key?.replace("perk_", "")}`).parentNode.parentNode.querySelector(".gearscore").getAttribute("value") - 100))
             }
