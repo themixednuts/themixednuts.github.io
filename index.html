@@ -160,7 +160,9 @@
                         </select>
                     </div>
                     <div class="targetcondition_container">
-                        <input type="text" id="targethp" min="0" max="100" value="100" class="hp input">
+                        <div class="hp_container before pica">
+                            <input type="text" id="targethp" min="0" max="100" value="100" class="hp input">
+                        </div>
                         <select name="" id="debuff_target">
                             <option value="">None</option>
                             <option value="Debuff">Debuff</option>
@@ -169,8 +171,12 @@
                         </select>
                     </div>
                     <div class="armorrating_container">
-                        <input type="text" class="armor_rating input" id="phys_armorrating">
-                        <input type="text" class="armor_rating input" id="ele_armorrating">
+                        <div class="physrating_container before pica">
+                            <input type="text" class="armor_rating input" id="phys_armorrating">
+                        </div>
+                        <div class="elerating_container before pica">
+                            <input type="text" class="armor_rating input" id="ele_armorrating">
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -205,11 +211,12 @@
                 src='../lyshineui/images/icons/drawing/2hdemohammersmall.png' title="Warhammer">
             <img class='weaponsmall' value='MusketT5' alt="Musket"
                 src='../lyshineui/images/icons/drawing/2hmusketasmall.png' title="Musket">
-            <img class='weaponsmall' value='BowT5' alt="Bow" src='../lyshineui/images/icons/drawing/bowbsmall.png' title="Bow">
+            <img class='weaponsmall' value='BowT5' alt="Bow" src='../lyshineui/images/icons/drawing/bowbsmall.png'
+                title="Bow">
             <img class='weaponsmall' value='RapierT5' alt="Rapier"
                 src='../lyshineui/images/icons/drawing/1hrapiersmall.png' title="Rapier">
-            <img class='weaponsmall' value='SpearT5' alt="Spear"
-                src='../lyshineui/images/icons/drawing/spearasmall.png' title="Spear">
+            <img class='weaponsmall' value='SpearT5' alt="Spear" src='../lyshineui/images/icons/drawing/spearasmall.png'
+                title="Spear">
             <img class='weaponsmall' value='1hElementalGauntlet_IceT5' alt="IceGauntlet"
                 src='../lyshineui/images/icons/drawing/icegauntletsmall.png' title="Ice Gauntlet">
             <img class='weaponsmall' value='FireStaffT5' alt="FireStaff"

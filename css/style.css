@@ -114,6 +114,12 @@ body {
     flex: 0 1 auto;
 }
 
+.pica{
+    font-family: 'pica';
+}
+
+
+
 .playerequip_container {
     position: relative;
     display: flex;
@@ -198,12 +204,18 @@ body {
     z-index: 5;
 }
 
+.before{
+    position: relative;
+}
+
 .attributerow::before,
-.input::before {
+.before::before {
     position: absolute;
     color: white;
     top: -20px;
 }
+
+
 
 #level_container::before {
     content: "LEVEL";
@@ -229,8 +241,25 @@ body {
     content: "CONSTITUTION";
 }
 
-#targethp::before {
-    content: "TARGET HP";
+.hp_container::before {
+    content: "HP";
+    text-align: center;
+    top: -10px;
+    width: 100%
+}
+
+.physrating_container::before,
+.elerating_container::before{
+    text-align: center;
+    top: -10px;
+    width: 100%;
+}
+
+.physrating_container::before{
+    content: "Physical Armor Rating";
+}
+.elerating_container::before{
+    content: "Elemental Armor Rating";
 }
 
 .target_container {
@@ -907,7 +936,6 @@ option {
     /* animation: purshaseScale .3s ease-out; */
 }
 
-.unpurchased {}
 
 .border_purchased {
     filter: var(--purchased);
@@ -934,7 +962,6 @@ option {
     container-type: inline-size;
     color: black;
     height: 50px;
-    transition: 300ms;
     line-height: 40px;
     width: 100%;
     justify-content: flex-start;
@@ -947,6 +974,10 @@ option {
     flex-shrink: 0;
     justify-content: space-between;
 
+}
+
+.bar_container.hit{
+    border: 1px solid white;
 }
 
 #targethp {
@@ -1001,7 +1032,6 @@ option {
     position: absolute;
     color: black;
     height: fit-content;
-
     width: fit-content;
     justify-items: center;
     top: 50%;
@@ -1010,21 +1040,21 @@ option {
     left: 45px;
     line-height: 100%;
     white-space: nowrap;
+    cursor: default;
 }
 
 .label.after {
-    display: none;
     position: absolute;
-    color: black;
-    height: fit-content;
-    width: fit-content;
+    display: block;
+    color: white;
     justify-items: center;
     top: 50%;
     transform: translateY(-50%);
     z-index: 20;
-    left: 45px;
+    left: 100%;
     line-height: 100%;
     white-space: nowrap;
+    opacity: 0%;
 }
 
 .equiprow {
@@ -1066,6 +1096,8 @@ option {
     background-repeat: no-repeat;
     background-position: center;
     display: none;
+    margin: 0;
+    padding: 0;
 }
 
 .list_container {
@@ -1160,6 +1192,7 @@ option {
     right: 5px;
     white-space: nowrap;
     width: max-content;
+    cursor: default;
 }
 
 .normal {
@@ -1226,9 +1259,41 @@ option {
     display: none;
 }
 
-.after {
+.after.span:not(.hide) {
     position: absolute;
-    display: none;
+    display: block;
+    width: 50px;
+    height: 40px;
+    white-space: nowrap;
+    text-align: center;
+    border: 2px;
+    border-radius: 10%;
+    color: black;
+    cursor: default;
+    opacity: 0%;
+}
+
+.normal_span_after {
+    background-color: var(--normalColor);
+    left: 300px;
+}
+
+.crit_span_after {
+    content: attr(data-content);
+    background-color: var(--critColor);
+    left: 360px;
+}
+
+.backstab_after {
+    content: attr(data-content);
+    background-color: var(--xpColor);
+    left: 420px;
+}
+
+.headshot_span_after {
+    content: attr(data-content);
+    background-color: var(--headshotColor);
+    left: 480px;
 }
 
 .bar {
@@ -1297,102 +1362,6 @@ option {
     font-family: 'tooltipgray-italic';
     color: #828282;
 }
-
-@container normal-Cont (inline-size < 200px) {
-    .label {
-        display: none;
-    }
-}
-
-@container (inline-size < 260px) {
-    .label.after {
-        position: absolute;
-        display: block;
-        left: 100%;
-        color: white;
-        white-space: nowrap;
-    }
-}
-
-
-@container (width < 120px) {
-    .normal_span {
-        display: none
-    }
-
-    .normal_span_after {
-        position: absolute;
-        width: 50px;
-        height: 40px;
-        white-space: nowrap;
-        text-align: center;
-        background-color: var(--normalColor);
-        border: 2px;
-        border-radius: 10%;
-        left: 300px;
-        color: black;
-        display: block;
-
-    }
-
-    .crit_span {
-        display: none;
-    }
-
-    .crit_span_after {
-        position: absolute;
-        content: attr(data-content);
-        width: 50px;
-        height: 40px;
-        white-space: nowrap;
-        text-align: center;
-        background-color: var(--critColor);
-        border: 2px;
-        border-radius: 10%;
-        left: 360px;
-        color: black;
-    }
-
-    .backstab_span {
-        display: none;
-    }
-
-    .backstab_span_after {
-        position: absolute;
-        content: attr(data-content);
-        width: 50px;
-        height: 40px;
-        white-space: nowrap;
-        text-align: center;
-        background-color: var(--xpColor);
-        border: 2px;
-        border-radius: 10%;
-        left: 420px;
-        color: black;
-
-    }
-
-    .headshot_span {
-        display: none;
-
-    }
-
-    .headshot_span_after {
-        position: absolute;
-        content: attr(data-content);
-        width: 50px;
-        height: 40px;
-        white-space: nowrap;
-        text-align: center;
-        background-color: var(--headshotColor);
-        border: 2px;
-        border-radius: 10%;
-        left: 480px;
-        color: black;
-
-    }
-}
-
 
 
 

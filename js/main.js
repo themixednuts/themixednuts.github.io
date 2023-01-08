@@ -772,6 +772,11 @@ let abilityTippy
 let abilityTippyEXTRA
 let abilityTippyCTRL
 
+let dmgBarTippy
+
+const castedSpell = []
+let lastHit
+
 //custom functions
 const _is = {
     GreaterThan: ((a, b) => a > b),
@@ -868,8 +873,8 @@ const _if = {
         }
         else return false
     }),
-    IfMannequinTag: ((a,b)=> {
-        console.log(a,b)
+    IfMannequinTag: ((a, b) => {
+        console.log(a, b)
         return new RegExp(a.TagName.replace("+", ".*")).test(b)
     })
 }
@@ -903,13 +908,13 @@ async function loadWeaponData(selectedWeapon) {
 
     selectedWeaponText = playerEquip.querySelector(".weaponslot").getAttribute("alt")
 
-    weaponStatusEffectTable = await loadWepStatusEffectTable(STATUSEFFECTS[selectedWeapon])
-    for (let status of Object.values(weaponStatusEffectTable))
-        wepStatusEffectMAP[status.StatusID.toUpperCase()] = status
-
     if (selectedWeaponText != 'VoidGauntlet')
         selectedWeaponText = selectedWeaponText.replace(/Gauntlet|Staff/i, 'Magic')
 
+
+    weaponStatusEffectTable = await loadWepStatusEffectTable(STATUSEFFECTS[selectedWeapon])
+    for (let status of Object.values(weaponStatusEffectTable))
+        wepStatusEffectMAP[status.StatusID.toUpperCase()] = status
 
     weaponAbilityTable = await loadWeaponAbilityTable(selectedWeaponText)
     for (let ability of Object.values(weaponAbilityTable))
@@ -1030,6 +1035,7 @@ async function loadWeaponData(selectedWeapon) {
         if (!checkbox.parentNode.querySelector(".active")) {
             checkbox.addEventListener("change", (e) => {
                 equipWepAbility()
+                setWeaponDamageInfo()
                 getFinalDamage()
             })
         }
@@ -1039,7 +1045,7 @@ async function loadWeaponData(selectedWeapon) {
     let a = 1
 
     document.querySelectorAll(`.icon__button`).forEach(button => button.addEventListener("click", (e) => {
-        if(e.target.textContent == 1){
+        if (e.target.textContent == 1) {
             a = 1
         }
         a++
@@ -1064,6 +1070,7 @@ async function loadWeaponData(selectedWeapon) {
     targetDmgID()
     getItemEquip()
     equipWepAbility()
+    setWeaponDamageInfo()
     setDescription()
     getFinalDamage()
 
@@ -1126,9 +1133,9 @@ const setItemPerkList = (container) => {
     })
 
     container.querySelectorAll(`.icon__button`).forEach(button => button.addEventListener("click", (e) => {
-        if(e.target.textContent == 1)[
+        if (e.target.textContent == 1) {
             a = 1
-        ]
+        }
         a++
         if (a > e.target.getAttribute("value"))
             a = 1
@@ -1137,10 +1144,11 @@ const setItemPerkList = (container) => {
     }))
 }
 
-let dmgBarTippy
+
 
 const setWeaponDamageInfo = () => {
     let equippedDamageKey = []
+    selfDamageIDMap = {}
 
     while (document.querySelector(".standard_damage_bars").firstChild)
         document.querySelector(".standard_damage_bars").removeChild(document.querySelector(".standard_damage_bars").lastChild)
@@ -1173,8 +1181,6 @@ const setWeaponDamageInfo = () => {
                             }
                         }
                 })
-
-
             }
 
             //set AttackName to respective div.textcontent
@@ -1182,7 +1188,14 @@ const setWeaponDamageInfo = () => {
             if (!selfDamageIDMap[key])
                 continue
 
-            currentSelfWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()]
+            let scaledPerk
+            if (itemPerkMAP[key?.replace("perk_", "").toUpperCase()]?.ScalingPerGearScore) {
+
+                scaledPerk = { ...perkStatusEffectMAP[selfDamageIDMap[key].toUpperCase()] }
+                scaledPerk.HealthModifierDamageBased = scaledPerk.HealthModifierDamageBased * (1 + itemPerkMAP[key?.replace("perk_", "").toUpperCase()]?.ScalingPerGearScore
+                    * (document.querySelector(`[value=${key?.replace("perk_", "")}`).parentNode.parentNode.querySelector(".gearscore").getAttribute("value") - 100))
+            }
+            currentSelfWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()] || scaledPerk
 
             let findDamageType = currentSelfWeaponDamageMAP[selfDamageIDMap[key]]?.DamageType
 
@@ -1207,7 +1220,7 @@ const setWeaponDamageInfo = () => {
                 document.querySelector(".ability_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
 
-            if (new RegExp("dot").test(key)) {
+            if (new RegExp("perk").test(key) || new RegExp("dot").test(key)) {
                 document.querySelector(".dot_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
             appendBars.forEach(x => document.querySelector(`#${key}`).appendChild(x))
@@ -1222,8 +1235,26 @@ const setWeaponDamageInfo = () => {
         }
     }
 
+    document.querySelectorAll(".bar_container").forEach(bar => {
 
+        bar.addEventListener("mousedown", (e) => {
+            if (e.button == 0) {
+                if (e.target.parentNode == bar || e.target.parentNode.parentNode == bar) {
+                    bar.classList.toggle("hit")
+                    document.querySelectorAll(".hit").forEach(hit => {
+                        if (hit != bar)
+                            hit.classList.remove("hit")
+                    })
+                    lastHit = ""
+                    if (bar.classList.contains("hit")) {
+                        lastHit = bar.getAttribute("value")
+                    }
+                }
+            }
 
+        })
+
+    })
 }
 
 const setDescription = () => {
@@ -1295,11 +1326,12 @@ const setBarDescription = () => {
             gem = `${changeTextColor("Gem Split:", colorYellow)} ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normalGEM)}` + "\n"
         }
 
+        let statuseffectTable = wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()] || perkStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]
 
         if (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]) {
             dmgCoef = `${changeTextColor("DmgCoef:", colorYellow)}`
             reaction = !damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoReaction
-            tickORattackType = `${changeTextColor("AttackType:", colorYellow)}`
+            tickORattackType = `${changeTextColor("AttackType:", colorYellow) + " " + damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackType}`
             canCrit = `${changeTextColor("CanCrit:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.CanCrit != false}` + "\n"
             noBackstab = `${changeTextColor("NoBackstab:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoBackstab == true}` + "\n"
             noHeadshot = `${changeTextColor("NoHeadshot:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.NoHeadshot == true}` + "\n"
@@ -1311,16 +1343,16 @@ const setBarDescription = () => {
         else {
             dmgCoef = `${changeTextColor("HealthModifierDamageBased:", colorYellow)}`
             reaction = false
-            tickORattackType = `${changeTextColor("TickRate:", colorYellow)}`
-            attkrunecharge = `${changeTextColor("SourceRuneChargeOnTick:", colorYellow)} ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.SourceRuneChargeOnTick}` + "\n"
+            tickORattackType = `${changeTextColor("TickRate:", colorYellow) + " " + statuseffectTable.TickRate}`
+            attkrunecharge = `${changeTextColor("SourceRuneChargeOnTick:", colorYellow)} ${statuseffectTable.SourceRuneChargeOnTick}` + "\n"
         }
         instance.setContent(
             `${changeTextColor("Normal:", colorYellow)} ${roundNumber(damageFormula(instance.reference.getAttribute("value")).normal)}` + "\n" +
             `${gem}` +
-            `${dmgCoef}: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DmgCoef || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.HealthModifierDamageBased}` + "\n" +
+            `${dmgCoef}: ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DmgCoef || currentSelfWeaponDamageMAP[instance.reference.getAttribute("value")]?.HealthModifierDamageBased}` + "\n" +
             `${changeTextColor("Reaction:", colorYellow)} ${reaction} ` + "\n" +
-            `${tickORattackType} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackType || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.TickRate}` + "\n" +
-            `${changeTextColor("DamageType:", colorYellow)} ${wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType}` + "\n" +
+            `${tickORattackType}` + "\n" +
+            `${changeTextColor("DamageType:", colorYellow)} ${statuseffectTable?.DamageType || damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType}` + "\n" +
             `${canCrit}` +
             `${noBackstab}` +
             `${noHeadshot}` +
@@ -1329,13 +1361,13 @@ const setBarDescription = () => {
             `${threatmulti}` +
             `${attkrunecharge}` +
             `${changeTextColor("BaseDamage:", colorYellow)} ${roundNumber((self.modsSelf[instance.reference.getAttribute("value")].BaseDamage + equipLoad) * 100)}%` + "\n" +
-            `${changeTextColor("DMG:", colorYellow)} ${roundNumber((DMG(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)) + self.modsSelf[instance.reference.getAttribute("value")].DMGVitalsCategory) * 100)}%` + "\n" +
-            `${changeTextColor("ABS:", colorYellow)} ${roundNumber((ABS(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || wepStatusEffectMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType)) + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%`
+            `${changeTextColor("DMG:", colorYellow)} ${roundNumber((DMG(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || statuseffectTable?.DamageType)) + self.modsSelf[instance.reference.getAttribute("value")].DMGVitalsCategory) * 100)}%` + "\n" +
+            `${changeTextColor("ABS:", colorYellow)} ${roundNumber((ABS(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || statuseffectTable?.DamageType)) + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%`
         )
         instance.setProps({
             placement: "top-start",
             allowHTML: true,
-            delay: [200, 200]
+            delay: [200, 0]
         })
     })
 }
@@ -1622,11 +1654,11 @@ const equipWepAbility = () => {
 
         checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value.toUpperCase()])
     }
-    setWeaponDamageInfo()
-/*     checkedSelfAbility.forEach(ability => {
-        console.log(ability)
-        getDamageInfo(ability.AbilityID)
-    }) */
+
+    /*     checkedSelfAbility.forEach(ability => {
+            console.log(ability)
+            getDamageInfo(ability.AbilityID)
+        }) */
 
     return checkedSelfAbility
 }
@@ -1803,6 +1835,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
         selectedWeaponOtherApplyStatusEffect
     ]
 
+    //console.log(selectedPerkOtherApplyStatusEffect)
     selectedSelfStatusEffects.forEach(status => {
 
         for (let ability of Object.values(status)) {
@@ -2301,6 +2334,21 @@ const getItemEquip = () => {
                                     hasStacks = true
                                     stackMax = perkStatusEffectMAP[status.toUpperCase()].StackMax
                                 }
+
+                                let castSpell = perkStatusEffectMAP[globalSpellDataMAP[perkStatusEffectMAP[status.toUpperCase()].CastSpell]?.StatusEffects.toUpperCase()]
+                                if (castSpell)
+                                    activeSelfWeaponAbilities[`perk_${item.value}`] = { [itemPerkMAP[item.value?.toUpperCase()].DisplayName]: castSpell?.StatusID }
+
+                                let dot = perkStatusEffectMAP[status.toUpperCase()]
+                                if (dot) {
+                                    if (dot.HealthModifierDamageBased) {
+                                        activeSelfWeaponAbilities[`perk_${item.value}`] = { [itemPerkMAP[item.value?.toUpperCase()].DisplayName]: dot?.StatusID }
+                                    }
+
+                                    if (perkStatusEffectMAP[globalAbilityMAP[dot.EquipAbility.toUpperCase()]?.OtherApplyStatusEffect.toUpperCase()]?.HealthModifierDamageBased) {
+                                        activeSelfWeaponAbilities[`perk_${item.value}`] = { [itemPerkMAP[item.value?.toUpperCase()].DisplayName]: perkStatusEffectMAP[globalAbilityMAP[dot.EquipAbility.toUpperCase()]?.OtherApplyStatusEffect.toUpperCase()]?.StatusID }
+                                    }
+                                }
                             })
 
                         }
@@ -2309,13 +2357,20 @@ const getItemEquip = () => {
 
                             globalAbilityMAP[ability.toUpperCase()].OtherApplyStatusEffect.split(",").forEach(status => {
                                 if (perkStatusEffectMAP[status.toUpperCase()]?.StackMax > 1) {
-
                                     hasStacks = true
                                     stackMax = perkStatusEffectMAP[status.toUpperCase()].StackMax
                                 }
-                                //let castSpell = perkStatusEffectMAP[globalSpellDataMAP[perkStatusEffectMAP[status.toUpperCase()].CastSpell].StatusEffects.toUpperCase()]
-                                //selfDamageIDMap[`perk_${castSpell.StatusID}`] = castSpell.StatusID
+                                let castSpell = perkStatusEffectMAP[globalSpellDataMAP[perkStatusEffectMAP[status.toUpperCase()].CastSpell]?.StatusEffects.toUpperCase()]
+                                if (castSpell)
+                                    activeSelfWeaponAbilities[`perk_${item.value}`] = { [itemPerkMAP[item.value?.toUpperCase()].DisplayName]: castSpell?.StatusID }
 
+                                let dot = perkStatusEffectMAP[status.toUpperCase()]
+                                if (dot) {
+                                    if (dot.HealthModifierDamageBased) {
+                                        activeSelfWeaponAbilities[`perk_${item.value}`] = { [itemPerkMAP[item.value?.toUpperCase()].DisplayName]: dot?.StatusID }
+                                    }
+
+                                }
                             })
 
 
@@ -2560,13 +2615,13 @@ const printAnim = async (tag) => {
     const obj = {}
 
     for (const animTags of Object.keys(ANIMATION)) {
-        if (new RegExp(animTags.replace("+", ".*"),"i").test(tag) && animTags) {
+        if (new RegExp(animTags.replace("+", ".*"), "i").test(tag) && animTags) {
             obj[animTags] = ANIMATION[animTags]
         }
 
     }
 
-    console.log(tag)
+    //console.log(tag)
     return obj
 }
 
@@ -2986,6 +3041,7 @@ let isStatusEffect = false
 const dmgcoeforhealtmod = (damageID) => {
     if (currentSelfWeaponDamageMAP[damageID].HealthModifierDamageBased) {
         isStatusEffect = true
+
         return Math.abs(currentSelfWeaponDamageMAP[damageID].HealthModifierDamageBased)
     }
     else {
@@ -3071,24 +3127,24 @@ function damageFormula(damageID) {
     if (!GEM || !findGem)
         GEM = 0
 
-    function _can (check,passed){
+    function _can(check, passed) {
 
-        if(currentSelfWeaponDamageMAP[damageID].hasOwnProperty(check)){
-            
+        if (currentSelfWeaponDamageMAP[damageID].hasOwnProperty(check)) {
+
             return passed
         }
         else
-        return 0
+            return 0
     }
     return {
         normal: noGEM * arrDMG[0],
-        crit:_can("CanCrit",noGEM * arrDMG[1]) ,
-        backstab: _can("NoBackstab",noGEM * arrDMG[2]),
-        headshot: _can("NoHeadshot",noGEM * arrDMG[3]) ,
+        crit: _can("CanCrit", noGEM * arrDMG[1]),
+        backstab: _can("NoBackstab", noGEM * arrDMG[2]),
+        headshot: _can("NoHeadshot", noGEM * arrDMG[3]),
         normalGEM: GEM * arrDMG[4],
-        critGEM:_can("CanCrit",GEM * arrDMG[5]),
-        backstabGEM: _can("NoBackstab",GEM * arrDMG[6]) ,
-        headshotGEM: _can("NoHeadshot",GEM * arrDMG[7])
+        critGEM: _can("CanCrit", GEM * arrDMG[5]),
+        backstabGEM: _can("NoBackstab", GEM * arrDMG[6]),
+        headshotGEM: _can("NoHeadshot", GEM * arrDMG[7])
     }
 
 }
@@ -3111,7 +3167,7 @@ const getFinalDamage = () => {
 
         if (!damageID)
             continue
-        console.log(damageID,damageFormula(damageID).normal)
+
         document.querySelector(`#${key}_normal_span`).textContent = roundNumber(damageFormula(damageID).normal)
         document.querySelector(`#${key}_normal_span_after`).textContent = roundNumber(damageFormula(damageID).normal)
         if (damageFormula(damageID).normalGEM) {
@@ -3188,21 +3244,21 @@ const getFinalDamage = () => {
         document.querySelector(`#${key}_normal`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
         //document.querySelector(`#${key}_normal_span`).style.width = (damageFormula(damageID).normal + isGEM("normalGEM")) / maxDamage * 100 + "% "
 
-        if(!document.querySelector(`#${key}_crit`).classList.contains("hide")){
+        if (!document.querySelector(`#${key}_crit`).classList.contains("hide")) {
             document.querySelector(`#${key}_crit`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
             //document.querySelector(`#${key}_crit_span`).style.width = (damageFormula(damageID).crit + isGEM("critGEM")) / maxDamage * 100 + "%"
         }
-        
-        if(!document.querySelector(`#${key}_backstab`).classList.contains("hide")){
+
+        if (!document.querySelector(`#${key}_backstab`).classList.contains("hide")) {
             document.querySelector(`#${key}_backstab`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
             //document.querySelector(`#${key}_backstab_span`).style.width = (damageFormula(damageID).backstab + isGEM("backstabGEM")) / maxDamage * 100 + "%"
         }
 
-        if(!document.querySelector(`#${key}_headshot`).classList.contains("hide")){
+        if (!document.querySelector(`#${key}_headshot`).classList.contains("hide")) {
             document.querySelector(`#${key}_headshot`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
             //document.querySelector(`#${key}_headshot_span`).style.width = (damageFormula(damageID).headshot + isGEM("headshotGEM")) / maxDamage * 100 + "%"
         }
-        
+
         document.querySelector(`#${key}_normal_gem`).style.width = 0 + "%"
         if (isGEM("normalGEM"))
             document.querySelector(`#${key}_normal_gem`).style.width = damageFormula(damageID).normalGEM / (damageFormula(damageID).normal + damageFormula(damageID).normalGEM) * 100 + "% "
@@ -3219,19 +3275,18 @@ const getFinalDamage = () => {
     for (let [key, attack] of Object.entries(selfDamageIDMap)) {
         if (!attack)
             continue
-        document.querySelector(`#${key}`).style.width = Math.max(maxDIV[attack] * 100, 11) + "%"
-
+        document.querySelector(`#${key}`).style.width = `clamp(50px,${maxDIV[attack] * 100}%,100%)`
     }
 
 
     //console.log(activeAttributeAbility)
     //console.log(activeItemPerks)
-    //console.log(self.modsSelf)
-    //console.log(self.modsOther)
+    console.log(self.modsSelf)
+    console.log(self.modsOther)
     //console.log(target.modsSelf)
     //console.log(target.modsOther)
-
-
+ 
+    window.dispatchEvent(new Event('resize'))
 }
 
 
@@ -3389,6 +3444,91 @@ new Array("change").forEach(type => {
 
 })
 
+new Array("resize", "load").forEach(type => {
+
+    window.addEventListener(type, debounced(40, () => {
+        const getWidth = (ele) => {
+            if (ele)
+                return ele.offsetWidth
+            return
+        }
+
+        const getLeft = (ele) => {
+            if (ele)
+                return ele.offsetLeft
+            return
+        }
+
+        document.querySelectorAll('.bar_container').forEach(bar => {
+            const normal = bar.querySelector(".normal")
+            const crit = bar.querySelector(".crit:not(.hide)")
+            const backstab = bar.querySelector(".backstab:not(.hide)")
+            const headshot = bar.querySelector(".headshot:not(.hide)")
+            const label = bar.querySelector(".normal").querySelector(".label")
+            const labelAfter = bar.querySelector(".label.after")
+            const normText = bar.querySelector(".normal").querySelector(".span")
+            const normTextAfter = bar.querySelector(".normal_span_after")
+            const critText = bar.querySelector(".crit").querySelector(".span")
+            const critTextAfter = bar.querySelector(".crit_span_after")
+            const headText = bar.querySelector(".headshot").querySelector(".span")
+            const headTextAfter = bar.querySelector(".headshot_span_after")
+            const backText = bar.querySelector(".backstab").querySelector(".span")
+            const backTextAfter = bar.querySelector(".backstab_after")
+
+            
+            if ((getWidth(normal)) <= (getWidth(label) + getLeft(label)) + 25) {
+                label.style.opacity = "0%"
+                labelAfter.style.opacity = "100%"
+            }
+            else {
+                label.style.opacity = "100%"
+                labelAfter.style.opacity = "0%"
+            }
+
+            if (getWidth(normal) <= (getWidth(normText) + getWidth(label) + getLeft(label) + 25)) {
+                normText.style.opacity = "0%"
+                normTextAfter.style.opacity = "100%"
+            }
+            else {
+                normText.style.opacity = "100%"
+                normTextAfter.style.opacity = "0%"
+            }
+
+            if ((getWidth(crit) - getWidth(normal)) <= (getWidth(critText) + 15)) {
+                critText.style.opacity = "0%"
+                critTextAfter.style.opacity = "100%"
+            }
+            else {
+                critText.style.opacity = "100%"
+                critTextAfter.style.opacity = "0%"
+            }
+
+            if ((getWidth(backstab) - getWidth(normal)) <= (getWidth(backText) + 15) || (getWidth(backstab) - getWidth(crit)) < (getWidth(backText) + 15) && getWidth(crit) != getWidth(backstab)) {
+                backText.style.opacity = "0%"
+                backTextAfter.style.opacity = "100%"
+            }
+            else {
+                backText.style.opacity = "100%"
+                backTextAfter.style.opacity = "0%"
+            }
+
+            if ((getWidth(headshot) - getWidth(normal)) <= (getWidth(headText) + 15)) {
+                headText.style.opacity = "0%"
+                headTextAfter.style.opacity = "100%"
+            }
+            else {
+                headText.style.opacity = "100%"
+                headTextAfter.style.opacity = "0%"
+            }
+
+        })
+
+    }))
+
+})
+
+
+
 
 new Array("keydown").forEach(type => {
     window.addEventListener(type, function check(e) {
@@ -3467,6 +3607,7 @@ new Array("input").forEach(type => {
 
     document.querySelectorAll(".perks").forEach(x => x.addEventListener(type, () => {
         getItemEquip()
+        setWeaponDamageInfo()
         getFinalDamage()
 
     }))
@@ -3476,6 +3617,7 @@ new Array("input").forEach(type => {
         container.querySelectorAll(".perks").forEach(perk => {
             perk.addEventListener(type, () => {
                 getItemEquip()
+                setWeaponDamageInfo()
                 getFinalDamage()
             })
         })
@@ -3593,7 +3735,12 @@ new Array("mousedown").forEach(type => {
         }
 
         if (e.target.matches(".removebttn")) {
+
+            console.log(e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).getAttribute("value"))
+            delete activeSelfWeaponAbilities[`perk_${e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).getAttribute("value")}`]
+
             e.target.parentNode.querySelector(".icon__button").classList.remove("show")
+            e.target.parentNode.querySelector(".icon__button").textContent = 1
             e.target.parentNode.querySelector(".info").classList.remove("show")
             e.target.parentNode.querySelector(".icon__button").setAttribute("for", "")
             e.target.parentNode.querySelector(".icon__button__bg").classList.remove("show")
@@ -3603,6 +3750,7 @@ new Array("mousedown").forEach(type => {
             e.target.classList.remove("show")
             e.target.parentNode.querySelector(".perks").dispatchEvent(new Event('input'))
             getItemEquip()
+            setWeaponDamageInfo()
             getFinalDamage()
         }
 
