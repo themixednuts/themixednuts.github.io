@@ -1090,7 +1090,7 @@ option {
     min-height: 16px;
     position: absolute;
     top: -10%;
-    left: -20%;
+    left: -25%;
     background-image: url("../lyshineui/images/button_close_a.png");
     background-size: cover;
     background-repeat: no-repeat;

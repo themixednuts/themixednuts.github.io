@@ -358,7 +358,10 @@ equipContainers.forEach(container => {
 
         })
 
-        container.querySelectorAll(".tempgem").forEach(item => item.classList.replace("tempgem", `${slot}gem`))
+        container.querySelectorAll(".tempgem").forEach(item => {
+            item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
+            item.classList.replace("tempgem", `${slot}gem`)
+        })
         container.querySelectorAll(".tempgem_list_div").forEach(item => item.classList.replace("tempgem_list_div", `${slot}gem_list_div`))
         container.querySelectorAll(".tempperk").forEach(item => {
             item.setAttribute("id", item.getAttribute("id").replace("temp", slot))
@@ -1191,7 +1194,7 @@ const setWeaponDamageInfo = () => {
             let scaledPerk = { ...perkStatusEffectMAP[selfDamageIDMap[key].toUpperCase()] }
             if (itemPerkMAP[key?.replace("perk_", "").toUpperCase()]?.ScalingPerGearScore) {
                 scaledPerk.HealthModifierDamageBased = scaledPerk.HealthModifierDamageBased * (1 + itemPerkMAP[key?.replace("perk_", "").toUpperCase()]?.ScalingPerGearScore
-                    * (document.querySelector(`[value=${key?.replace("perk_", "")}`).parentNode.parentNode.querySelector(".gearscore").getAttribute("value") - 100))
+                    * (document.querySelector(`[value=${key?.replace("perk_", "")}].perks`).parentNode.parentNode.querySelector(".gearscore").getAttribute("value") - 100))
             }
             currentSelfWeaponDamageMAP[selfDamageIDMap[key]] = damageTableMAP[selfDamageIDMap[key].toUpperCase()] || wepStatusEffectMAP[selfDamageIDMap[key].toUpperCase()] || scaledPerk
 
@@ -1247,6 +1250,8 @@ const setWeaponDamageInfo = () => {
                     if (bar.classList.contains("hit")) {
                         lastHit = bar.getAttribute("value")
                     }
+
+                    getFinalDamage()
                 }
             }
 
@@ -1571,11 +1576,11 @@ const conditionalChecks = (damageID, ability, reference) => {
         whichID = "DamageID"
     if (perkStatusEffectMAP[damageID.toUpperCase()]?.StatusID)
         whichID = "StatusID"
-
+        //whichDamageMap[whichID]
     if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(whichDamageMap.IsRanged))
-        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap[whichID]))
-        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageID))
+        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(lastHit))
+        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(lastHit))
         && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(whichDamageMap.AttackType))
         && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageType))
         && (!ability.TargetStatusEffectCategory || new RegExp(ability.TargetStatusEffectCategory.replace(/,/g, "|"), "gi").test(targetCondition.querySelector("#debuff_target").value))
@@ -3283,7 +3288,7 @@ const getFinalDamage = () => {
     console.log(self.modsOther)
     //console.log(target.modsSelf)
     //console.log(target.modsOther)
- 
+
     window.dispatchEvent(new Event('resize'))
 }
 
@@ -3473,7 +3478,7 @@ new Array("resize", "load").forEach(type => {
             const backText = bar.querySelector(".backstab").querySelector(".span")
             const backTextAfter = bar.querySelector(".backstab_after")
 
-            
+
             if ((getWidth(normal)) <= (getWidth(label) + getLeft(label)) + 25) {
                 label.style.opacity = "0%"
                 labelAfter.style.opacity = "100%"
@@ -3734,17 +3739,21 @@ new Array("mousedown").forEach(type => {
 
         if (e.target.matches(".removebttn")) {
 
-            console.log(e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).getAttribute("value"))
+
             delete activeSelfWeaponAbilities[`perk_${e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).getAttribute("value")}`]
 
-            e.target.parentNode.querySelector(".icon__button").classList.remove("show")
+            e.target.parentNode.querySelector(".icon__button")?.classList.remove("show")
+            if(e.target.parentNode.querySelector(".icon__button"))
             e.target.parentNode.querySelector(".icon__button").textContent = 1
             e.target.parentNode.querySelector(".info").classList.remove("show")
-            e.target.parentNode.querySelector(".icon__button").setAttribute("for", "")
-            e.target.parentNode.querySelector(".icon__button__bg").classList.remove("show")
-            e.target.parentNode.querySelector(".icon__button__border").classList.remove("show")
+            e.target.parentNode.querySelector(".icon__button")?.setAttribute("for", "")
+            e.target.parentNode.querySelector(".icon__button__bg")?.classList.remove("show")
+            e.target.parentNode.querySelector(".icon__button__border")?.classList.remove("show")
             e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("value", "")
+            if(e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).classList.contains("perkslot"))
             e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_perkbackground.png")
+            if(e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).classList.contains("gemslot"))
+            e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "")
             e.target.classList.remove("show")
             e.target.parentNode.querySelector(".perks").dispatchEvent(new Event('input'))
             getItemEquip()
