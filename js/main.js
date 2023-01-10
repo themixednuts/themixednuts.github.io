@@ -1577,10 +1577,14 @@ const conditionalChecks = (damageID, ability, reference) => {
     if (perkStatusEffectMAP[damageID.toUpperCase()]?.StatusID)
         whichID = "StatusID"
         //whichDamageMap[whichID]
+    let hit
+        if(lastHit == whichDamageMap[whichID]){
+            hit = lastHit
+        }
     if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(whichDamageMap.IsRanged))
-        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(lastHit))
-        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(lastHit))
+        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(hit))
+        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(hit))
         && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(whichDamageMap.AttackType))
         && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageType))
         && (!ability.TargetStatusEffectCategory || new RegExp(ability.TargetStatusEffectCategory.replace(/,/g, "|"), "gi").test(targetCondition.querySelector("#debuff_target").value))
