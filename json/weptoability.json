@@ -500,7 +500,7 @@
             "Forceful Impact": "2H_Spear_Javelin_Knockback"
         },
         "ability_attack2": {
-            "Skewer": "2H_Spear_Skewer_Bleed"
+            "Skewer": "2H_Spear_Skewer_Stab"
         },
         "ability_attack3": {
             "Perforate": "2H_Spear_Perforate"

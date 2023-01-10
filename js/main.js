@@ -798,6 +798,25 @@ function roundNumber(number) {
     return Number(Math.round(parseFloat(number + 'e' + 1)) + 'e-' + 1)
 }
 
+function sigma(start, end, modifier) {
+    const length = end - start + 1;
+    const map = (v, k) => modifier ? modifier(k + start) : k + start;
+    const sum = (a, b) => a + b;
+
+    return Array.from({ length }, map).reduce(sum);
+}
+
+const effectiveCritChance = (p) => {
+
+    return Math.pow(sigma(1, Math.ceil(1 / p), n => {
+        let prod = 1
+        for (let m = 0; m <= (n - 1); m++) {
+            prod *= (1 - (m * p))
+        }
+        return n * Math.min(n * p, 1) * prod
+    }), -1)
+
+}
 
 function itemScaling(itemperk, container) {
     const weptrue = () => {
@@ -881,12 +900,145 @@ const _if = {
         return new RegExp(a.TagName.replace("+", ".*")).test(b)
     })
 }
+
+const getInfo = (id) => {
+    let ability = id
+    let affix
+
+    if (globalAbilityMAP[id.EquipAbility?.toUpperCase()]) {
+        ability = globalAbilityMAP[id.EquipAbility?.toUpperCase()]
+    }
+
+    if (wepAbilityMAP[id.AbilityID?.toUpperCase()]) {
+        ability = wepAbilityMAP[id.AbilityID.toUpperCase()]
+    }
+
+    if (affixDataMAP[id.Affix?.toUpperCase()]) {
+        affix = affixDataMAP[id.Affix?.toUpperCase()]
+    }
+
+    let content = ""
+    const startTrigger = "OnEventPassiveConditionsPass"
+    const startProp = "BaseDamage"
+
+
+    if (ability) {
+
+        let keys = Object.keys(ability)
+        let startIndexTrigger = keys.indexOf(startTrigger)
+        let startIndexAbility = keys.indexOf(startProp)
+        content += changeTextColor(`<br>Ability Info: <br>`)
+
+        for (let i = 0; i < keys.length; i++) {
+
+            if (i == startIndexTrigger) {
+                content += changeTextColor("Triggers: <br>")
+            }
+            if (i == startIndexAbility) {
+                content += changeTextColor("If Triggers Met: <br>")
+            }
+            if (ability[keys[i]] || keys[i] == "IsStackableAbility") {
+
+                //uncomment once NWDB has GlobablAbility urls
+                //if (keys[i] == "AbilityID") {
+                //    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/ability/${ability[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${ability[keys[i]]}</a> <br>`
+                //} 
+                if (String(ability[keys[i]]).includes(",")) {
+                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${ability[keys[i]].replace(/,/g, ",<br>")} <br>`
+                }
+                else
+                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${ability[keys[i]]} <br>`
+            }
+
+
+        }
+    }
+
+    if (affix) {
+
+        let keys = Object.keys(affix)
+
+        content += changeTextColor(`<br>Affix Info: <br>`)
+
+        for (let i = 0; i < keys.length; i++) {
+
+            if (affix[keys[i]]) {
+
+
+                if (keys[i] == "StatusID") {
+                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${affix[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${affix[keys[i]]}</a> <br>`
+                }
+                else if (String(affix[keys[i]]).includes(",")) {
+                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${affix[keys[i]].replace(/,/g, ", <br>")} <br>`
+                }
+                else
+                    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${affix[keys[i]]} <br>`
+
+            }
+
+        }
+    }
+
+    if (ability?.SelfApplyStatusEffect) {
+
+        ability.SelfApplyStatusEffect.split(",")
+            .forEach(status => {
+                let statusTable = perkStatusEffectMAP[status.toUpperCase()] || wepStatusEffectMAP[status.toUpperCase()]
+                let keys = Object.keys(statusTable)
+
+                content += changeTextColor(`<br>StatusEffect Info: <br>`)
+
+                for (let i = 0; i < keys.length; i++) {
+
+                    if (statusTable[keys[i]]) {
+                        if (keys[i] == "StatusID") {
+                            content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${statusTable[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${statusTable[keys[i]]}</a> <br>`
+                        }
+                        else if (String(status[keys[i]]).includes(",")) {
+                            content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, ",<br>")} <br>`
+                        }
+                        else
+                            content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${statusTable[keys[i]]} <br>`
+                    }
+                }
+            })
+    }
+
+    if (ability?.OtherApplyStatusEffect) {
+
+        ability.OtherApplyStatusEffect.split(",")
+            .forEach(status => {
+                let statusTable = perkStatusEffectMAP[status.toUpperCase()] || wepStatusEffectMAP[status.toUpperCase()]
+                let keys = Object.keys(statusTable)
+
+                content += changeTextColor(`<br>StatusEffect Info: <br>`)
+
+                for (let i = 0; i < keys.length; i++) {
+
+
+
+                    if (statusTable[keys[i]]) {
+                        if (keys[i] == "StatusID") {
+                            content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${statusTable[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${statusTable[keys[i]]}</a> <br>`
+                        }
+                        else if (String(status[keys[i]]).includes(",")) {
+                            content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, ",<br>")} <br>`
+                        }
+                        else
+                            content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${statusTable[keys[i]]} <br>`
+                    }
+                }
+            })
+    }
+
+    return content
+}
 //end custom functions
 
 let currentAnimations
 
 //load properties for selected weapon
-async function loadWeaponData(selectedWeapon) {
+async function loadWeaponData() {
 
     //set default weapon location
     if (!selectedWeapon) {
@@ -1147,9 +1299,11 @@ const setItemPerkList = (container) => {
     }))
 }
 
-
+let activeBar
 
 const setWeaponDamageInfo = () => {
+
+
     let equippedDamageKey = []
     selfDamageIDMap = {}
 
@@ -1221,7 +1375,7 @@ const setWeaponDamageInfo = () => {
                 document.querySelector(".ability_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
 
-            if (new RegExp("perk").test(key) || new RegExp("dot").test(key)) {
+            if (new RegExp("perk").test(key) || new RegExp("dot").test(key) || new RegExp("status").test(key)) {
                 document.querySelector(".dot_damage_bars").appendChild(createItem("div", ``, { id: key, value: selfDamageIDMap[key], class: "bar_container" }))
             }
             appendBars.forEach(x => document.querySelector(`#${key}`).appendChild(x))
@@ -1241,22 +1395,46 @@ const setWeaponDamageInfo = () => {
         bar.addEventListener("mousedown", (e) => {
             if (e.button == 0) {
                 if (e.target.parentNode == bar || e.target.parentNode.parentNode == bar) {
+
+                    activeBar = bar
                     bar.classList.toggle("hit")
                     document.querySelectorAll(".hit").forEach(hit => {
                         if (hit != bar)
                             hit.classList.remove("hit")
                     })
-                    lastHit = ""
+
+                    if (!bar.classList.contains("hit")) {
+                        lastHit = ""
+                        activeBar = ""
+                    }
                     if (bar.classList.contains("hit")) {
                         lastHit = bar.getAttribute("value")
                     }
 
+                    if (lastHit && wepStatusEffectMAP[damageTableMAP[bar.getAttribute("value")?.toUpperCase()]?.StatusEffect?.toUpperCase()]?.HealthModifierDamageBased) {
+                        activeSelfWeaponAbilities[`status_${bar.getAttribute("value")}`] = { [wepStatusEffectMAP[damageTableMAP[bar.getAttribute("value")?.toUpperCase()].StatusEffect.toUpperCase()].DisplayName]: wepStatusEffectMAP[damageTableMAP[bar.getAttribute("value")?.toUpperCase()].StatusEffect.toUpperCase()].StatusID }
+                        setWeaponDamageInfo()
+                    }
+
+                    if (!lastHit && activeSelfWeaponAbilities[`status_${bar.getAttribute("value")}`]) {
+                        delete activeSelfWeaponAbilities[`status_${bar.getAttribute("value")}`]
+                        setWeaponDamageInfo()
+                    }
+
                     getFinalDamage()
+
                 }
             }
 
         })
 
+        if (!activeBar) {
+            return
+        }
+        if (activeBar?.getAttribute("id") == bar?.getAttribute("id")) {
+            lastHit = bar.getAttribute("value")
+            bar.classList.add("hit")
+        }
     })
 }
 
@@ -1267,22 +1445,36 @@ const setDescription = () => {
 
     abilityTippy.forEach(instance => {
         let token
-
-        if (!shiftACTIVE && !ctrlACTIVE)
-            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).normal
-        if ((shiftACTIVE && !ctrlACTIVE) || (!shiftACTIVE && ctrlACTIVE))
-            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).extra
-        if (shiftACTIVE && ctrlACTIVE)
-            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).ctrl
-
-        instance.setContent(
-            token
-        )
+        token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).normal
         instance.setProps({
             allowHTML: true,
             theme: "ability-tooltip",
             placement: 'bottom',
+            interactive: true,
+            appendTo: () => document.body
         })
+
+
+        if (shiftACTIVE || ctrlACTIVE){
+            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).extra
+            + "\n" 
+            + getInfo(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()])
+        }
+
+/*         if (!shiftACTIVE && !ctrlACTIVE){
+            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).normal
+            instance.setProps({
+                allowHTML: true,
+                theme: "ability-tooltip",
+                placement: 'bottom',
+                interactive: false,
+            })
+        } */
+
+        instance.setContent(
+            token
+        )
+
 
     })
 
@@ -1314,7 +1506,7 @@ const setBarDescription = () => {
         let threatmulti = ""
         let attkrunecharge = ""
         let equipLoad
-
+        let eCritChance = ""
         if (equipLoadWeight < 13 || !equipLoad) {
             equipLoad = 0.2
         }
@@ -1342,6 +1534,7 @@ const setBarDescription = () => {
             stunbreakout = `${changeTextColor("StunBreakoutIncrement:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.StunBreakoutIncrement}` + "\n"
             threatmulti = `${changeTextColor("ThreatMultiplier:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.ThreatMultiplier}` + "\n"
             attkrunecharge = `${changeTextColor("AttackRuneCharge:", colorYellow)} ${damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.AttackRuneCharge}` + "\n"
+            eCritChance = `${changeTextColor("EffectiveCritChance:", colorYellow)} ${roundNumber(effectiveCritChance(wepItemDefMAP[selectedWeapon?.toLowerCase()]?.CritChance + self.modsSelf[instance.reference.getAttribute("value")]?.CritChance) * 100)}%` + "\n"
         }
         else {
             dmgCoef = `${changeTextColor("HealthModifierDamageBased:", colorYellow)}`
@@ -1365,7 +1558,8 @@ const setBarDescription = () => {
             `${attkrunecharge}` +
             `${changeTextColor("BaseDamage:", colorYellow)} ${roundNumber((self.modsSelf[instance.reference.getAttribute("value")].BaseDamage + equipLoad) * 100)}%` + "\n" +
             `${changeTextColor("DMG:", colorYellow)} ${roundNumber((DMG(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || statuseffectTable?.DamageType)) + self.modsSelf[instance.reference.getAttribute("value")].DMGVitalsCategory) * 100)}%` + "\n" +
-            `${changeTextColor("ABS:", colorYellow)} ${roundNumber((ABS(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || statuseffectTable?.DamageType)) + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%`
+            `${changeTextColor("ABS:", colorYellow)} ${roundNumber((ABS(instance.reference.getAttribute("value"), (damageTableMAP[instance.reference.getAttribute("value").toUpperCase()]?.DamageType || statuseffectTable?.DamageType)) + self.modsOther[instance.reference.getAttribute("value")].ABSVitalsCategory) * 100)}%` + "\n" +
+            `${eCritChance}`
         )
         instance.setProps({
             placement: "top-start",
@@ -1421,138 +1615,10 @@ for (const tippy of Object.values(perkTippy)) {
             instance.setContent(() => {
 
                 const perk = itemPerkMAP[instance.reference.parentNode.querySelector(".perks").getAttribute("value")?.toUpperCase()]
-                let ability
-                let affix
-                let id
-                let ref
-
-
-
-                if (globalAbilityMAP[perk.EquipAbility?.toUpperCase()]) {
-                    ability = globalAbilityMAP[perk.EquipAbility?.toUpperCase()]
-                }
-                if (affixDataMAP[perk.Affix?.toUpperCase()]) {
-                    affix = affixDataMAP[perk.Affix?.toUpperCase()]
-                }
-
-
-                let content = ""
-                const startTrigger = "OnEventPassiveConditionsPass"
-                const startProp = "BaseDamage"
-
-
-                if (ability) {
-
-                    let keys = Object.keys(ability)
-                    let startIndexTrigger = keys.indexOf(startTrigger)
-                    let startIndexAbility = keys.indexOf(startProp)
-                    content += changeTextColor(`<br>Ability Info: <br>`)
-
-                    for (let i = 0; i < keys.length; i++) {
-
-                        if (i == startIndexTrigger) {
-                            content += changeTextColor("Triggers: <br>")
-                        }
-                        if (i == startIndexAbility) {
-                            content += changeTextColor("If Triggers Met: <br>")
-                        }
-                        if (ability[keys[i]] || keys[i] == "IsStackableAbility") {
-
-                            //uncomment once NWDB has GlobablAbility urls
-                            //if (keys[i] == "AbilityID") {
-                            //    content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/ability/${ability[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${ability[keys[i]]}</a> <br>`
-                            //} 
-                            if (String(ability[keys[i]]).includes(",")) {
-                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${ability[keys[i]].replace(/,/g, ",<br>")} <br>`
-                            }
-                            else
-                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${ability[keys[i]]} <br>`
-                        }
-
-
-                    }
-                }
-
-                if (affix) {
-
-                    let keys = Object.keys(affix)
-
-                    content += changeTextColor(`<br>Affix Info: <br>`)
-
-                    for (let i = 0; i < keys.length; i++) {
-
-                        if (affix[keys[i]]) {
-
-
-                            if (keys[i] == "StatusID") {
-                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${affix[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${affix[keys[i]]}</a> <br>`
-                            }
-                            else if (String(affix[keys[i]]).includes(",")) {
-                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${affix[keys[i]].replace(/,/g, ", <br>")} <br>`
-                            }
-                            else
-                                content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${affix[keys[i]]} <br>`
-
-                        }
-
-                    }
-                }
-
-                if (ability?.SelfApplyStatusEffect) {
-
-                    ability.SelfApplyStatusEffect.split(",")
-                        .forEach(status => {
-                            let statusTable = perkStatusEffectMAP[status.toUpperCase()]
-                            let keys = Object.keys(statusTable)
-
-                            content += changeTextColor(`<br>StatusEffect Info: <br>`)
-
-                            for (let i = 0; i < keys.length; i++) {
-
-                                if (statusTable[keys[i]]) {
-                                    if (keys[i] == "StatusID") {
-                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${statusTable[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${statusTable[keys[i]]}</a> <br>`
-                                    }
-                                    else if (String(status[keys[i]]).includes(",")) {
-                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, ",<br>")} <br>`
-                                    }
-                                    else
-                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${statusTable[keys[i]]} <br>`
-                                }
-                            }
-                        })
-                }
-
-                if (ability?.OtherApplyStatusEffect) {
-
-                    ability.OtherApplyStatusEffect.split(",")
-                        .forEach(status => {
-                            let statusTable = perkStatusEffectMAP[status.toUpperCase()]
-                            let keys = Object.keys(statusTable)
-
-                            content += changeTextColor(`<br>StatusEffect Info: <br>`)
-
-                            for (let i = 0; i < keys.length; i++) {
-
-
-
-                                if (statusTable[keys[i]]) {
-                                    if (keys[i] == "StatusID") {
-                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <a href="https://nwdb.info/db/status-effect/${statusTable[keys[i]]}" target="_blank" rel="noopener noreferrer" class="nwdb">${statusTable[keys[i]]}</a> <br>`
-                                    }
-                                    else if (String(status[keys[i]]).includes(",")) {
-                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} <br> ${statusTable[keys[i]].replace(/,/g, ",<br>")} <br>`
-                                    }
-                                    else
-                                        content += `${changeTextColor(`${keys[i]}:`, colorYellow)} ${statusTable[keys[i]]} <br>`
-                                }
-                            }
-                        })
-                }
 
                 return (
                     `${changeTextColor("Perk Name:", colorYellow)} <a href="https://nwdb.info/db/perk/${perk.PerkID}" target="_blank" rel="noopener noreferrer" class="nwdb">${perk.DisplayName}</a> <br>`
-                    + content
+                    + getInfo(perk)
                 )
 
             })
@@ -1566,6 +1632,7 @@ for (const tippy of Object.values(perkTippy)) {
 }
 
 
+
 const conditionalChecks = (damageID, ability, reference) => {
 
     let whichDamageMap = currentSelfWeaponDamageMAP[damageID] ? currentSelfWeaponDamageMAP[damageID] : damageTableMAP[damageID.toUpperCase()] ? damageTableMAP[damageID.toUpperCase()] : perkStatusEffectMAP[damageID.toUpperCase()]
@@ -1576,11 +1643,11 @@ const conditionalChecks = (damageID, ability, reference) => {
         whichID = "DamageID"
     if (perkStatusEffectMAP[damageID.toUpperCase()]?.StatusID)
         whichID = "StatusID"
-        //whichDamageMap[whichID]
+    //whichDamageMap[whichID]
     let hit
-        if(lastHit == whichDamageMap[whichID]){
-            hit = lastHit
-        }
+    if (lastHit == whichDamageMap[whichID]) {
+        hit = lastHit
+    }
     if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(whichDamageMap.IsRanged))
         && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(hit))
@@ -3057,6 +3124,8 @@ const dmgcoeforhealtmod = (damageID) => {
     }
 }
 
+
+
 function damageFormula(damageID) {
     let noGEM
     let GEM
@@ -3453,7 +3522,7 @@ new Array("change").forEach(type => {
 
 new Array("resize", "load").forEach(type => {
 
-    window.addEventListener(type, debounced(40, () => {
+    window.addEventListener(type, () => {
         const getWidth = (ele) => {
             if (ele)
                 return ele.offsetWidth
@@ -3530,7 +3599,7 @@ new Array("resize", "load").forEach(type => {
 
         })
 
-    }))
+    })
 
 })
 
@@ -3540,12 +3609,12 @@ new Array("resize", "load").forEach(type => {
 new Array("keydown").forEach(type => {
     window.addEventListener(type, function check(e) {
         if (e.keyCode == 16) {
-            shiftACTIVE = true
+            shiftACTIVE = !shiftACTIVE
             setDescription()
 
         }
         if (e.keyCode == 17) {
-            ctrlACTIVE = true
+            ctrlACTIVE = !ctrlACTIVE
             setDescription()
 
         }
@@ -3587,7 +3656,7 @@ new Array("keydown").forEach(type => {
 new Array("keyup").forEach(type =>
 
     window.addEventListener(type, function check(e) {
-        if (e.keyCode == 16) {
+       /*  if (e.keyCode == 16) {
             shiftACTIVE = false
             setDescription()
         }
@@ -3595,7 +3664,7 @@ new Array("keyup").forEach(type =>
             ctrlACTIVE = false
             setDescription()
         }
-
+ */
     })
 )
 
@@ -3747,17 +3816,17 @@ new Array("mousedown").forEach(type => {
             delete activeSelfWeaponAbilities[`perk_${e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).getAttribute("value")}`]
 
             e.target.parentNode.querySelector(".icon__button")?.classList.remove("show")
-            if(e.target.parentNode.querySelector(".icon__button"))
-            e.target.parentNode.querySelector(".icon__button").textContent = 1
+            if (e.target.parentNode.querySelector(".icon__button"))
+                e.target.parentNode.querySelector(".icon__button").textContent = 1
             e.target.parentNode.querySelector(".info").classList.remove("show")
             e.target.parentNode.querySelector(".icon__button")?.setAttribute("for", "")
             e.target.parentNode.querySelector(".icon__button__bg")?.classList.remove("show")
             e.target.parentNode.querySelector(".icon__button__border")?.classList.remove("show")
             e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("value", "")
-            if(e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).classList.contains("perkslot"))
-            e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_perkbackground.png")
-            if(e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).classList.contains("gemslot"))
-            e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "")
+            if (e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).classList.contains("perkslot"))
+                e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "../lyshineui/images/crafting/crafting_perkbackground.png")
+            if (e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).classList.contains("gemslot"))
+                e.target.parentNode.querySelector(`#${e.target.getAttribute("for")}`).setAttribute("src", "")
             e.target.classList.remove("show")
             e.target.parentNode.querySelector(".perks").dispatchEvent(new Event('input'))
             getItemEquip()

@@ -213,6 +213,7 @@ body {
     position: absolute;
     color: white;
     top: -20px;
+    
 }
 
 
@@ -242,10 +243,12 @@ body {
 }
 
 .hp_container::before {
-    content: "HP";
+    content: "HP%";
     text-align: center;
     top: -10px;
-    width: 100%
+    width: 100%;
+    font-weight: 500;
+    font-size: 1.1rem;
 }
 
 .physrating_container::before,
@@ -253,6 +256,8 @@ body {
     text-align: center;
     top: -10px;
     width: 100%;
+    font-weight: 500;
+    font-size: 1.1rem;
 }
 
 .physrating_container::before{
@@ -535,6 +540,9 @@ body {
     background-color: black;
     overflow-wrap: break-word;
     max-width: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .tippy-box[data-theme~='maxHeight'] {
