@@ -92,18 +92,6 @@ body {
 
 }
 
-.playercondition_container {
-    position: relative;
-    display: inline-flex;
-    grid-column: 2/3;
-    grid-row: 1/-1;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: center;
-    gap: 2rem;
-    flex: 1 1 auto;
-}
-
 .attributecontainer {
     position: relative;
     display: inline-flex;
@@ -128,9 +116,10 @@ body {
     grid-row: 1/-1;
     flex-wrap: nowrap;
     align-content: flex-start;
+    width: 100%;
     gap: 1rem;
     flex: 1 1 auto;
-    margin: 10px 10px 15px 10px;
+    /* margin: 10px 10px 15px 10px; */
 }
 
 .equiprow {
@@ -140,9 +129,7 @@ body {
     justify-content: center;
     align-items: center;
     flex: 1;
-    max-width: 500px;
-    gap: 2%; 
-    
+    max-width: 100%;
 }
 
 .forms {
@@ -552,6 +539,9 @@ body {
     background-color: black;
     overflow-wrap: break-word;
     max-width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .tippy-box[data-theme~='maxHeight'] {
@@ -577,6 +567,7 @@ body {
 
 .tippy-content {
     white-space: pre-line;
+    padding: 5px;
 }
 
 .appended_ability_div_tooltip_ctrl {
@@ -1093,7 +1084,7 @@ option {
     align-content: flex-start;
     gap: 1rem;
     flex: 1 1 auto;
-    margin: 10px 10px 15px 10px;
+    /* margin: 10px 10px 15px 10px; */
 }
 
 .removebttn {

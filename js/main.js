@@ -548,7 +548,7 @@ const playerEqiup_tippy = tippy(playerEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'container',
-    maxWidth: 350,
+    maxWidth: 400,
     placement: 'bottom'
 })
 
@@ -3014,7 +3014,7 @@ const replaceToken = (ability) => {
     let getOperand = []
     let extradescription = ability.Description
     let description = ability.Description
-    let ctrldescription = ability.Description
+    //let ctrldescription = ability.Description
     let innerToken = []
     let insideToken
 
@@ -3050,11 +3050,11 @@ const replaceToken = (ability) => {
 
     extradescription = `${ability.DisplayName} <br><br> ${extradescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'").replace(/font face=\"lyshineui\/fonts\/pica_regular\.font\"/gi, "p class='pica'")}`
     description = `${ability.DisplayName} <br><br> ${description.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'").replace(/font face=\"lyshineui\/fonts\/pica_regular\.font\"/gi, "p class='pica'")}`
-    ctrldescription = `${ability.DisplayName} <br><br> ${ctrldescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'").replace(/font face=\"lyshineui\/fonts\/pica_regular\.font\"/gi, "p class='pica'")}`
+    //ctrldescription = `${ability.DisplayName} <br><br> ${ctrldescription.replace(/(\\n)/g, "<br>").replace(/font face=\"lyshineui\/fonts\/Nimbus_SemiBold\.font\"/gi, "p class='boldyellow'").replace(/font(?=>)/gi, "p").replace(/font face=\"lyshineui\/fonts\/Nimbus_Regular_Italic\.font\"/gi, "p class='grayitalic'").replace(/font face=\"lyshineui\/fonts\/pica_regular\.font\"/gi, "p class='pica'")}`
     return {
         normal: description,
         extra: extradescription,
-        ctrl: ctrldescription
+        //ctrl: ctrldescription
     }
 
 }
