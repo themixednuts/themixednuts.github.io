@@ -547,8 +547,8 @@ const playerEqiup_tippy = tippy(playerEquip_dropdown, {
     trigger: 'click',
     interactive: true,
     appendTo: () => document.body,
-    theme: 'ability-tooltip',
-    maxWidth: 400,
+    theme: 'container',
+    maxWidth: 350,
     placement: 'bottom'
 })
 
@@ -560,7 +560,7 @@ const targetEqiup_tippy = tippy(targetEquip_dropdown, {
     trigger: 'click',
     interactive: true,
     appendTo: () => document.body,
-    theme: 'ability-tooltip',
+    theme: 'container',
     maxWidth: 400,
     placement: 'bottom'
 })
@@ -573,7 +573,7 @@ const playerAttr_tippy = tippy(playerAttr_dropdown, {
     trigger: 'click',
     interactive: true,
     appendTo: () => document.body,
-    theme: 'ability-tooltip',
+    theme: 'container',
     maxWidth: 800
 })
 
@@ -585,7 +585,7 @@ const targetCondition_tippy = tippy(targetCondition_dropdown, {
     trigger: 'click',
     interactive: true,
     appendTo: () => document.body,
-    theme: 'ability-tooltip',
+    theme: 'container',
     maxWidth: 400
 })
 

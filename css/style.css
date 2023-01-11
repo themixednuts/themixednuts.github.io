@@ -140,7 +140,9 @@ body {
     justify-content: center;
     align-items: center;
     flex: 1;
-
+    max-width: 500px;
+    gap: 2%; 
+    
 }
 
 .forms {
@@ -363,17 +365,18 @@ body {
     flex-wrap: nowrap;
     align-items: center;
     gap: .5rem;
+    flex-shrink: 1;
 }
 
 .gearscore_icon {
     position: relative;
     flex: 0;
-    width: 42px;
-    height: 42px;
+    aspect-ratio: 1/1;
+    max-width: 42px;
 }
 
 .gearscore {
-    height: 42px;
+    max-height: 42px;
     width: 70px;
 }
 
@@ -525,8 +528,8 @@ body {
 .gem_bg {
     position: relative;
     display: flex;
-    width: 42px;
-    height: 42px;
+    max-width: 42px;
+    aspect-ratio: 1/1;
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -543,6 +546,12 @@ body {
     max-height: 400px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.tippy-box[data-theme~='container'] {
+    background-color: black;
+    overflow-wrap: break-word;
+    max-width: 250px;
 }
 
 .tippy-box[data-theme~='maxHeight'] {
@@ -1065,17 +1074,13 @@ option {
     opacity: 0%;
 }
 
-.equiprow {
-    position: relative;
-    display: inline-flex;
-    gap: .75rem;
-    justify-content: center;
-    align-items: center;
-}
+
 
 .imgslot {
     height: auto;
-    width: 32px;
+    max-width: 32px;
+    flex-shrink: 1;
+
 }
 
 .targetequip_container {
@@ -1120,8 +1125,8 @@ option {
 }
 
 .icon_div {
-    width: 42px;
-    height: 42px;
+    width: clamp(24px,42px,42px);
+    aspect-ratio: 1/1;
     background-image: url("../lyshineui/images/equipment/equipmentbg.png");
     background-size: 42px;
     background-position: center;
@@ -1156,6 +1161,7 @@ option {
 .button {
     position: relative;
     display: flex;
+    flex-shrink: 1;
 }
 
 .perkslot,
@@ -1172,8 +1178,10 @@ option {
 .gemslot {
     -webkit-appearance: none;
     appearance: none;
+    max-width: 38px;
+    min-width: 24px;
     width: 38px;
-    height: 38px;
+    aspect-ratio: 1/1;
     border: 0px;
 }
 
