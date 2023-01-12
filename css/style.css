@@ -570,7 +570,8 @@ body {
 
 }
 
-.appended_ability_div:not(.border):hover>.hover {
+.appended_ability_div:not(.border):hover>.hover,
+.appended_ability_div:not(.border):focus>.hover {
     scale: 107.5%;
     filter: brightness(100%);
     top: 50%;
@@ -578,7 +579,8 @@ body {
     transform: translateY(-50%) translateX(-50%);
 }
 
-.appended_ability_div:has(.purchased):hover>.border {
+.appended_ability_div:has(.purchased):hover>.border,
+.appended_ability_div:has(.purchased):focus>.border {
     scale: 107.5%;
     filter: var(--purchased) brightness(100%);
     top: 50%;
@@ -586,28 +588,13 @@ body {
     transform: translateY(-50%) translateX(-50%);
 }
 
-.appended_ability_div:not(:has(.purchased)):hover>.border {
+.appended_ability_div:not(:has(.purchased)):hover>.border,
+.appended_ability_div:not(:has(.purchased)):focus> {
     scale: 107.5%;
     filter: var(--blueBorder) brightness(100%);
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
-}
-
-
-.appended_ability_div:hover>.appended_ability_div_tooltip:not(.shift_key.ctrl_key):not(.shift_key) {
-    display: block;
-    z-index: 1000;
-}
-
-.appended_ability_div:hover>.appended_ability_div_tooltip_extra.shift_key:not(.ctrl_key) {
-    display: block;
-    z-index: 1000;
-}
-
-.appended_ability_div:hover>.appended_ability_div_tooltip_ctrl.shift_key.ctrl_key {
-    display: block;
-    z-index: 1000;
 }
 
 .ability {
@@ -924,8 +911,6 @@ option {
 
 
 .purchased {
-    top: 50%;
-    left: 50%;
     filter: brightness(100%);
     /* animation: purshaseScale .3s ease-out; */
 }

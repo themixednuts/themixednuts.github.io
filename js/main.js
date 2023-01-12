@@ -55,7 +55,6 @@ const ATTRTHREHOLDS = [
 
 
 const MODIFIERS = [
-
     "ArmorPenetration",
     "CritArmorPenetration",
     "HitFromBehindArmorPenetration",
@@ -540,8 +539,6 @@ const player_tippywep = tippy(playerEquip.querySelector(".weaponslot"), {
 
 
 const playerEquip_dropdown = document.querySelector("#player-dropdown-button")
-
-
 const playerEqiup_tippy = tippy(playerEquip_dropdown, {
     content: playerEquip,
     trigger: 'click',
@@ -553,8 +550,6 @@ const playerEqiup_tippy = tippy(playerEquip_dropdown, {
 })
 
 const targetEquip_dropdown = document.querySelector("#target-dropdown-button")
-
-
 const targetEqiup_tippy = tippy(targetEquip_dropdown, {
     content: targetEquip,
     trigger: 'click',
@@ -588,10 +583,6 @@ const targetCondition_tippy = tippy(targetCondition_dropdown, {
     theme: 'container',
     maxWidth: 400
 })
-
-
-
-
 
 const iconAbility = "lyshineui/images/icons/abilities"
 const masteryIcon = "lyshineui/images/skills/mastery"
@@ -673,13 +664,6 @@ const perkStatusEffectTable = await loadPerkStatusEffectTable()
 let perkStatusEffectMAP = {}
 for (const status of Object.values(perkStatusEffectTable))
     perkStatusEffectMAP[status.StatusID.toUpperCase()] = status
-
-
-
-let damageTableRow = []
-let damageName = [document.querySelectorAll('.barlabel')].reduce((a, c) => a + c).forEach((value, key) => damageTableRow[key] = value.id)
-
-let abilityData
 
 let staminaMAP = {}
 const staminaCosts_Player = await loadStaminaData()
@@ -1040,10 +1024,8 @@ let currentAnimations
 //load properties for selected weapon
 async function loadWeaponData() {
 
-    //set default weapon location
-    if (!selectedWeapon) {
-        selectedWeapon = playerEquip.querySelector(".weaponslot").getAttribute("value")
-    }
+    selectedWeapon = playerEquip.querySelector(".weaponslot").getAttribute("value")
+
     //clear any weapon StatusEffect map
     wepStatusEffectMAP = {}
     //clear any weapon AbilityTable map
@@ -1455,26 +1437,15 @@ const setDescription = () => {
         })
 
 
-        if (shiftACTIVE || ctrlACTIVE){
+        if (shiftACTIVE || ctrlACTIVE) {
             token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).extra
-            + "\n" 
-            + getInfo(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()])
+                + "\n"
+                + getInfo(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()])
         }
-
-/*         if (!shiftACTIVE && !ctrlACTIVE){
-            token = replaceToken(wepAbilityMAP[instance.reference.id.replace("_checkbox", "").toUpperCase()]).normal
-            instance.setProps({
-                allowHTML: true,
-                theme: "ability-tooltip",
-                placement: 'bottom',
-                interactive: false,
-            })
-        } */
 
         instance.setContent(
             token
         )
-
 
     })
 
@@ -1722,8 +1693,8 @@ const equipWepAbility = () => {
 
     let uniqueOptions = [...new Set(options)]
     uniqueOptions.forEach(status => {
-        if (!playerAttr.querySelector(`#${status.StatusID}_option`))
-            playerAttr.querySelector(".player_statuseffects_select").appendChild(createItem("option", `${status.StatusID}`, { class: "added_statuseffect", id: `${status.StatusID}_option`, value: `${status.StatusID}` }))
+        if (!playerAttr.querySelector(`#${status?.StatusID}_option`))
+            playerAttr.querySelector(".player_statuseffects_select").appendChild(createItem("option", `${status?.StatusID}`, { class: "added_statuseffect", id: `${status?.StatusID}_option`, value: `${status?.StatusID}` }))
 
     })
 
@@ -1823,13 +1794,22 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                 }
 
-                if (ability.PerStatusEffectOnTarget || ability.PerStatusEffectOnSelf) {
+                if (ability.PerStatusEffectOnTarget || ability.PerStatusEffectOnSelf || ability.MaxNumAroundMe > 1) {
                     if (!document.querySelector(`#${ability.AbilityID}_icon__button`).textContent)
                         document.querySelector(`#${ability.AbilityID}_icon__button`).textContent = 1
-                    if (ability.PerStatusEffectOnTarget)
+                    if (ability.PerStatusEffectOnTarget) {
                         document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnTargetMax}`)
-                    if (ability.PerStatusEffectOnSelf)
+                    }
+                    if (ability.PerStatusEffectOnSelf) {
                         document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.PerStatusEffectOnSelfMax}`)
+                    }
+                    if (ability.MaxNumAroundMe) {
+                        document.querySelector(`#${ability.AbilityID}_icon__button`).setAttribute("value", `${ability.MaxNumAroundMe}`)
+                    }
+
+                    document.querySelector(`#${ability.AbilityID}_icon__button`).classList.add("show", "maxStack")
+                    document.querySelector(`#${ability.AbilityID}_icon__button__bg`).classList.add("show")
+                    document.querySelector(`#${ability.AbilityID}_icon__button__border`).classList.add("show")
                 }
 
 
@@ -1961,14 +1941,7 @@ const checkCondition = (abilityID, damageIDREFERENCE) => {
 
                 let maxStack = 1
 
-                if (x.PerStatusEffectOnTarget) {
-
-                    if (document.querySelector(`#${x.AbilityID}_icon__button`)) {
-                        maxStack = document.querySelector(`#${x.AbilityID}_icon__button`).textContent
-                    }
-                }
-
-                if (x.PerStatusEffectOnSelf) {
+                if (x.PerStatusEffectOnTarget || x.PerStatusEffectOnSelf || x.MaxNumAroundMe) {
 
                     if (document.querySelector(`#${x.AbilityID}_icon__button`)) {
                         maxStack = document.querySelector(`#${x.AbilityID}_icon__button`).textContent
@@ -3422,11 +3395,7 @@ function up() {
     safetyStop = true
 }
 
-window.addEventListener("touchstart", (e) => {
-    if(e.targetTouches.length == 2){
-        shiftACTIVE = !shiftACTIVE
-    }
-})
+
 
 new Array("change").forEach(type => {
 
@@ -3665,15 +3634,15 @@ new Array("keydown").forEach(type => {
 new Array("keyup").forEach(type =>
 
     window.addEventListener(type, function check(e) {
-       /*  if (e.keyCode == 16) {
-            shiftACTIVE = false
-            setDescription()
-        }
-        if (e.keyCode == 17) {
-            ctrlACTIVE = false
-            setDescription()
-        }
- */
+        /*  if (e.keyCode == 16) {
+             shiftACTIVE = false
+             setDescription()
+         }
+         if (e.keyCode == 17) {
+             ctrlACTIVE = false
+             setDescription()
+         }
+  */
     })
 )
 
