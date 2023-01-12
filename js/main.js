@@ -1689,6 +1689,7 @@ const equipWepAbility = () => {
             document.querySelector(`#${ability.AbilityID}_checkbox`).checked = true
             checkedSelfAbility.push(ability)
         }
+
     }
 
     let uniqueOptions = [...new Set(options)]
@@ -1698,9 +1699,8 @@ const equipWepAbility = () => {
 
     })
 
-    if (playerAttr.querySelector(".player_statuseffects_select").value != "") {
-
-        checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select").value.toUpperCase()])
+    if (playerAttr.querySelector(".player_statuseffects_select").value) {
+        checkedSelfAbility.push(wepStatusEffectMAP[document.querySelector(".player_statuseffects_select")?.value.toUpperCase()])
     }
 
     /*     checkedSelfAbility.forEach(ability => {
