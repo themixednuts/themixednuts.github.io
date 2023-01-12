@@ -3582,7 +3582,12 @@ new Array("resize", "load").forEach(type => {
 })
 
 
-
+window.addEventListener("touchstart", (e) => {
+    e.targetTouches.length >= 2 {
+        shiftACTIVE = !shiftACTIVE
+        setDescription()
+    }
+})
 
 new Array("keydown").forEach(type => {
     window.addEventListener(type, function check(e) {
