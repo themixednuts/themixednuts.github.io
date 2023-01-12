@@ -1537,7 +1537,6 @@ const setBarDescription = () => {
             allowHTML: true,
             trigger: "click",
             interactive: true,
-            touch: "hold",
             appendTo: () => document.body
         })
     })
@@ -3431,13 +3430,7 @@ new Array("change").forEach(type => {
             getFinalDamage()
     })
 
-    targetHP.addEventListener(type, function onCh(e) {
-        if (e.target.value > 100) {
-            e.target.value = 100
-        }
 
-        getFinalDamage()
-    })
 
     for (const attributeKey of Object.keys(ATTRIBUTES)) {
         const attr = playerAttr.querySelector(`#${attributeKey.toLowerCase()}`);
@@ -3458,11 +3451,7 @@ new Array("change").forEach(type => {
         })
     }
 
-    targetCondition.querySelectorAll(".armor_rating").forEach(item =>
-        item.addEventListener(type, (e) => {
-            getFinalDamage()
-        })
-    )
+
 
     targetCondition.querySelector(".target_level_container").addEventListener(type, (e) => {
 
@@ -3698,9 +3687,19 @@ new Array("input").forEach(type => {
     })
 
 
+    targetCondition.querySelectorAll(".armor_rating").forEach(item =>
+        item.addEventListener(type, (e) => {
+            getFinalDamage()
+        })
+    )
 
+    targetHP.addEventListener(type, function onCh(e) {
+        if (e.target.value > 100) {
+            e.target.value = 100
+        }
 
-
+        getFinalDamage()
+    })
 
     equipContainers.forEach(container => {
         container.querySelectorAll(".search").forEach(search => search.addEventListener(type, (e) => {
