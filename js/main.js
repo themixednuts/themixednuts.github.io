@@ -1537,6 +1537,7 @@ const setBarDescription = () => {
             allowHTML: true,
             trigger: "click",
             interactive: true,
+            touch: false,
             appendTo: () => document.body
         })
     })
