@@ -548,7 +548,7 @@ const playerEqiup_tippy = tippy(playerEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'container',
-    maxWidth: 400,
+    maxWidth: 600,
     placement: 'bottom'
 })
 
@@ -561,7 +561,7 @@ const targetEqiup_tippy = tippy(targetEquip_dropdown, {
     interactive: true,
     appendTo: () => document.body,
     theme: 'container',
-    maxWidth: 400,
+    maxWidth: 600,
     placement: 'bottom'
 })
 
@@ -1635,31 +1635,34 @@ for (const tippy of Object.values(perkTippy)) {
 
 const conditionalChecks = (damageID, ability, reference) => {
 
-    let whichDamageMap = currentSelfWeaponDamageMAP[damageID] ? currentSelfWeaponDamageMAP[damageID] : damageTableMAP[damageID.toUpperCase()] ? damageTableMAP[damageID.toUpperCase()] : perkStatusEffectMAP[damageID.toUpperCase()]
+    let damageRow = currentSelfWeaponDamageMAP[damageID] || damageTableMAP[damageID.toUpperCase()] || perkStatusEffectMAP[damageID.toUpperCase()]
 
 
-    let whichID
+    let _id
     if (currentSelfWeaponDamageMAP[damageID]?.DamageID || damageTableMAP[damageID.toUpperCase()]?.DamageID)
-        whichID = "DamageID"
-    if (perkStatusEffectMAP[damageID.toUpperCase()]?.StatusID)
-        whichID = "StatusID"
+        _id = "DamageID"
+    if (perkStatusEffectMAP[damageID.toUpperCase()]?.StatusID || currentSelfWeaponDamageMAP[damageID]?.StatusID)
+        _id = "StatusID"
     //whichDamageMap[whichID]
     let hit
-    if (lastHit == whichDamageMap[whichID]) {
+    let hitRow
+    if (lastHit == damageRow[_id]) {
         hit = lastHit
+        hitRow = currentSelfWeaponDamageMAP[lastHit]
     }
-    if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(whichDamageMap.IsRanged))
-        && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(whichDamageMap.IsRanged))
-        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(hit))
-        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(hit))
-        && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(whichDamageMap.AttackType))
-        && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(whichDamageMap.DamageType))
+
+    if ((!ability.DamageIsRanged || new RegExp(ability.DamageIsRanged, "gi").test(damageRow?.IsRanged))
+        && (!ability.DamageIsMelee || !new RegExp(ability.DamageIsMelee, "gi").test(damageRow?.IsRanged))
+        && (!ability.DamageTableRow || new RegExp(ability.DamageTableRow.replace(/,/g, "|"), "gi").test(damageID))
+        && (!ability.RemoteDamageTableRow || new RegExp(ability.RemoteDamageTableRow.replace(/,/g, "|"), "gi").test(damageID))
+        && (!ability.AttackType || new RegExp(ability.AttackType.replace(/,/g, "|"), "gi").test(damageRow?.AttackType))
+        && (!ability.DamageTypes || new RegExp(ability.DamageTypes.replace(/,/g, "|"), "gi").test(damageRow?.DamageType))
         && (!ability.TargetStatusEffectCategory || new RegExp(ability.TargetStatusEffectCategory.replace(/,/g, "|"), "gi").test(targetCondition.querySelector("#debuff_target").value))
         && (!ability.TargetHealthPercent || _is[ability.TargetComparisonType](targetHP.value, ability.TargetHealthPercent))
         && (!ability.DamageCategory || ability.DamageCategory == findDamageCategory(damageID))
         && (!ability.DMGVitalsCategory || new RegExp(ability.DMGVitalsCategory.split("=")[0]).test(selectedVitals.VitalsCategories))
         && (!ability.StatusEffect || ability.StatusEffect == playerAttr.querySelector(".player_statuseffects_select").value)
-        && (!ability.RequireReaction || ability.RequireReaction != whichDamageMap.NoReaction))
+        && (!ability.RequireReaction || ability.RequireReaction != damageRow?.NoReaction))
         return true
     else
         return false

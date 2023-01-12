@@ -102,18 +102,17 @@ body {
     flex: 0 1 auto;
 }
 
-.pica{
+.pica {
     font-family: 'pica';
 }
 
 
 
-.playerequip_container {
+.playerequip_container,
+.targetequip_container {
     position: relative;
     display: flex;
     flex-direction: column;
-    grid-column: 3/4;
-    grid-row: 1/-1;
     flex-wrap: nowrap;
     align-content: flex-start;
     width: 100%;
@@ -129,7 +128,7 @@ body {
     justify-content: center;
     align-items: center;
     flex: 1;
-    max-width: 100%;
+    width: 100%;
 }
 
 .forms {
@@ -193,7 +192,7 @@ body {
     z-index: 5;
 }
 
-.before{
+.before {
     position: relative;
 }
 
@@ -202,7 +201,7 @@ body {
     position: absolute;
     color: white;
     top: -20px;
-    
+
 }
 
 
@@ -241,7 +240,7 @@ body {
 }
 
 .physrating_container::before,
-.elerating_container::before{
+.elerating_container::before {
     text-align: center;
     top: -10px;
     width: 100%;
@@ -249,24 +248,12 @@ body {
     font-size: 1.1rem;
 }
 
-.physrating_container::before{
+.physrating_container::before {
     content: "Physical Armor Rating";
 }
-.elerating_container::before{
-    content: "Elemental Armor Rating";
-}
 
-.target_container {
-    position: relative;
-    min-width: 100px;
-    display: flex;
-    flex-wrap: nowrap;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    flex-direction: column;
-    gap: 1rem;
-    align-content: center;
-    /* justify-content: center; */
+.elerating_container::before {
+    content: "Elemental Armor Rating";
 }
 
 .vitals_container {
@@ -538,7 +525,6 @@ body {
 .tippy-box[data-theme~='container'] {
     background-color: black;
     overflow-wrap: break-word;
-    max-width: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -984,7 +970,7 @@ option {
 
 }
 
-.bar_container.hit{
+.bar_container.hit {
     border: 1px solid white;
 }
 
@@ -1116,7 +1102,7 @@ option {
 }
 
 .icon_div {
-    width: clamp(24px,42px,42px);
+    width: clamp(24px, 42px, 42px);
     aspect-ratio: 1/1;
     background-image: url("../lyshineui/images/equipment/equipmentbg.png");
     background-size: 42px;
