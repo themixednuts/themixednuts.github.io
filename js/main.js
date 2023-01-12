@@ -3580,14 +3580,25 @@ new Array("resize", "load").forEach(type => {
     })
 
 })
+var mylatesttap;
+function doubletap() {
 
+   var now = new Date().getTime();
+   var timesince = now - mylatesttap;
+   if((timesince < 600) && (timesince > 0)){
 
-window.addEventListener("touchstart", (e) => {
-    e.targetTouches.length >= 2 {
-        shiftACTIVE = !shiftACTIVE
-        setDescription()
-    }
-})
+    shiftACTIVE = !shiftACTIVE
+    setDescription()
+
+   }else{
+            // too much time to be a doubletap
+         }
+
+   mylatesttap = new Date().getTime();
+
+}
+
+window.addEventListener("touchstart", doubletap)
 
 new Array("keydown").forEach(type => {
     window.addEventListener(type, function check(e) {
