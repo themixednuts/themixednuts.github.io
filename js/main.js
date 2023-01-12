@@ -3422,6 +3422,12 @@ function up() {
     safetyStop = true
 }
 
+window.addEventListener("touchstart", (e) => {
+    if(e.targetTouches.length == 2){
+        shiftACTIVE = !shiftACTIVE
+    }
+})
+
 new Array("change").forEach(type => {
 
 
