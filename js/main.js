@@ -1535,7 +1535,9 @@ const setBarDescription = () => {
         instance.setProps({
             placement: "top-start",
             allowHTML: true,
-            delay: [200, 0]
+            trigger: "click",
+            interactive: true,
+            appendTo: () => document.body
         })
     })
 }
@@ -3583,18 +3585,18 @@ new Array("resize", "load").forEach(type => {
 var mylatesttap;
 function doubletap() {
 
-   var now = new Date().getTime();
-   var timesince = now - mylatesttap;
-   if((timesince < 600) && (timesince > 0)){
+    var now = new Date().getTime();
+    var timesince = now - mylatesttap;
+    if ((timesince < 600) && (timesince > 0)) {
 
-    shiftACTIVE = !shiftACTIVE
-    setDescription()
+        shiftACTIVE = !shiftACTIVE
+        setDescription()
 
-   }else{
-            // too much time to be a doubletap
-         }
+    } else {
+        // too much time to be a doubletap
+    }
 
-   mylatesttap = new Date().getTime();
+    mylatesttap = new Date().getTime();
 
 }
 
